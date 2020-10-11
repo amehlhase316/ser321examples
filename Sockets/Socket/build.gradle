@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+description = "Client Server Socket Example"
+
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'SockClient'
+  // default args
+  args 'localhost' // host
+  args '8888' // port
+  args '10' // int value to write
+  args '20' // int value to write
+}
+
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'SockServer'
+  // default args
+  args '8888' // port
+  args '10000' // sleep delay
+}

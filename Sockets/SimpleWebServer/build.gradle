@@ -1,0 +1,11 @@
+apply plugin: 'application'
+
+application {
+    mainClassName = 'SimpleWebServer'
+    description = "Simple Web Server Example"
+}
+
+run {
+  // default arguments
+  args '9099' // port
+}

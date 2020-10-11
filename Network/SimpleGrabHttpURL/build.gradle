@@ -1,0 +1,9 @@
+application {
+    mainClassName = 'SimpleGrabHttpURL'
+    description = "SimpleGrabHttpURL Example"
+}
+
+run {
+  // default arguments
+  args 'https://devhints.io/bash' // url
+}

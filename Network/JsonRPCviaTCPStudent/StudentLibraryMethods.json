@@ -1,0 +1,37 @@
+[
+    {
+        "method": "saveToJsonFile",
+        "params":[ ],
+        "returns": true
+    },
+    {
+        "method": "resetFromJsonFile",
+        "params":[ ],
+        "returns": true
+    },
+    {   // add(JsonOfAStudent) --> bool
+        "method": "add",
+        "params":[{ }],
+        "returns": true
+    },
+    {   // remove(string) --> bool
+        "method": "remove",
+        "params":["Tim"],
+        "returns": true
+    },
+    {   // get(string) --> jsonOfAStudent
+        "method": "get",
+        "params":["Tim"],
+        "returns":{ }
+    },
+    {   // getNames() --> json array of strings of student names
+        "method": "getNames",
+        "params":[],
+        "returns": [ ]
+    },
+    {   // getById(int id) --> String name of student with this id
+        "method": "getById",
+        "params":[25],
+        "returns": "Tim Lindquist"
+    }
+]

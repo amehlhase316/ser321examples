@@ -1,0 +1,22 @@
+application {
+    mainClassName = 'SynchExample'
+    description = "Synchronization Example"
+}
+
+// gradle run -- runs with default
+// gradl run --args='5, 10000'  -- runs with 5 and 10 as values
+run {
+  // default arguments
+  args '5' // number of transactions (threads)
+  args '5' // sleep delay
+}
+
+// gradle SynchExample2 --args='5,1000'. -- runs with two accounts and created 5 threads
+task SynchExample2(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SynchExample2'
+
+  args '5' // number of transactions (threads)
+  args '40000' // sleep delay
+}

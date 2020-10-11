@@ -1,0 +1,82 @@
+apply plugin: 'java'
+
+description = "Client Server Socket Example"
+
+task runBrowser(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  
+  main = 'SimpleBrowser'
+  // default args
+  args 'https://devhints.io/bash' // url
+}
+
+task runGetNameForIP(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "IPs"
+  description = "Get url for IP"
+  main = 'GetNameForIP'
+  // default args
+  args '8.8.4.4' // IP
+}
+
+task runGetIP(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "IPs"
+  description = "Get IP for url"
+  main = 'GetIP'
+  // default args
+  args 'devhints.io' // url
+}
+
+// the Client and Server belong together
+task runDatagramReceive(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "Datagram Server/Client"
+  description = "Datagram Receive"
+  main = 'DatagramReceive'
+  // default args
+  args '9099' // port
+}
+
+task runDatagramSend(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "Datagram Server/Client"
+  description = "Datagram Send"
+  main = 'DatagramSend'
+  // default args
+  args '9099' // port
+  args 'my message' // message
+}
+
+// Client and Server socket, socket can serve up to three clients
+// The port is defined directly in the Java files. For practice consider changing
+// the tasks to add the port as input to the Gradle task
+task SocketServer(type: JavaExec) {
+  group 'TCP Server/Client'
+  description 'Creates Server socket waits for up to 3 messages'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SockServer'
+}
+
+task SocketClient(type: JavaExec) {
+  group 'TCP Server/Client'
+  description 'Creates client socket sends a message and number to server'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SockClient'
+
+  // allows you to provide host, host&message, host&number, host&number&message (which order does not matter as long as named correctly)
+  // run with arguments e.g.: gradle SocketClient -Phost=localhost -Pmessage=secret -Pnumber=5
+  if (project.hasProperty("host") && project.hasProperty("message") && project.hasProperty("number")) {
+    args(project.getProperty('host'), project.getProperty('message'), project.getProperty('number'));
+  } else if (project.hasProperty("host") && project.hasProperty("message")) {
+    args(project.getProperty('host'), project.getProperty('message'));
+  } else if (project.hasProperty("host") && project.hasProperty("number")) {
+    args(project.getProperty('host'), "Set by Gradle, since nothing provided: https://gph.is/2y76sj4", project.getProperty('number'));
+  }  else if (project.hasProperty("host")) {
+    args(project.getProperty('host'));
+  } 
+}

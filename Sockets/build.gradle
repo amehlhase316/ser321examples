@@ -1,0 +1,4 @@
+subprojects {
+  group = "sockets.examples"
+}
+

@@ -1,0 +1,4 @@
+application {
+    mainClassName = 'GroupFileSerialize'
+    description = "Serialization example"
+}

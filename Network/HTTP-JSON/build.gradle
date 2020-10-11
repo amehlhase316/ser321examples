@@ -1,0 +1,21 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'API'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies{
+  compile 'org.json:json:20171018' // org.json
+  compile 'com.google.code.gson:gson:2.8.6' // Google JSON
+}
+
+task API(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'API'
+  // default args
+  args 'kgary' // port 
+}

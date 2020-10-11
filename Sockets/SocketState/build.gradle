@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+description = "Client Server Socket-State Example"
+
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'SockClientState'
+  // default args
+  args 'localhost' // host
+  args '9099' // port
+  args 'r'
+  args '10' // int value to write
+  args '20' // int value to write
+}
+
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'SockServerState'
+  // default args
+  args '9099' // port
+  args '5' // sleep time
+}

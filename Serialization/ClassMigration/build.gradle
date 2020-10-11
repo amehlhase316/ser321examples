@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+description = "Serialization Example"
+
+
+task runUser(type: Exec) {
+  workingDir 'build/classes/java/main'
+  description = "Run User"
+  commandLine 'serialver'
+  // default args
+  args 'User'
+}
+
+runUser.dependsOn 'compileJava'
+
+task runFileSerialize(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run File Serialize"
+  main = 'UserFileSerialize'
+  // default args
+  args 'write'
+}

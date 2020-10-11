@@ -1,0 +1,43 @@
+// Gradle script not running a program but showing how
+// you can create tasks and use doFrist doLast to specify which 
+// order things run
+
+// You should test all the tasks:
+// what is on project scope and what on just task scope?
+// can you figure out why the prints are as they are?
+
+// Also run 'gradle tasks --all' to see what the groups and description part does
+
+// gradle task
+task('task1') {
+     group = "Just a task"
+     description = "Shows how doFirst and doLast works"
+     doFirst {
+     	println "first"
+     }
+     doLast {
+     	println "last"
+     }
+}
+
+// gradle task
+task('task2') {
+     group = "Just a task"
+     description = "Shows how doFirst and doLast works -- reversed"
+     doLast {
+     	println "first"
+     }
+     doFirst {
+     	println "last"
+     }
+}
+
+//gradle task on project 'scope'
+task Project1() {
+	println("Hello World")
+}
+
+//gradle task on project 'scope'
+task('project2') {
+    println "Hello you"
+}

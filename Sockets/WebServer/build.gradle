@@ -1,0 +1,79 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'SimpleServer'
+
+task SimpleWebServer(type: JavaExec) {
+  group 'http'
+  description 'Simple Http Demo'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'httpServer.WebServer'
+  standardInput = System.in
+}
+
+task FunWebServer(type: JavaExec) {
+  group 'http'
+  description 'Simple Http Demo'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'funHttpServer.WebServer'
+  standardInput = System.in
+}
+
+
+task LordWhyWebServer(type: JavaExec) {
+  group 'http'
+  description 'Complicated Http Server'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'lordWhyHttpServer.WhyServer'
+  standardInput = System.in
+}
+
+
+task LordWhyWebClient(type: JavaExec) {
+  group 'http'
+  description 'Complicated Http Client'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'lordWhyHttpServer.WhyClient'
+  standardInput = System.in
+}
+
+task JsonParser(type: JavaExec) {
+  group 'http'
+  description 'JsonParser test'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'lordWhyHttpServer.json.JsonParser'
+  standardInput = System.in
+}
+
+
+task MysteryWhyWebServer(type: JavaExec) {
+  group 'http'
+  description 'Mysterious Http Server'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'mysteryWhyServer.Server'
+  standardInput = System.in
+}
+
+task MysteryWhyWebClient(type: JavaExec) {
+  group 'http'
+  description 'Mysterious Http Client'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'mysteryWhyServer.Client'
+  standardInput = System.in
+}
+

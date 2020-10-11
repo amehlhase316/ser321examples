@@ -1,0 +1,38 @@
+<html>
+
+<head>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+  <script type="text/javascript">
+    function getNewImage() {
+      fetch('/json')
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+          document.getElementById("heading").innerHTML = data.header
+          document.getElementById("image").src = data.image
+        })
+        .catch(function (err) {
+            console.log('error: ' + err);
+        });
+    }
+    function ready(callbackFunction){
+      if(document.readyState != 'loading')
+        callbackFunction(event)
+      else
+        document.addEventListener("DOMContentLoaded", callbackFunction)
+    }
+    ready(event => {
+      document.getElementById("random-btn").addEventListener("click", getNewImage);
+      getNewImage();
+    })
+  </script>
+</head>
+
+<body>
+  <button id="random-btn">Random</button>
+  <h1 id="heading">test</h1>
+  <img src="" id="image" style ="max-width:500px;max-height:500px" /> <br />
+</body>
+
+</html>

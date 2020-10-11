@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+description = "TCP Client Server Example"
+
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'TCPClient'
+  // default args
+  args 'localhost' // host
+  args '9099' // port
+  args 'This is line one.\nThis is line two' // data
+}
+
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'TCPServer'
+  // default args
+  args '9099' // port
+  args '9' // delay
+}

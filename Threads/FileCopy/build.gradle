@@ -1,0 +1,4 @@
+application {
+    mainClassName = 'TempConvertClient'
+    description = "File copy using threads example"
+}

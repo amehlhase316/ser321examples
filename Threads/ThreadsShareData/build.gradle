@@ -1,0 +1,10 @@
+application {
+    mainClassName = 'SynchronizedThreads'
+    description = "Example Java Synchronized Threads"
+}
+
+run {
+  // default arguments
+  args '5' // number of threads
+  args '5' // sleep delay
+}

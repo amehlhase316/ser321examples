@@ -1,0 +1,15 @@
+application {
+    mainClassName = 'MusicThread'
+    description = "Thread example to play a wav file"
+}
+
+repositories {
+    flatDir {
+        name = 'libs dir'
+        dir file('lib')  
+    }
+}
+
+dependencies {
+    implementation files('lib/MusicGui.jar')  
+}

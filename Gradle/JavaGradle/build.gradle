@@ -1,0 +1,67 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'Multiply'
+
+// task which will run Main with default parameters, 
+// can be overwritten with: gradle runApp --args '3 4' 
+task runApp(type: JavaExec) {
+  group 'Multiply tasks'
+  description 'Tasks which runs Multiply with default parameters'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Multiply'
+
+  // default arguments if non are given
+  args '1'
+  args '2'
+}
+
+// task which will run Main with default parameters, 
+// but also accepts new parameter this time with given names
+// Example: gradle runAppAgain -Pnum1=9 -Pnum2=10
+// Example2 (this will make Gradle run more quietly in the console):
+//   gradle runAppAgain -Pnum1=9 -Pnum2=10 -q --console=plain 
+task runAppAgain(type: JavaExec) {
+  group 'Multiply tasks'
+  description 'Tasks which runs Multiply with default parameters or given values'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Multiply'
+
+  // only works if two arguments are provided
+  // Try: using default values in case non or only one parameter is provided
+  if (project.hasProperty("num1") && project.hasProperty("num2")) {
+    args(project.getProperty('num1'), project.getProperty('num2'));
+  } else if (project.hasProperty("num1")){
+    args(project.getProperty('num1'), 1);
+  }
+}
+
+// task that runs the Fraction Main which does not use arguments: gradle runFraction
+task runFraction(type: JavaExec) {
+  group 'Fraction Tasks'
+  description 'Tasks which runs Fraction with no arguments'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Fraction'
+}
+
+// Try:
+// 1. Change Fraction.main so it accepts 2 arguments
+// 2. Create a new gradle tasks that accepts two arguments and 
+//    can be called as: gradle runFrac -Pdenom=4 -Pnum=3 or as gradle runFrac -Pnum=3 -Pdenom=4 
+
+// Example how you can add that libraries can be pulled from mavenCentral()
+// repositories {
+//   mavenCentral()
+// }
+
+// Setting dependencies, e.g. when you import JSON in your Java files
+// dependencies{
+//   compile 'org.json:json:20171018'
+// }

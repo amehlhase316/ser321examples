@@ -1,0 +1,43 @@
+apply plugin: 'java'
+
+description = "TCP Json RPC Client Server Example"
+
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'client.StudentCollectionClient'
+  standardInput = System.in
+  // default args
+  args '127.0.0.1' // host 
+  args '9099' // port 
+}
+
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'server.StudentCollectionTCPJsonRPCServer'
+  // default args
+  args '9099' // port 
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.json', name: 'json', version: '20200518'
+}
+
+/* for local library setup */
+/*
+repositories {
+    flatDir {
+        name = 'libs dir'
+        dir file('lib')  
+    }
+}
+
+dependencies {
+    implementation files('lib/json.jar')  
+}
+*/

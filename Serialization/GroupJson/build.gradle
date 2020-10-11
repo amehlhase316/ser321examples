@@ -1,0 +1,26 @@
+application {
+    mainClassName = 'GroupFileSerialize'
+    description = "JSON serialization example"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.json', name: 'json', version: '20200518'
+}
+
+/* for local library setup */
+/*
+repositories {
+    flatDir {
+        name = 'libs dir'
+        dir file('lib')  
+    }
+}
+
+dependencies {
+    implementation files('lib/json.jar')  
+}
+*/

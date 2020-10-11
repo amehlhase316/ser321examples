@@ -1,0 +1,32 @@
+apply plugin: 'java'
+
+description = "Multicast Socket Example"
+
+task runListener(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Listener"
+  main = 'Listener'
+  // default args
+  args '224.0.0.1' // multicast address
+  args '6789' // port
+}
+
+task runSender(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Sender"
+  main = 'Sender'
+  // default args
+  args 'my sender message' // message
+  args '224.0.0.1' // multicast address
+  args '6789' // port
+}
+
+task runMulticastPeer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Multicast Peer"
+  main = 'MulticastPeer'
+  // default args
+  args 'my multicast message' // message
+  args '224.0.0.1' // multicast address
+  args '6789' // port
+}

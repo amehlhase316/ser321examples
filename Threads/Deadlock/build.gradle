@@ -1,0 +1,4 @@
+application {
+    mainClassName = 'Deadlock'
+    description = "Deadlock Example"
+}
