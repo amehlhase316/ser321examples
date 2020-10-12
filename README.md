@@ -12,7 +12,7 @@ All examples are developed by the teaching team:
 
 Many examples are used and adapted from Dr. Lindquist and Dr. Gary.
 
-Others were developed by Dr. Mehlhase, David Clemens and Aman Kaushik.
+Others were developed by Dr. Mehlhase, David Clements and Aman Kaushik.
 
 
 ## Running the examples
