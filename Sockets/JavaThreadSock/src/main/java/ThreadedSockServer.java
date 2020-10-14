@@ -45,7 +45,7 @@ public class ThreadedSockServer extends Thread {
         // checks if input only contains digits
         if (!s.matches("\\d+")) {
           validInput = false;
-          out.writeObject("Not a number: https://gph.is/g/4o667JP");
+          out.writeObject("Not a number: https://gph.is/2yDymkn");
         }
 
         // if it contains only numbers
