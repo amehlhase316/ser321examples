@@ -15,7 +15,7 @@ public class API {
 
       try {
 
-         // System.out.println(fetchURL("https://api.github.com/rate_limit")); // in case you need to check your rate limit
+         //System.out.println(fetchURL("https://api.github.com/rate_limit")); // in case you need to check your rate limit
          String user = args[0];
          String json = fetchURL("https://api.github.com/users/" + user + "/repos"); // fetching the JSON reply
          System.out.println(json); // printing it so you see how it looks like 
@@ -64,7 +64,6 @@ public class API {
 
                // add new branch to branch array
                newBranchJSON.put(newBranch);
-
             }
 
             // add the branches array to the repo

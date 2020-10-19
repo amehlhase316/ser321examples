@@ -1,0 +1,18 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'JSON'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies{
+  compile 'org.json:json:20171018' // org.json
+}
+
+task JSON(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'JSON'
+}
