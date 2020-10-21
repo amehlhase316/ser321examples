@@ -71,7 +71,7 @@ class WebServer {
   /**
    * Used in the "/random" endpoint
    */
-  private final static HashMap<String, String> _images = new HashMap<>() {
+  private final static HashMap<String, String> _images = new HashMap() {
     {
       put("streets", "https://iili.io/JV1pSV.jpg");
       put("bread", "https://iili.io/Jj9MWG.jpg");
@@ -293,7 +293,7 @@ class WebServer {
     if (filenames.size() > 0) {
       StringBuilder builder = new StringBuilder();
       builder.append("<ul>\n");
-      for (var filename : filenames) {
+      for (String filename : filenames) {
         builder.append("<li>" + filename + "</li>");
       }
       builder.append("</ul>\n");
