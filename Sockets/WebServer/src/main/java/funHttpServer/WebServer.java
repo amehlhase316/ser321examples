@@ -255,15 +255,17 @@ class WebServer {
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
-          List<GitRepoData> parsedData = parseJson(json);
+          try {
+            List<GitRepoData> parsedData = parseJson(json);
 
-          for (GitRepoData gd: parsedData) {
-            builder.append(gd.getOwner().getLogin() + ", ")
-                    .append(gd.getId() + " -> ")
-                    .append(gd.getName() + "\n");
+            for (GitRepoData gd: parsedData) {
+              builder.append(gd.getOwner().getLogin() + ", ")
+                      .append(gd.getId() + " -> ")
+                      .append(gd.getName() + "\n");
+            }
+          } catch (IOException e) {
+            builder.append(e.getMessage());
           }
-
-          // 192.168.1.155
 
         } else {
           // if the request is not recognized at all
