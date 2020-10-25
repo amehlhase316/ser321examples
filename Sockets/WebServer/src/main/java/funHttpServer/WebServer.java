@@ -25,7 +25,6 @@ import java.util.Random;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
-import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
 class WebServer {
