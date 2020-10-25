@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Gradle/JavaGradle" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Gradle/JavaGradle" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Gradle/JustGradle" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Gradle/JustGradle" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Network" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="gradleJvm" value="11 (3)" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Network" />
+            <option value="$PROJECT_DIR$/Network/FetchAPageTCP" />
+            <option value="$PROJECT_DIR$/Network/HTTP-JSON" />
+            <option value="$PROJECT_DIR$/Network/JSON" />
+            <option value="$PROJECT_DIR$/Network/JsonRPCviaTCPStudent" />
+            <option value="$PROJECT_DIR$/Network/SimpleGrabHttpURL" />
+            <option value="$PROJECT_DIR$/Network/SimpleGrabURL" />
+            <option value="$PROJECT_DIR$/Network/tcp" />
+            <option value="$PROJECT_DIR$/Network/udp" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Serialization" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Serialization" />
+            <option value="$PROJECT_DIR$/Serialization/ClassMigration" />
+            <option value="$PROJECT_DIR$/Serialization/GroupJson" />
+            <option value="$PROJECT_DIR$/Serialization/GroupSerialize" />
+            <option value="$PROJECT_DIR$/Serialization/UserXml" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Sockets" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Sockets" />
+            <option value="$PROJECT_DIR$/Sockets/GroupSerializeSocket" />
+            <option value="$PROJECT_DIR$/Sockets/JavaSimpleSock" />
+            <option value="$PROJECT_DIR$/Sockets/JavaThreadSock" />
+            <option value="$PROJECT_DIR$/Sockets/MulticastSocket" />
+            <option value="$PROJECT_DIR$/Sockets/SimpleInterop" />
+            <option value="$PROJECT_DIR$/Sockets/SimpleInterop/Cpp" />
+            <option value="$PROJECT_DIR$/Sockets/SimpleInterop/Java" />
+            <option value="$PROJECT_DIR$/Sockets/SimpleWebServer" />
+            <option value="$PROJECT_DIR$/Sockets/Socket" />
+            <option value="$PROJECT_DIR$/Sockets/SocketState" />
+            <option value="$PROJECT_DIR$/Sockets/WebServer" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Threads" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../../../../Gradle/gradle-6.6.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Threads" />
+            <option value="$PROJECT_DIR$/Threads/Deadlock" />
+            <option value="$PROJECT_DIR$/Threads/FileCopy" />
+            <option value="$PROJECT_DIR$/Threads/FirstThread" />
+            <option value="$PROJECT_DIR$/Threads/MusicThread" />
+            <option value="$PROJECT_DIR$/Threads/Synchronization" />
+            <option value="$PROJECT_DIR$/Threads/ThreadsShareData" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
