@@ -26,6 +26,8 @@ import java.util.Random;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
+
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 
@@ -285,6 +287,7 @@ class WebServer {
 
   private List<GitRepoData> parseJson(String json) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     TypeFactory typeFactory = objectMapper.getTypeFactory();
     return objectMapper.readValue(json, typeFactory.constructCollectionType(List.class, GitRepoData.class));
   }
