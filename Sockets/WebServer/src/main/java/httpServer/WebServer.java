@@ -85,7 +85,7 @@ System.out.println("FINISHED\n");
         catch (IOException e) {
             e.printStackTrace();
             response = ("<html>ERROR: " +
-                        e.getMessage() + "</html").getBytes();
+                        e.getMessage() + "</html>").getBytes();
         }
 
         return response;

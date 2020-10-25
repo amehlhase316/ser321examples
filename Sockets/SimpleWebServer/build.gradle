@@ -1,3 +1,7 @@
+plugins {
+	id 'application'
+}
+	
 apply plugin: 'application'
 
 application {

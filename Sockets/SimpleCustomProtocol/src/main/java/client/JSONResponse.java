@@ -1,0 +1,4 @@
+package client;
+
+class JSONResponse {
+}
