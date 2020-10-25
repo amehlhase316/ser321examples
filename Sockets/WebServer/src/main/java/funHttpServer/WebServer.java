@@ -21,11 +21,13 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.TypeFactory;
 
 class WebServer {
   public static void main(String args[]) {
@@ -251,10 +253,13 @@ class WebServer {
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
-          GitRepoData parsedData = parseJson(json);
-          builder.append(parsedData.getOwner().getLogin() + ", ")
-                  .append(parsedData.getId() + " -> ")
-                  .append(parsedData.getName() + "\n");
+          List<GitRepoData> parsedData = parseJson(json);
+
+          for (GitRepoData gd: parsedData) {
+            builder.append(gd.getOwner().getLogin() + ", ")
+                    .append(gd.getId() + " -> ")
+                    .append(gd.getName() + "\n");
+          }
 
           // 192.168.1.155
 
@@ -278,9 +283,10 @@ class WebServer {
     return response;
   }
 
-  private GitRepoData parseJson(String json) throws IOException {
+  private List<GitRepoData> parseJson(String json) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
-    return objectMapper.readValue(json, GitRepoData.class);
+    TypeFactory typeFactory = objectMapper.getTypeFactory();
+    return objectMapper.readValue(json, typeFactory.constructCollectionType(List.class, GitRepoData.class));
   }
 
   /**
