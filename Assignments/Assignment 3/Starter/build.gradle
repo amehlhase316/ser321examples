@@ -1,0 +1,25 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'Concentration'
+
+task Gui(type: JavaExec) {
+  group 'gui'
+  description 'Displays a GUI for a game of concentration'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Assignment3Starter.ClientGui'
+  standardInput = System.in
+}
+
+task Maker(type: JavaExec) {
+  group 'maker'
+  description 'Takes an image and makes the rebus library'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Assignment3Starter.GridMaker'
+  standardInput = System.in
+}
