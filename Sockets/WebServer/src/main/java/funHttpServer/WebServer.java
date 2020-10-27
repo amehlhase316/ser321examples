@@ -196,18 +196,22 @@ class WebServer {
         } else if (request.contains("multiply?")) {
           // This multiplies two numbers, there is NO error handling, so when
           // wrong data is given this just crashes
+         try{ 
+             Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+             // extract path parameters
+             query_pairs = splitQuery(request.replace("multiply?", ""));
 
-          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-          // extract path parameters
-          query_pairs = splitQuery(request.replace("multiply?", ""));
+             // extract required fields from parameters
+             Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+             Integer num2 = Integer.parseInt(query_pairs.get("num2"));
 
-          // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
-
-          // do math
-          Integer result = num1 * num2;
-
+             // do math
+             Integer result = num1 * num2;
+         } //end try
+           
+         catch(Exception e){
+            System.out.println("Error Code: 400. Parameters for Multiplication are incorrect.");
+         } //end catch
           // Generate response
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
