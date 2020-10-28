@@ -254,8 +254,8 @@ class WebServer {
           // amehlhase, 46384989 -> test316
           //JSONParser objParser = new JSONparser();
           JSONObject objJson = new JSONObject(json);
-          
-
+          JSONArray jArray = new JSONArray(json);
+          System.out.println(jArray.length());
 
         } else {
           // if the request is not recognized at all
@@ -269,7 +269,7 @@ class WebServer {
         // Output
         response = builder.toString().getBytes();
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       e.printStackTrace();
       response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
     }
