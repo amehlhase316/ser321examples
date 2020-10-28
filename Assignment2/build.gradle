@@ -10,7 +10,7 @@ task Gui(type: JavaExec) {
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'Assignment3Starter.ClientGui'
+  main = 'Client.ClientGui'
   standardInput = System.in
 }
 
@@ -20,6 +20,6 @@ task Maker(type: JavaExec) {
 
   classpath = sourceSets.main.runtimeClasspath
 
-  main = 'Assignment3Starter.GridMaker'
+  main = 'Server.GridMaker'
   standardInput = System.in
 }

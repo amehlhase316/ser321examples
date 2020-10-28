@@ -1,4 +1,4 @@
-package Assignment3Starter;
+package Client;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;

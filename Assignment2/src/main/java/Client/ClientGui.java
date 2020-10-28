@@ -1,4 +1,4 @@
-package Assignment3Starter;
+package Client;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -28,7 +28,7 @@ import javax.swing.WindowConstants;
  * > Does not show when created. show() must be called to show he GUI.
  * 
  */
-public class ClientGui implements Assignment3Starter.OutputPanel.EventHandlers {
+public class ClientGui implements Client.OutputPanel.EventHandlers {
   JDialog frame;
   PicturePanel picturePanel;
   OutputPanel outputPanel;
