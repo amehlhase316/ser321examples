@@ -26,6 +26,12 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
 
+import java.io.FileReader;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.json.*;
+
 class WebServer {
   public static void main(String args[]) {
     WebServer server = new WebServer(9000);
@@ -236,7 +242,8 @@ class WebServer {
           Map<String, String> query_pairs = new LinkedHashMap<String, String>();
           query_pairs = splitQuery(request.replace("github?", ""));
           String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
-          System.out.println(json);
+          System.out.println(json); // prints to console
+
 
           builder.append("Check the todos mentioned in the Java source file");
           // TODO: Parse the JSON returned by your fetch and create an appropriate
@@ -245,6 +252,10 @@ class WebServer {
           // amehlhase, 46384989 -> memoranda
           // amehlhase, 46384989 -> ser316examples
           // amehlhase, 46384989 -> test316
+          //JSONParser objParser = new JSONparser();
+          JSONObject objJson = new JSONObject(json);
+          
+
 
         } else {
           // if the request is not recognized at all

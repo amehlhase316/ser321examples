@@ -4,8 +4,8 @@ apply plugin: 'application'
 //define main class
 mainClassName = 'Multiply'
 
-// task which will run Main with default parameters, 
-// can be overwritten with: gradle runApp --args '3 4' 
+// task which will run Main with default parameters,
+// can be overwritten with: gradle runApp --args '3 4'
 task runApp(type: JavaExec) {
   group 'Multiply tasks'
   description 'Tasks which runs Multiply with default parameters'
@@ -19,11 +19,11 @@ task runApp(type: JavaExec) {
   args '2'
 }
 
-// task which will run Main with default parameters, 
+// task which will run Main with default parameters,
 // but also accepts new parameter this time with given names
 // Example: gradle runAppAgain -Pnum1=9 -Pnum2=10
 // Example2 (this will make Gradle run more quietly in the console):
-//   gradle runAppAgain -Pnum1=9 -Pnum2=10 -q --console=plain 
+//   gradle runAppAgain -Pnum1=9 -Pnum2=10 -q --console=plain
 task runAppAgain(type: JavaExec) {
   group 'Multiply tasks'
   description 'Tasks which runs Multiply with default parameters or given values'
@@ -53,15 +53,15 @@ task runFraction(type: JavaExec) {
 
 // Try:
 // 1. Change Fraction.main so it accepts 2 arguments
-// 2. Create a new gradle tasks that accepts two arguments and 
-//    can be called as: gradle runFrac -Pdenom=4 -Pnum=3 or as gradle runFrac -Pnum=3 -Pdenom=4 
+// 2. Create a new gradle tasks that accepts two arguments and
+//    can be called as: gradle runFrac -Pdenom=4 -Pnum=3 or as gradle runFrac -Pnum=3 -Pdenom=4
 
-// Example how you can add that libraries can be pulled from mavenCentral()
-// repositories {
-//   mavenCentral()
-// }
+//Example how you can add that libraries can be pulled from mavenCentral()
+repositories {
+  mavenCentral()
+}
 
-// Setting dependencies, e.g. when you import JSON in your Java files
-// dependencies{
-//   compile 'org.json:json:20171018'
-// }
+//Setting dependencies, e.g. when you import JSON in your Java files
+dependencies{
+  compile 'org.json:json:20171018'
+}
