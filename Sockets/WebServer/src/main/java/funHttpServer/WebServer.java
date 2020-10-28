@@ -252,11 +252,25 @@ class WebServer {
           // amehlhase, 46384989 -> memoranda
           // amehlhase, 46384989 -> ser316examples
           // amehlhase, 46384989 -> test316
+
           //JSONParser objParser = new JSONparser();
           //Object strJson = json;
           //JSONObject objJson = new JSONObject(json);
+          String strOwnerID;
+          String strRepoName;
+          String strOwnerLogin;
+
           JSONArray jArray = new JSONArray(json);
           System.out.println(jArray.length());
+          for (int arrIter = 0; arrIter < jArray.length(); arrIter++) {
+            JSONObject objRepo = jArray.getJSONObject(arrIter);
+            strRepoName = objRepo.getString("name");
+            JSONObject objRepoOwner = objRepo.getJSONObject("owner");
+            strOwnerLogin = objRepoOwner.getString("login");
+            strOwnerID = objRepoOwner.getString("id");
+
+            builder.append(strOwnerLogin + ", " + strOwnerID + " -> " + strRepoName);
+          } // end for loop
 
         } else {
           // if the request is not recognized at all
