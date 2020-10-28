@@ -269,7 +269,7 @@ class WebServer {
             strOwnerLogin = objRepoOwner.getString("login");
             intOwnerID = objRepoOwner.getInt("id");
 
-            String.println(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
+            System.out.println(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
             /*
             builder.append("HTTP/1.1 200 OK\n");
             builder.append("Content-Type: text/html; charset=utf-8\n");
