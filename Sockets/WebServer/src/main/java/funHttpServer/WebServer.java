@@ -273,7 +273,7 @@ class WebServer {
 
             System.out.println(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
             builder.append(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
-            builder.append('\n');
+            builder.append(System.getProperty("line.separator"));
 
 
           } // end for loop
