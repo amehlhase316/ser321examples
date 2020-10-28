@@ -272,7 +272,8 @@ class WebServer {
             intOwnerID = objRepoOwner.getInt("id");
 
             System.out.println(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
-            builder.append(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName + "\n");
+            builder.append(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
+            builder.append("\n");
 
           } // end for loop
 
