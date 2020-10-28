@@ -1,5 +1,5 @@
 /*
-Simple Web Server in Java which allows you to call 
+Simple Web Server in Java which allows you to call
 localhost:9000/ and show you the root.html webpage from the www/root.html folder
 You can also do some other simple GET requests:
 1) /random shows you a random picture (well random from the set defined)
@@ -9,8 +9,8 @@ You can also do some other simple GET requests:
 5) /github?query=users/amehlhase316/repos (or other GitHub repo owners) will lead to receiving
    JSON which will for now only be printed in the console. See the todo below
 
-The reading of the request is done "manually", meaning no library that helps making things a 
-little easier is used. This is done so you see exactly how to pars the request and 
+The reading of the request is done "manually", meaning no library that helps making things a
+little easier is used. This is done so you see exactly how to pars the request and
 write a response back
 */
 
@@ -196,7 +196,8 @@ class WebServer {
         } else if (request.contains("multiply?")) {
           // This multiplies two numbers, there is NO error handling, so when
           // wrong data is given this just crashes
-         try{ 
+        Integer result;
+         try{
              Map<String, String> query_pairs = new LinkedHashMap<String, String>();
              // extract path parameters
              query_pairs = splitQuery(request.replace("multiply?", ""));
@@ -204,19 +205,21 @@ class WebServer {
              // extract required fields from parameters
              Integer num1 = Integer.parseInt(query_pairs.get("num1"));
              Integer num2 = Integer.parseInt(query_pairs.get("num2"));
-
              // do math
-             Integer result = num1 * num2;
+             result = num1 * num2;
+             builder.append("HTTP/1.1 200 OK\n");
+             builder.append("Content-Type: text/html; charset=utf-8\n");
+             builder.append("\n");
+             builder.append("Result is: " + result);
          } //end try
-           
          catch(Exception e){
-            System.out.println("Error Code: 400. Parameters for Multiplication are incorrect.");
+            builder.append("HTTP/1.1 400. Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Parameters for Multiplication are incorrect.");
          } //end catch
           // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
+
 
           // TODO: Include error handling here with a correct error code and
           // a response that makes sense
@@ -335,7 +338,7 @@ class WebServer {
    * a method to make a web request. Note that this method will block execution
    * for up to 20 seconds while the request is being satisfied. Better to use a
    * non-blocking request.
-   * 
+   *
    * @param aUrl the String indicating the query url for the OMDb api search
    * @return the String result of the http request.
    *
