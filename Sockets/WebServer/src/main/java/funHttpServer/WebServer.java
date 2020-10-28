@@ -256,7 +256,7 @@ class WebServer {
           //JSONParser objParser = new JSONparser();
           //Object strJson = json;
           //JSONObject objJson = new JSONObject(json);
-          String strOwnerID;
+          int intOwnerID;
           String strRepoName;
           String strOwnerLogin;
 
@@ -267,9 +267,9 @@ class WebServer {
             strRepoName = objRepo.getString("name");
             JSONObject objRepoOwner = objRepo.getJSONObject("owner");
             strOwnerLogin = objRepoOwner.getString("login");
-            strOwnerID = objRepoOwner.getString("id");
+            intOwnerID = objRepoOwner.getInt("id");
 
-            builder.append(strOwnerLogin + ", " + strOwnerID + " -> " + strRepoName);
+            builder.append(strOwnerLogin + ", " + intOwnerID + " -> " + strRepoName);
           } // end for loop
 
         } else {
