@@ -264,7 +264,7 @@ class WebServer {
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
-          builder.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>title</title></head><body>")
+          builder.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>title</title></head><body>");
           for (int arrIter = 0; arrIter < jArray.length(); arrIter++) {
             JSONObject objRepo = jArray.getJSONObject(arrIter);
             strRepoName = objRepo.getString("name");
@@ -278,7 +278,7 @@ class WebServer {
 
 
           } // end for loop
-          builder.append("</body></html>")
+          builder.append("</body></html>");
 
         } else {
           // if the request is not recognized at all
