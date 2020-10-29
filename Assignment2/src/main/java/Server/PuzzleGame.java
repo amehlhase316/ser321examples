@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -37,6 +38,10 @@ public class PuzzleGame {
         this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
     }
 
+    public static List<File> getImageFiles() {
+        return imageFiles;
+    }
+
     private static List<File> getRebusImageFiles() {
         return Arrays.stream(new File("gameSetupFiles").listFiles())
                 .filter(file -> file.getName().contains(".jpg") || file.getName().contains(".png"))
@@ -50,10 +55,13 @@ public class PuzzleGame {
             return objectMapper.readValue(Paths.get(PUZZLE_QUESTIONS_FILE_PATH).toFile(), PuzzleQuestions.class).getPuzzleQuestions();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            System.exit(-1);
         }
-        return null;
+        System.exit(-1);
+        return Collections.emptyList();
+    }
+
+    public Rebus getRandomlySelectedRebus() {
+        return randomlySelectedRebus;
     }
 
     private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
