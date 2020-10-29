@@ -23,9 +23,9 @@ public class PuzzleGame {
     private static final List<File> imageFiles = getRebusImageFiles();
     private final List<PuzzleQuestion> gameQuestions;
     private final int numberOfQuestionsAvailableToAnswer;
+    private final Rebus randomlySelectedRebus;
     private int numberOfQuestionsAnsweredIncorrectly;
     private int numberOfQuestionsAnsweredCorrectly;
-    private Rebus randomlySelectedRebus;
 
     public PuzzleGame(List<PuzzleQuestion> gameQuestions, int numberOfQuestionsAvailableToAnswer) throws IOException {
         this.gameQuestions = gameQuestions;
