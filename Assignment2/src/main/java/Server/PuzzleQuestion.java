@@ -1,5 +1,7 @@
 package Server;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -16,6 +18,11 @@ public class PuzzleQuestion {
         Objects.requireNonNull(answer);
         this.question = question;
         this.answer = stripSpacesAndPunctuation(answer);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
     }
 
     private String stripSpacesAndPunctuation(String stringWithSpacesAndPuncuation) {

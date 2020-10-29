@@ -1,5 +1,8 @@
 package Server;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.awt.image.BufferedImage;
 
 public class Rebus {
@@ -12,12 +15,17 @@ public class Rebus {
         this.rebusAnswer = parseRebusAnswer(rebusAnswer);
     }
 
-    private String parseRebusAnswer(String rebusAnswer) {
-        return stripSpacesAndPunctuation(String.join(" ", rebusAnswer.split("-")));
+    public static String stripSpacesAndPunctuation(String stringWithSpacesAndPuncuation) {
+        return stringWithSpacesAndPuncuation.replaceAll("([.\\w]{4})$", "").replaceAll("[^A-Za-z\\d]", "").toLowerCase();
     }
 
-    private String stripSpacesAndPunctuation(String stringWithSpacesAndPuncuation) {
-        return stringWithSpacesAndPuncuation.replaceAll("[^A-Za-z\\d]", "").toLowerCase();
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+    }
+
+    private String parseRebusAnswer(String rebusAnswer) {
+        return stripSpacesAndPunctuation(String.join(" ", rebusAnswer.split("-")));
     }
 
     public boolean isCorrect(String rebusAnswerUserGuess) {

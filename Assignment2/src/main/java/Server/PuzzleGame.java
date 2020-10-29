@@ -38,6 +38,7 @@ public class PuzzleGame {
         this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
     }
 
+
     public static List<File> getImageFiles() {
         return imageFiles;
     }
@@ -60,16 +61,16 @@ public class PuzzleGame {
         return Collections.emptyList();
     }
 
+    public static int pickRandomly(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max);
+    }
+
     public Rebus getRandomlySelectedRebus() {
         return randomlySelectedRebus;
     }
 
     private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
         return ImageIO.read(fileToConvert);
-    }
-
-    private int pickRandomly(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
     public boolean answerPuzzleQuestion(PuzzleQuestion puzzleQuestion, String answer) {
