@@ -18,6 +18,7 @@ package funHttpServer;
 
 import java.io.*;
 import java.net.*;
+import java.json.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -240,9 +241,9 @@ class WebServer {
 
           JSONArray repos = new JSONArray(json);
           for(int i = 0; i < repos.length(); i++){
-          	return_value += repo.getJSONObject(i).getString("name") + "\n";
-          	return_value += repo.getJSONObject(i).getInt("id") + "\n";
-          	return_value += repo.getJSONObject(i).getJSONObject("owner").getString("login") + "\n\n";
+          	return_value += repos.getJSONObject(i).getString("name") + "\n";
+          	return_value += repos.getJSONObject(i).getInt("id") + "\n";
+          	return_value += repos.getJSONObject(i).getJSONObject("owner").getString("login") + "\n\n";
           }
 
           builder.append("HTTP/1.1 200 OK\n");
