@@ -61,9 +61,9 @@ public class ClientGui implements Client.OutputPanel.EventHandlers {
         // create the frame
 
         ClientGui main = new ClientGui();
-        final List<BufferedImage> croppedImages = GridMaker.main("gameSetupFiles/Pineapple-Upside-Down-Cake.jpg 2".split(" "));
+        final List<BufferedImage> croppedImages = GridMaker.main("puzzles/Pineapple-Upside-Down-Cake.jpg 2".split(" "));
         // be sure to run in terminal at least once:
-        //     gradle Maker --args="gameSetupFiles/Pineapple-Upside-Down-Cake.jpg 2"
+        //     gradle Maker --args="puzzles/Pineapple-Upside-Down-Cake.jpg 2"
 
         // prepare the GUI for display
         main.newGame(2);
@@ -86,9 +86,9 @@ public class ClientGui implements Client.OutputPanel.EventHandlers {
         // show an error for a missing image file
         main.insertImage("does not exist.jpg", 0, 0);
         // show an error for too big coordinate
-        main.insertImage("gameSetupFiles/Pineapple-Upside-down-cake_1_0.jpg", 2, 0);
+        main.insertImage("puzzles/Pineapple-Upside-down-cake_1_0.jpg", 2, 0);
         // show an error for too little coordinate
-        main.insertImage("gameSetupFiles/Pineapple-Upside-down-cake_1_0.jpg", -1, 0);
+        main.insertImage("puzzles/Pineapple-Upside-down-cake_1_0.jpg", -1, 0);
 
         // show the GUI dialog as modal
         main.show(true);

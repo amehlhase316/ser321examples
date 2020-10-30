@@ -38,7 +38,6 @@ public class PuzzleGame {
         this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
     }
 
-
     public static List<File> getImageFiles() {
         return imageFiles;
     }

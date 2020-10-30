@@ -4,9 +4,32 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Assignment2/TiledRebusGameTCP" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Assignment2/TiledRebusGameTCP" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/Assignment2/TiledRebusGameUDP" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/Assignment2/TiledRebusGameUDP" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Gradle/JavaGradle" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Gradle/JavaGradle" />
@@ -14,9 +37,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Gradle/JustGradle" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Gradle/JustGradle" />
@@ -24,10 +48,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Network" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
-        <option name="gradleJvm" value="11 (3)" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Network" />
@@ -43,9 +67,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Serialization" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Serialization" />
@@ -57,9 +82,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Sockets" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Sockets" />
@@ -78,9 +104,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/Threads" />
-        <option name="gradleHome" value="$USER_HOME$/Gradle/gradle-6.6.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/Threads" />

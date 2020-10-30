@@ -4,6 +4,8 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/Assignments/Assignment 3/Starter/img" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/Sockets/SimpleCustomProtocol/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Sockets/WebServer/src/main/java" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
