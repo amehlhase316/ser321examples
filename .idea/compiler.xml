@@ -5,30 +5,6 @@
       <module name="Assignment2" target="11" />
       <module name="Assignment2.main" target="11" />
       <module name="Assignment2.test" target="11" />
-      <module name="Network.FetchAPageTCP" target="11" />
-      <module name="Network.FetchAPageTCP.main" target="11" />
-      <module name="Network.FetchAPageTCP.test" target="11" />
-      <module name="Network.HTTP-JSON" target="11" />
-      <module name="Network.HTTP-JSON.main" target="11" />
-      <module name="Network.HTTP-JSON.test" target="11" />
-      <module name="Network.JSON" target="11" />
-      <module name="Network.JSON.main" target="11" />
-      <module name="Network.JSON.test" target="11" />
-      <module name="Network.JsonRPCviaTCPStudent" target="11" />
-      <module name="Network.JsonRPCviaTCPStudent.main" target="11" />
-      <module name="Network.JsonRPCviaTCPStudent.test" target="11" />
-      <module name="Network.SimpleGrabHttpURL" target="11" />
-      <module name="Network.SimpleGrabHttpURL.main" target="11" />
-      <module name="Network.SimpleGrabHttpURL.test" target="11" />
-      <module name="Network.SimpleGrabURL" target="11" />
-      <module name="Network.SimpleGrabURL.main" target="11" />
-      <module name="Network.SimpleGrabURL.test" target="11" />
-      <module name="Network.tcp" target="11" />
-      <module name="Network.tcp.main" target="11" />
-      <module name="Network.tcp.test" target="11" />
-      <module name="Network.udp" target="11" />
-      <module name="Network.udp.main" target="11" />
-      <module name="Network.udp.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

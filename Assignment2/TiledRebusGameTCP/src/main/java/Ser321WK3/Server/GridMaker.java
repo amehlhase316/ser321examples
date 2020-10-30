@@ -1,4 +1,4 @@
-package Server;
+package Ser321WK3.Server;
 
 
 import java.awt.Graphics2D;

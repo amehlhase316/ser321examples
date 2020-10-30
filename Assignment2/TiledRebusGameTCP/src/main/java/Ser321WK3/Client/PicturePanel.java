@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -114,6 +115,14 @@ public class PicturePanel extends JPanel {
             return true;
         }
         return false;
+    }
+
+    public boolean insertImage(BufferedImage imageToInsert, int row, int col) {
+        Objects.requireNonNull(imageToInsert);
+        ImageIcon icon = new ImageIcon(imageToInsert);
+        handleFirstImage(icon.getIconWidth(), icon.getIconHeight());
+        labels[row][col].setIcon(icon);
+        return true;
     }
 
     // States that the widget can be in

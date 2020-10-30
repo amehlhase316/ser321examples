@@ -1,4 +1,4 @@
-package Client;
+package Ser321WK3.Client;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,7 +23,7 @@ import Server.GridMaker;
  *
  * Notes ----------- > Does not show when created. show() must be called to show he GUI.
  */
-public class ClientGui implements Client.OutputPanel.EventHandlers {
+public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
     JDialog frame;
     PicturePanel picturePanel;
     OutputPanel outputPanel;

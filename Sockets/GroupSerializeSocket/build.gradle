@@ -1,29 +1,29 @@
 apply plugin: 'java'
 
-description = "Client Server Socket Example"
+description = "Ser321WK3.Client Server Socket Example"
 
 task runClient(type: JavaExec) {
-  group "groupSerialize"
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Client"
-  main = 'client.GroupClient'
-  // default args
-  args 'localhost' // host
-  args '9099' // port
+    group "groupSerialize"
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run Ser321WK3.Client"
+    main = 'client.GroupClient'
+    // default args
+    args 'localhost' // host
+    args '9099' // port
 }
 
 task runServer(type: JavaExec) {
-  group "groupSerialize"
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Server"
-  main = 'server.GroupServer'
-  // default args
-  args '9099' // port
+    group "groupSerialize"
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run Server"
+    main = 'server.GroupServer'
+    // default args
+    args '9099' // port
 }
 
 task runGroupFileSerialize(type: JavaExec) {
-  group "groupSerialize"
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Server"
-  main = 'serial.GroupFileSerialize'
+    group "groupSerialize"
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run Server"
+    main = 'serial.GroupFileSerialize'
 }
