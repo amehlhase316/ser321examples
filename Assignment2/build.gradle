@@ -9,6 +9,7 @@ dependencies {
     compile 'org.codehaus.jackson:jackson-jaxrs:1.9.0'
     compile 'org.apache.commons:commons-lang3:3.9'
     compile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    compile 'commons-cli:commons-cli:1.4'
 }
 
 repositories {
