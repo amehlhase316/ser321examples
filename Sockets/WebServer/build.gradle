@@ -5,85 +5,85 @@ apply plugin: 'application'
 mainClassName = 'SimpleServer'
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile 'org.codehaus.jackson:jackson-jaxrs:1.9.0'
-  compile 'org.apache.commons:commons-lang3:3.9'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.codehaus.jackson:jackson-jaxrs:1.9.0'
+    compile 'org.apache.commons:commons-lang3:3.9'
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 task SimpleWebServer(type: JavaExec) {
-  group 'http'
-  description 'Simple Http Demo'
+    group 'http'
+    description 'Simple Http Demo'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'httpServer.WebServer'
-  standardInput = System.in
+    main = 'httpServer.WebServer'
+    standardInput = System.in
 }
 
 task FunWebServer(type: JavaExec) {
-  group 'http'
-  description 'Simple Http Demo'
+    group 'http'
+    description 'Simple Http Demo'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'funHttpServer.WebServer'
-  standardInput = System.in
+    main = 'funHttpServer.WebServer'
+    standardInput = System.in
 }
 
 
 task LordWhyWebServer(type: JavaExec) {
-  group 'http'
-  description 'Complicated Http Server'
+    group 'http'
+    description 'Complicated Http Server'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'lordWhyHttpServer.WhyServer'
-  standardInput = System.in
+    main = 'lordWhyHttpServer.WhyServer'
+    standardInput = System.in
 }
 
 
 task LordWhyWebClient(type: JavaExec) {
-  group 'http'
-  description 'Complicated Http Client'
+    group 'http'
+    description 'Complicated Http Ser321WK3.Client'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'lordWhyHttpServer.WhyClient'
-  standardInput = System.in
+    main = 'lordWhyHttpServer.WhyClient'
+    standardInput = System.in
 }
 
 task JsonParser(type: JavaExec) {
-  group 'http'
-  description 'JsonParser test'
+    group 'http'
+    description 'JsonParser test'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'lordWhyHttpServer.json.JsonParser'
-  standardInput = System.in
+    main = 'lordWhyHttpServer.json.JsonParser'
+    standardInput = System.in
 }
 
 
 task MysteryWhyWebServer(type: JavaExec) {
-  group 'http'
-  description 'Mysterious Http Server'
+    group 'http'
+    description 'Mysterious Http Server'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'mysteryWhyServer.Server'
-  standardInput = System.in
+    main = 'mysteryWhyServer.Server'
+    standardInput = System.in
 }
 
 task MysteryWhyWebClient(type: JavaExec) {
-  group 'http'
-  description 'Mysterious Http Client'
+    group 'http'
+    description 'Mysterious Http Ser321WK3.Client'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'mysteryWhyServer.Client'
-  standardInput = System.in
+    main = 'mysteryWhyServer.Ser321WK3.Client'
+    standardInput = System.in
 }
 

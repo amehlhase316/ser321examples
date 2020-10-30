@@ -1,4 +1,4 @@
-package Server;
+package Ser321WK3.Server;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -62,6 +62,10 @@ public class PuzzleGame {
 
     public static int pickRandomly(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max);
+    }
+
+    public PuzzleQuestion getRandomlySelectedQuestion() {
+        return gameQuestions.get(pickRandomly(0, gameQuestions.size()));
     }
 
     public Rebus getRandomlySelectedRebus() {

@@ -21,7 +21,7 @@ task Gui(type: JavaExec) {
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Client.ClientGui'
+    main = 'Ser321WK3.Client.ClientGui'
     standardInput = System.in
 }
 
