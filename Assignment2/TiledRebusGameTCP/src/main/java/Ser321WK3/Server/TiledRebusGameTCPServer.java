@@ -7,9 +7,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,6 +16,9 @@ import java.net.Socket;
 import java.util.Arrays;
 
 import Ser321WK3.Payload;
+
+import static Ser321WK3.CustomTCPUtilities.parseInt;
+import static Ser321WK3.CustomTCPUtilities.parsePayload;
 
 public class TiledRebusGameTCPServer {
 
@@ -41,7 +41,7 @@ public class TiledRebusGameTCPServer {
         int parsedPort = 9000;
         try {
             command = parser.parse(cliOptions, args);
-            parsedPort = Integer.parseInt(command.getOptionValue(port.getOpt()));
+            parsedPort = parseInt(command.getOptionValue(port.getOpt()));
         } catch (ParseException e) {
             e.printStackTrace();
             formatter.printHelp("utility-name", cliOptions);
@@ -83,19 +83,6 @@ public class TiledRebusGameTCPServer {
                 System.out.println("Connection setup failed: " + e.getMessage());
                 e.printStackTrace();
             }
-        }
-
-        private Payload parsePayload(String payload) {
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            TypeFactory typeFactory = mapper.getTypeFactory();
-            try {
-                return mapper.readValue(payload, typeFactory.constructType(Payload.class));
-            } catch (Exception e) {
-                System.out.println("Error while parsing payload: " + payload);
-                e.printStackTrace();
-            }
-            return new Payload("", false, false);
         }
 
         @Override
@@ -168,7 +155,7 @@ public class TiledRebusGameTCPServer {
 
         private boolean currentGameIsNull(Payload parsedPayload) throws IOException {
             try {
-                final int gridDimension = Integer.parseInt(parsedPayload.getMessage().strip());
+                final int gridDimension = parseInt(parsedPayload.getMessage().strip());
                 gameController.setGridDimension(gridDimension);
                 final int numberOfPuzzleQuestionsAvailable =
                         RebusPuzzleGameController.convertGridDimensionToNumberOfQuestionsAvailable(gridDimension);
