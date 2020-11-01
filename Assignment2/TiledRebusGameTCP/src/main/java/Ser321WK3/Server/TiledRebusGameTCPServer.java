@@ -22,11 +22,11 @@ import Ser321WK3.Payload;
 public class TiledRebusGameTCPServer {
 
     public static void main(String[] args) {
-        if (args == null || args.length != 1) {
-            System.out.println(String.format("Improper command-line argument structure: %s\n" +
-                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>"));
-            System.exit(0);
-        }
+//        if (args == null || args.length != 1) {
+//            System.out.println(String.format("Improper command-line argument structure: %s\n" +
+//                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>"));
+//            System.exit(0);
+//        }
 
         final Options cliOptions = new Options();
         final Option port = new Option("Pport", "port", true, "port number");
@@ -45,6 +45,9 @@ public class TiledRebusGameTCPServer {
             e.printStackTrace();
             formatter.printHelp("utility-name", cliOptions);
 
+            System.out.println(String.format("Improper command-line argument structure: %s\n" +
+                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>"));
+            System.exit(0);
             System.exit(1);
         }
 
@@ -95,6 +98,7 @@ public class TiledRebusGameTCPServer {
             return new Payload("", false, false);
         }
 
+        @Override
         public void run() {
             Payload parsedPayload;
             String receivedData;
@@ -114,6 +118,7 @@ public class TiledRebusGameTCPServer {
                         System.out.println("Data Received: " + receivedData);
                         parsedPayload = parsePayload(receivedData);
                         Payload playResultOut = play(parsedPayload);
+                        outputStream.writeUTF(playResultOut.toString());
                     }
                 } while (gameIsNotOver());
 
@@ -129,8 +134,7 @@ public class TiledRebusGameTCPServer {
         }
 
         private boolean gameIsNotOver() {
-            return gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly() < RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS
-                    && !gameController.wonGame();
+            return gameController.gameOver();
         }
 
         private Payload play(Payload playerResponse) {
