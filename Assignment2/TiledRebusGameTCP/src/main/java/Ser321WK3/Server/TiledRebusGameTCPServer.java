@@ -16,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 
 import Ser321WK3.Payload;
 
@@ -45,9 +46,8 @@ public class TiledRebusGameTCPServer {
             e.printStackTrace();
             formatter.printHelp("utility-name", cliOptions);
 
-            System.out.println(String.format("Improper command-line argument structure: %s\n" +
-                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>"));
-            System.exit(0);
+            System.out.printf("\nImproper command-line argument structure: %s\n" +
+                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>%n", Arrays.toString(args));
             System.exit(1);
         }
 
