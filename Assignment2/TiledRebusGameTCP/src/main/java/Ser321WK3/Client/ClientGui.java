@@ -5,12 +5,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
-
-import Ser321WK3.Server.GridMaker;
 
 /**
  * The ClientGui class is a GUI frontend that displays an image grid, an input text box, a button, and a text area for status.
@@ -23,7 +20,7 @@ import Ser321WK3.Server.GridMaker;
  *
  * Notes ----------- > Does not show when created. show() must be called to show he GUI.
  */
-public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
+public class ClientGui implements OutputPanel.EventHandlers {
     JDialog frame;
     PicturePanel picturePanel;
     OutputPanel outputPanel;
@@ -57,41 +54,14 @@ public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
         frame.add(outputPanel, c);
     }
 
-    public static void main(String[] args) throws IOException {
-        // create the frame
-
-        ClientGui main = new ClientGui();
-        final List<BufferedImage> croppedImages = GridMaker.main("puzzles/Pineapple-Upside-Down-Cake.jpg 2".split(" "));
-        // be sure to run in terminal at least once:
-        //     gradle Maker --args="puzzles/Pineapple-Upside-Down-Cake.jpg 2"
-
-        // prepare the GUI for display
-        main.newGame(2);
-
-        int dimension = 2;
-        int i = 0;
-        int j = 0;
-        for (BufferedImage image : croppedImages) {
-            if (i == dimension) {
-                break;
-            }
-            if (j == dimension) {
-                i++;
-                j = 0;
-            }
-            main.outputPanel.appendOutput(String.format("Inserting a new image at row: %d col: %d", i, j));
-            main.insertImage(image, i, j++);
-        }
-
-        // show an error for a missing image file
-        main.insertImage("does not exist.jpg", 0, 0);
-        // show an error for too big coordinate
-        main.insertImage("puzzles/Pineapple-Upside-down-cake_1_0.jpg", 2, 0);
-        // show an error for too little coordinate
-        main.insertImage("puzzles/Pineapple-Upside-down-cake_1_0.jpg", -1, 0);
-
-        // show the GUI dialog as modal
-        main.show(true);
+    /**
+     * Creates a new game and set the size of the grid
+     *
+     * @param dimension - the size of the grid will be dimension x dimension
+     */
+    public void newGame(int dimension) {
+        picturePanel.newGame(dimension);
+        outputPanel.appendOutput("Started new game with a " + dimension + "x" + dimension + " board.");
     }
 
     /**
@@ -105,14 +75,8 @@ public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
         frame.setVisible(true);
     }
 
-    /**
-     * Creates a new game and set the size of the grid
-     *
-     * @param dimension - the size of the grid will be dimension x dimension
-     */
-    public void newGame(int dimension) {
-        picturePanel.newGame(dimension);
-        outputPanel.appendOutput("Started new game with a " + dimension + "x" + dimension + " board.");
+    public boolean insertImage(BufferedImage imageToBeInserted, int row, int col) {
+        return picturePanel.insertImage(imageToBeInserted, row, col);
     }
 
     /**
@@ -142,28 +106,6 @@ public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
         return false;
     }
 
-    public boolean insertImage(BufferedImage imageToBeInserted, int row, int col) {
-        return picturePanel.insertImage(imageToBeInserted, row, col);
-    }
-
-    /**
-     * Submit button handling
-     *
-     * Change this to whatever you need
-     */
-    @Override
-    public void submitClicked() {
-        // Pulls the input box text
-        String input = outputPanel.getInputText();
-        // if has input
-        if (input.length() > 0) {
-            // append input to the output panel
-            outputPanel.appendOutput(input);
-            // clear input text box
-            outputPanel.setInputText("");
-        }
-    }
-
     /**
      * Key listener for the input text box
      *
@@ -174,5 +116,24 @@ public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
         if (input.equals("surprise")) {
             outputPanel.appendOutput("You found me!");
         }
+    }
+
+    /**
+     * Submit button handling
+     *
+     * Change this to whatever you need
+     */
+    @Override
+    public String submitClicked() {
+        // Pulls the input box text
+        String input = outputPanel.getInputText();
+        // if has input
+        if (input.length() > 0) {
+            // append input to the output panel
+            outputPanel.appendOutput(input);
+            // clear input text box
+            outputPanel.setInputText("");
+        }
+        return input;
     }
 }

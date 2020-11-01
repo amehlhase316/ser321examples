@@ -4,22 +4,18 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeName;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-@JsonTypeName("payload")
+
 public class Payload {
     private final List<BufferedImage> croppedImages;
     private final String message;
     private final boolean wonGame;
     private final boolean gameOver;
 
-    @JsonCreator
-    public Payload(@JsonProperty("message") String message,
-                   @JsonProperty("wonGame") boolean wonGame,
-                   @JsonProperty("gameOver") boolean gameOver) {
+    public Payload(String message, boolean wonGame, boolean gameOver) {
         this(null, message, wonGame, gameOver);
     }
 

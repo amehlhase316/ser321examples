@@ -19,7 +19,7 @@ import javax.imageio.ImageIO;
 
 public class PuzzleGame {
 
-    private static final String PUZZLE_QUESTIONS_FILE_PATH = "gameSetupFiles/PuzzleQuestions.json";
+    private static final String PUZZLE_QUESTIONS_FILE_PATH = "puzzles/PuzzleQuestions.json";
     private static final List<File> imageFiles = getRebusImageFiles();
     private final List<PuzzleQuestion> gameQuestions;
     private final int numberOfQuestionsAvailableToAnswer;
@@ -27,25 +27,15 @@ public class PuzzleGame {
     private int numberOfQuestionsAnsweredIncorrectly;
     private int numberOfQuestionsAnsweredCorrectly;
 
+    public PuzzleGame(int numberOfQuestionsAvailableToAnswer) throws IOException {
+        this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
+    }
+
     public PuzzleGame(List<PuzzleQuestion> gameQuestions, int numberOfQuestionsAvailableToAnswer) throws IOException {
         this.gameQuestions = gameQuestions;
         this.numberOfQuestionsAvailableToAnswer = numberOfQuestionsAvailableToAnswer;
         File randomlySelected = imageFiles.get(pickRandomly(0, imageFiles.size()));
         this.randomlySelectedRebus = new Rebus(convertFileToImage(randomlySelected), randomlySelected.getName());
-    }
-
-    public PuzzleGame(int numberOfQuestionsAvailableToAnswer) throws IOException {
-        this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
-    }
-
-    public static List<File> getImageFiles() {
-        return imageFiles;
-    }
-
-    private static List<File> getRebusImageFiles() {
-        return Arrays.stream(new File("gameSetupFiles").listFiles())
-                .filter(file -> file.getName().contains(".jpg") || file.getName().contains(".png"))
-                .collect(Collectors.toList());
     }
 
     private static List<PuzzleQuestion> parsePuzzleQuestions() {
@@ -64,16 +54,26 @@ public class PuzzleGame {
         return ThreadLocalRandom.current().nextInt(min, max);
     }
 
+    private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
+        return ImageIO.read(fileToConvert);
+    }
+
+    public static List<File> getImageFiles() {
+        return imageFiles;
+    }
+
+    private static List<File> getRebusImageFiles() {
+        return Arrays.stream(new File("puzzles").listFiles())
+                .filter(file -> file.getName().contains(".jpg") || file.getName().contains(".png"))
+                .collect(Collectors.toList());
+    }
+
     public PuzzleQuestion getRandomlySelectedQuestion() {
         return gameQuestions.get(pickRandomly(0, gameQuestions.size()));
     }
 
     public Rebus getRandomlySelectedRebus() {
         return randomlySelectedRebus;
-    }
-
-    private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
-        return ImageIO.read(fileToConvert);
     }
 
     public boolean answerPuzzleQuestion(PuzzleQuestion puzzleQuestion, String answer) {

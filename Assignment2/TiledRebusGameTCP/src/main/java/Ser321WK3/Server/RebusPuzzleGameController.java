@@ -7,7 +7,7 @@ import java.util.List;
 public class RebusPuzzleGameController {
 
     public static final int NUMBER_OF_POSSIBLE_WRONG_ANSWERS = 3;
-    private final static List<PuzzleQuestion> usedQuestions = new ArrayList<>();
+    private static final List<PuzzleQuestion> usedQuestions = new ArrayList<>();
     private List<BufferedImage> croppedImages;
     private int gridDimension;
     private boolean wonGame;

@@ -27,6 +27,9 @@ public class OutputPanel extends JPanel {
     private JButton submit;
     private JTextArea area;
     private ArrayList<EventHandlers> handlers = new ArrayList<>();
+    private String currentInput;
+
+
     /**
      * Constructor
      */
@@ -57,11 +60,12 @@ public class OutputPanel extends JPanel {
         c.gridy = 0;
         submit = new JButton("Submit");
         submit.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource() == submit) {
                     for (var handler : handlers) {
-                        handler.submitClicked();
+                        currentInput = handler.submitClicked();
                     }
                 }
             }
@@ -78,6 +82,10 @@ public class OutputPanel extends JPanel {
         area = new JTextArea();
         JScrollPane pane = new JScrollPane(area);
         add(pane, c);
+    }
+
+    public String getCurrentInput() {
+        return currentInput;
     }
 
     /**
@@ -124,6 +132,6 @@ public class OutputPanel extends JPanel {
         void inputUpdated(String input);
 
         // executes when the submit button is clicked
-        void submitClicked();
+        String submitClicked();
     }
 }

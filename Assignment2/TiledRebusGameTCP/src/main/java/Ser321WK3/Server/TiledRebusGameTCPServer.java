@@ -28,12 +28,12 @@ public class TiledRebusGameTCPServer {
         }
 
         final RebusPuzzleGameController gameController;
-        try (ServerSocket listener = new ServerSocket(parsedPort)) {
+        try {
+            ServerSocket listener = new ServerSocket(parsedPort);
             gameController = new RebusPuzzleGameController();
             while (true) {
-                try (Socket socket = listener.accept()) {
-                    new Connection(socket, gameController);
-                }
+                Socket socket = listener.accept();
+                new Connection(socket, gameController);
             }
         } catch (IOException e) {
             System.out.println("Error while listening on socket: " + e.getMessage());
@@ -42,7 +42,6 @@ public class TiledRebusGameTCPServer {
     }
 
     private static final class Connection extends Thread {
-        private static final int DELAY = 1_000;
         private final RebusPuzzleGameController gameController;
         private final Socket clientSocket;
         private DataInputStream inputStream;
@@ -65,26 +64,25 @@ public class TiledRebusGameTCPServer {
         public void run() {
             Payload parsedPayload;
             String receivedData;
-            boolean gameIsNull = (gameController.getCurrentGame() == null);
             try {
+                outputStream.writeUTF(initializeRebusPuzzleGameRequest().toString());
+                parsedPayload = parsePayload(inputStream.readUTF());
+                int gridDimension = parseInt(parsedPayload.getMessage());
+                gameController.setCurrentGame(new PuzzleGame(gridDimension));
+                gameController.setGridDimension(gridDimension);
+                outputStream.flush();
+                gameController.setCurrentQuestion();
+                gameController.fillCroppedImages();
                 do {
-                    if (gameIsNull) {
-                        outputStream.writeUTF(initializeRebusPuzzleGameRequest().toString());
-                        parsedPayload = parsePayload(inputStream.readUTF());
-                        gameIsNull = currentGameIsNull(parsedPayload);
-                    }
-
-                    if (!gameIsNull) {
-                        gameController.setCurrentQuestion();
-                        gameController.fillCroppedImages();
-                        Payload questionOut = new Payload(gameController.getCurrentQuestion().getQuestion(), false, false);
-                        outputStream.writeUTF(questionOut.toString());
-                        receivedData = inputStream.readUTF();
-                        System.out.println("Data Received: " + receivedData);
-                        parsedPayload = parsePayload(receivedData);
-                        Payload playResultOut = play(parsedPayload);
-                        outputStream.writeUTF(playResultOut.toString());
-                    }
+                    Payload questionOut = new Payload(gameController.getCurrentQuestion().getQuestion(), false, false);
+                    inputStream.readAllBytes();
+                    outputStream.writeUTF(questionOut.toString());
+                    receivedData = inputStream.readUTF();
+                    System.out.println("Data Received: " + receivedData);
+                    parsedPayload = parsePayload(receivedData);
+                    Payload playResultOut = play(parsedPayload);
+                    outputStream.writeUTF(playResultOut.toString());
+                    outputStream.flush();
                 } while (gameIsNotOver());
 
             } catch (Exception e) {
@@ -98,8 +96,9 @@ public class TiledRebusGameTCPServer {
             }
         }
 
-        private boolean gameIsNotOver() {
-            return gameController.gameOver();
+        public Payload initializeRebusPuzzleGameRequest() {
+            String message = "Enter an int >= 2: ";
+            return new Payload(message, false, false);
         }
 
         private Payload play(Payload playerResponse) {
@@ -131,6 +130,10 @@ public class TiledRebusGameTCPServer {
             }
         }
 
+        private boolean gameIsNotOver() {
+            return gameController.gameOver();
+        }
+
         private boolean currentGameIsNull(Payload parsedPayload) throws IOException {
             try {
                 final int gridDimension = parseInt(parsedPayload.getMessage().strip());
@@ -144,11 +147,6 @@ public class TiledRebusGameTCPServer {
                 outputStream.writeUTF((new Payload(message, false, false)).toString());
                 return true;
             }
-        }
-
-        public Payload initializeRebusPuzzleGameRequest() {
-            String message = "Enter an int >= 2: ";
-            return new Payload(message, false, false);
         }
 
         public DataInputStream getInputStream() {

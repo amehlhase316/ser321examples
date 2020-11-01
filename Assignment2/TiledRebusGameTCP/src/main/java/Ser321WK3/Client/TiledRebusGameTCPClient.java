@@ -26,7 +26,7 @@ public class TiledRebusGameTCPClient {
         } catch (Exception e) {
             try {
                 parsedPort = Integer.parseInt(args[1]);
-                parsedIPAddress = args[1];
+                parsedIPAddress = args[0];
             } catch (Exception exc) {
                 exc.printStackTrace();
                 System.out.printf("\nImproper command-line argument structure: %s\n" +
@@ -36,23 +36,31 @@ public class TiledRebusGameTCPClient {
         }
 
         // Connect to the server.
-        boolean gameOver = false;
+        boolean gameOver;
         try {
             clientSocket = new Socket(parsedIPAddress, parsedPort);
-            final DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
-            final DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
+            DataInputStream inputStream = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
 
             final ClientGui gameGui = new ClientGui();
-            Payload gameSetupPayload = parsePayload(inputStream.readUTF());
+            String received = inputStream.readUTF();
+            Payload gameSetupPayload = parsePayload(received);
             int gridDimension = initializeGame(gameGui, gameSetupPayload);
             outputStream.writeUTF(new Payload(Integer.toString(gridDimension), false, false).toString());
+            outputStream.flush();
+
             do {
+
                 Payload serverPayload = parsePayload(inputStream.readUTF());
                 gameGui.outputPanel.appendOutput(serverPayload.getMessage());
+                gameGui.show(true);
                 displayPayloadImages(serverPayload, gameGui, gridDimension);
                 String userInput = gameGui.outputPanel.getInputText();
                 outputStream.writeUTF(new Payload(userInput, false, false).toString());
+                outputStream.flush();
+
                 gameGui.show(false);
+
                 serverPayload = parsePayload(inputStream.readUTF());
                 displayPayloadImages(serverPayload, gameGui, gridDimension);
                 gameGui.outputPanel.appendOutput(serverPayload.getMessage());
@@ -63,6 +71,17 @@ public class TiledRebusGameTCPClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
+        gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
+        gameGui.show(true);
+        int gridDimension;
+        do {
+            gridDimension = gameSetup(gameGui);
+        } while (gridDimension < 2);
+        gameGui.newGame(gridDimension);
+        return gridDimension;
     }
 
     private static void displayPayloadImages(Payload serverPayload, ClientGui gameGui, int gridDimension) {
@@ -82,27 +101,13 @@ public class TiledRebusGameTCPClient {
         }
     }
 
-    private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
-        System.out.println("I am in 'inititialize game");
-        gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
-        gameGui.show(true);
-        int gridDimension = gameSetup(gameGui);
-        gameGui.show(false);
-        gameGui.newGame(gridDimension);
-        gameGui.show(true);
-        return gridDimension;
-    }
-
     private static int gameSetup(ClientGui gameGui) {
-        int gridDimension;
-        do {
-            gridDimension = parseInt(gameGui.outputPanel.getInputText());
-            if (gridDimension == 0) {
-                gameGui.outputPanel.setInputText("");
-                gameGui.outputPanel.appendOutput("Something went wrong. Please only enter an int >= 2.");
-            }
-        } while (gridDimension < 2);
-        gameGui.outputPanel.setInputText("");
+        gameGui.submitClicked();
+        int gridDimension = parseInt(gameGui.outputPanel.getCurrentInput());
+        if (gridDimension == 0) {
+            gameGui.outputPanel.setInputText("");
+            gameGui.outputPanel.appendOutput("Something went wrong. Please only enter an int >= 2.");
+        }
         return gridDimension;
     }
 }
