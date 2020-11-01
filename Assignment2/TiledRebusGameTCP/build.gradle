@@ -1,5 +1,7 @@
 // set as java application
 apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'idea'
 
 //define main class
 mainClassName = 'Concentration'
@@ -14,6 +16,45 @@ dependencies {
 
 repositories {
     mavenCentral()
+}
+
+
+if (project.hasProperty("port")) {
+    ext.port = project.getProperties().get("port")
+} else {
+    ext.port = "9000"
+}
+
+if (project.hasProperty("host")) {
+    ext.host = project.getProperties().get("host")
+} else {
+    ext.host = "localhost"
+}
+
+task runServer(type: JavaExec) {
+    group 'server'
+    description = 'Starts up a Rebus TCP game server with -Pport=<port : int> arg'
+
+    ext.javaMainClass = "Ser321WK3.Server.TiledRebusGameTCPServer"
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'Ser321WK3.Server.TiledRebusGameTCPServer'
+    standardInput = System.in
+    args port
+}
+
+task runClient(type: JavaExec) {
+    group 'client'
+    description = 'Requires two arguments -Phost=<some host IP address> -Pport=<int : port>'
+
+    ext.javaMainClass = "Ser321WK3.Client.TiledRebusGameTCPClient"
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'Ser321WK3.Client.TiledRebusGameTCPClient'
+    standardInput = System.in
+    args = [host, port]
 }
 
 task Gui(type: JavaExec) {

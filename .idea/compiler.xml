@@ -5,6 +5,7 @@
       <module name="Assignment2" target="11" />
       <module name="Assignment2.main" target="11" />
       <module name="Assignment2.test" target="11" />
+      <module name="Assignment2.TiledRebusGameUDP" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

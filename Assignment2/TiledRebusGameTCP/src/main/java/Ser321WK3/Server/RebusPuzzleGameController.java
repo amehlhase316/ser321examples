@@ -22,8 +22,6 @@ public class RebusPuzzleGameController {
     public RebusPuzzleGameController(PuzzleGame currentGame, final int gridDimension) {
         this.currentGame = currentGame;
         this.gridDimension = gridDimension;
-        setCurrentQuestion();
-        fillCroppedImages();
     }
 
     public static List<PuzzleQuestion> getUsedQuestions() {
@@ -38,7 +36,7 @@ public class RebusPuzzleGameController {
         return croppedImages;
     }
 
-    private void fillCroppedImages() {
+    public void fillCroppedImages() {
         this.croppedImages = new ArrayList<>();
         BufferedImage image = currentGame.getRandomlySelectedRebus().getRebusImage();
         int divisibleHeight = image.getHeight() - (image.getHeight() % gridDimension);

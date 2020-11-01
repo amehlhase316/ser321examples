@@ -1,13 +1,5 @@
 package Ser321WK3.Client;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,33 +17,22 @@ public class TiledRebusGameTCPClient {
     public static void main(String[] args) {
         Socket clientSocket = null;
 
-        final Options cliOptions = new Options();
-
-        final Option host = new Option("Phost", "host", true, "game server IP address");
-        host.setRequired(true);
-        final Option port = new Option("Pport", "port", true, "port : int (i.e. 9_000)");
-        port.setRequired(true);
-
-        cliOptions.addOption(host);
-        cliOptions.addOption(port);
-
-        final CommandLineParser parser = new DefaultParser();
-        final HelpFormatter helpFormatter = new HelpFormatter();
-        final CommandLine command;
-
         // Parse command line args into host:port.
-        int parsedPort = 9000;
+        int parsedPort = 0;
         String parsedIPAddress = "localhost";
         try {
-            command = parser.parse(cliOptions, args);
-            parsedPort = Integer.parseInt(command.getOptionValue(port.getOpt()));
-            parsedIPAddress = command.getOptionValue(host.getOpt());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            helpFormatter.printHelp("utility-name", cliOptions);
-            System.out.printf("\nImproper command-line argument structure: %s\n" +
-                    "\tShould be of the form: \"gradle runClient -Pport = <some port int> -Phost = <some host IP address>%n", Arrays.toString(args));
-            System.exit(1);
+            parsedPort = Integer.parseInt(args[0]);
+            parsedIPAddress = args[1];
+        } catch (Exception e) {
+            try {
+                parsedPort = Integer.parseInt(args[1]);
+                parsedIPAddress = args[1];
+            } catch (Exception exc) {
+                exc.printStackTrace();
+                System.out.printf("\nImproper command-line argument structure: %s\n" +
+                        "\tShould be of the form: \"gradle runClient -Pport = <some port int> -Phost = <some host IP address>%n", Arrays.toString(args));
+                System.exit(1);
+            }
         }
 
         // Connect to the server.

@@ -1,13 +1,5 @@
 package Ser321WK3.Server;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,28 +15,12 @@ import static Ser321WK3.CustomTCPUtilities.parsePayload;
 public class TiledRebusGameTCPServer {
 
     public static void main(String[] args) {
-//        if (args == null || args.length != 1) {
-//            System.out.println(String.format("Improper command-line argument structure: %s\n" +
-//                    "\tShould be of the form: \"gradle runServer -Pport = <some port int>"));
-//            System.exit(0);
-//        }
 
-        final Options cliOptions = new Options();
-        final Option port = new Option("Pport", "port", true, "port number");
-        port.setRequired(true);
-
-        cliOptions.addOption(port);
-
-        CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
-        CommandLine command;
-        int parsedPort = 9000;
+        int parsedPort = 0;
         try {
-            command = parser.parse(cliOptions, args);
-            parsedPort = parseInt(command.getOptionValue(port.getOpt()));
-        } catch (ParseException e) {
+            parsedPort = parseInt(args[0]);
+        } catch (Exception e) {
             e.printStackTrace();
-            formatter.printHelp("utility-name", cliOptions);
 
             System.out.printf("\nImproper command-line argument structure: %s\n" +
                     "\tShould be of the form: \"gradle runServer -Pport = <some port int>%n", Arrays.toString(args));
@@ -99,6 +75,8 @@ public class TiledRebusGameTCPServer {
                     }
 
                     if (!gameIsNull) {
+                        gameController.setCurrentQuestion();
+                        gameController.fillCroppedImages();
                         Payload questionOut = new Payload(gameController.getCurrentQuestion().getQuestion(), false, false);
                         outputStream.writeUTF(questionOut.toString());
                         receivedData = inputStream.readUTF();
