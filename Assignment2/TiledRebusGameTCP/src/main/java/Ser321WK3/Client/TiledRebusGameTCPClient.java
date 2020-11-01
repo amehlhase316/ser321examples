@@ -83,6 +83,7 @@ public class TiledRebusGameTCPClient {
     }
 
     private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
+        System.out.println("I am in 'inititialize game");
         gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
         gameGui.show(true);
         int gridDimension = gameSetup(gameGui);
