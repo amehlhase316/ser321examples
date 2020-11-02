@@ -1,0 +1,11 @@
+application {
+    mainClassName = 'Transaction'
+    description = "Transaction Example"
+}
+
+run {
+  // default arguments
+  args '5' // transactions
+  args '5' // sleep delay
+  args '5' // num deposits
+}
