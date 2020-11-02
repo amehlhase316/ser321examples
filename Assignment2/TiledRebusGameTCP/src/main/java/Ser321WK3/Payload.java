@@ -2,15 +2,13 @@ package Ser321WK3;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Payload {
-    private List<BufferedImage> croppedImages;
+public class Payload implements Serializable {
+    private List<byte[]> croppedImages;
     private String message;
     private boolean wonGame;
     private boolean gameOver;
@@ -19,11 +17,10 @@ public class Payload {
         this(null, message, wonGame, gameOver);
     }
 
-    @JsonCreator
-    public Payload(@JsonProperty("croppedImages") List<BufferedImage> croppedImages,
-                   @JsonProperty("message") String message,
-                   @JsonProperty("wonGame") boolean wonGame,
-                   @JsonProperty("gameOver") boolean gameOver) {
+    public Payload(List<byte[]> croppedImages,
+                   String message,
+                   boolean wonGame,
+                   boolean gameOver) {
         this.croppedImages = croppedImages;
         this.message = message;
         this.wonGame = wonGame;
@@ -31,11 +28,11 @@ public class Payload {
     }
 
 
-    public List<BufferedImage> getCroppedImages() {
+    public List<byte[]> getCroppedImages() {
         return croppedImages;
     }
 
-    public void setCroppedImages(List<BufferedImage> croppedImages) {
+    public void setCroppedImages(List<byte[]> croppedImages) {
         this.croppedImages = croppedImages;
     }
 

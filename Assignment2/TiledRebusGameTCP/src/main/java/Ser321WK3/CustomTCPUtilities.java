@@ -1,21 +1,27 @@
 package Ser321WK3;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import org.awaitility.Awaitility;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import Ser321WK3.Client.ClientGui;
 
+
 public class CustomTCPUtilities {
     public static Payload parsePayload(String payload) {
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         TypeFactory typeFactory = mapper.getTypeFactory();
         try {
             return mapper.readValue(payload, typeFactory.constructType(Payload.class));
@@ -35,23 +41,30 @@ public class CustomTCPUtilities {
         return 0;
     }
 
-    public static void setReceivedData(AtomicReference<String> receivedDataString, String s) {
-        receivedDataString.set(s);
+    public static void setReceivedData(AtomicReference<Payload> receivedDataString, Payload payload) {
+        receivedDataString.set(payload);
     }
 
-    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<String> receivedData, int timeToWait) throws IOException {
+    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference, int timeToWait) throws IOException {
         if (inputStream == null) {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(gameGui::userInputCompleted);
             gameGui.setUserInputCompleted(false);
-            receivedData.set(gameGui.outputPanel.getCurrentInput());
+            payloadAtomicReference.set(new Payload(gameGui.outputPanel.getCurrentInput(), false, false));
             gameGui.outputPanel.setInputText("");
         } else {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(() -> {
-                setReceivedData(receivedData, inputStream.readUTF());
-                return !receivedData.get().isEmpty();
+                setReceivedData(payloadAtomicReference, readPayload(inputStream));
+                return !(payloadAtomicReference.get() == null);
             });
         }
     }
 
+    public static void writePayloadOut(Payload output, OutputStream outputStream) throws IOException {
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(output);
+    }
 
+    public static Payload readPayload(InputStream inputStream) throws IOException, ClassNotFoundException {
+        return ((Payload) (new ObjectInputStream(inputStream)).readObject());
+    }
 }

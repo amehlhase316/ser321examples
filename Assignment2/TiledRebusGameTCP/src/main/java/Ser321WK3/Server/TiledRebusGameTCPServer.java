@@ -1,5 +1,7 @@
 package Ser321WK3.Server;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,13 +12,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import Ser321WK3.Payload;
 
 import static Ser321WK3.CustomTCPUtilities.parseInt;
-import static Ser321WK3.CustomTCPUtilities.parsePayload;
 import static Ser321WK3.CustomTCPUtilities.setReceivedData;
 import static Ser321WK3.CustomTCPUtilities.waitForData;
+import static Ser321WK3.CustomTCPUtilities.writePayloadOut;
 
 public class TiledRebusGameTCPServer {
 
@@ -99,24 +104,23 @@ public class TiledRebusGameTCPServer {
         @Override
         public void run() {
             Payload parsedPayload;
-            AtomicReference<String> receivedDataString = new AtomicReference<>("");
+            AtomicReference<Payload> payloadAtomicReference = new AtomicReference<>(null);
             try {
                 if (gameController.getCurrentGame() == null) {
-                    initializeGame(receivedDataString);
+                    initializeGame(payloadAtomicReference);
                 }
 
                 do {
                     Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
-                    outputStream.writeUTF(questionOut.toString());
+                    writePayloadOut(questionOut, outputStream);
 
-                    waitForInputFromClient(receivedDataString);
-                    System.out.println("Data received from client: " + receivedDataString.get());
-                    parsedPayload = parsePayload(receivedDataString.get());
-                    setReceivedData(receivedDataString, "");
+                    waitForInputFromClient(payloadAtomicReference);
+                    System.out.println("Data received from client: " + payloadAtomicReference.get());
 
-                    Payload playResultOut = play(parsedPayload);
-                    outputStream.writeUTF(playResultOut.toString());
+                    Payload playResultOut = play(payloadAtomicReference.get());
+                    writePayloadOut(playResultOut, outputStream);
                     outputStream.flush();
+                    setReceivedData(payloadAtomicReference, null);
                 } while (gameIsNotOver());
 
             } catch (Exception e) {
@@ -124,22 +128,20 @@ public class TiledRebusGameTCPServer {
             }
         }
 
-        private void initializeGame(AtomicReference<String> receivedDataString) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-            Payload parsedPayload;
-            outputStream.writeUTF(initializeRebusPuzzleGameRequest().toString());
-            waitForInputFromClient(receivedDataString);
+        private void initializeGame(AtomicReference<Payload> payloadAtomicReference) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            writePayloadOut(initializeRebusPuzzleGameRequest(), outputStream);
+            waitForInputFromClient(payloadAtomicReference);
 
-            parsedPayload = parsePayload(receivedDataString.get());
-            setReceivedData(receivedDataString, "");
+            System.out.printf("%nReceived payload from Client: %s%n", payloadAtomicReference.get().toString());
+            int gridDimension = parseInt(payloadAtomicReference.get().getMessage());
 
-            System.out.printf("%nReceived payload from Client: %s%n", parsedPayload.toString());
-            int gridDimension = parseInt(parsedPayload.getMessage());
             gameController.setCurrentGame(new PuzzleGame(gridDimension));
             gameController.setGridDimension(gridDimension);
             outputStream.flush();
             gameController.setCurrentQuestion();
             gameController.fillCroppedImages();
             setPrimaryConnection(true);
+            setReceivedData(payloadAtomicReference, null);
         }
 
         public boolean primaryConnection() {
@@ -150,25 +152,27 @@ public class TiledRebusGameTCPServer {
             isPrimaryConnection = primaryConnection;
         }
 
-        private void waitForInputFromClient(AtomicReference<String> receivedDataString) throws IOException {
+        private void waitForInputFromClient(AtomicReference<Payload> payloadAtomicReference) {
             do {
                 try {
-                    waitForData(inputStream, null, receivedDataString, 120);
+                    waitForData(inputStream, null, payloadAtomicReference, 120);
                 } catch (Exception e) {
                     /*IGNORE*/
                 }
-            } while (receivedDataString.get().isEmpty());
+            } while (payloadAtomicReference.get() == null);
         }
 
         public Payload initializeRebusPuzzleGameRequest() {
-            String message = "Enter an int >= 2: ";
-            return new Payload(null, message, false, false);
+            gameController.setWonGame(false);
+            gameController.setGameOver(false);
+            return parsePayload(null, null, "Enter an int >= 2: ");
         }
 
         private Payload play(Payload playerResponse) {
             final PuzzleQuestion currentQuestion = gameController.getCurrentQuestion();
             final String playerResponseMessage = playerResponse.getMessage();
             boolean answeredCorrectly = gameController.getCurrentGame().answerPuzzleQuestion(currentQuestion, playerResponseMessage);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             gameController.setCurrentQuestion();
             if (gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly() ==
                     RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS) {
@@ -176,23 +180,40 @@ public class TiledRebusGameTCPServer {
             } else if (gameController.getCurrentGame().getRandomlySelectedRebus().isCorrect(playerResponseMessage)) {
                 gameController.setWonGame(true);
                 gameController.setGameOver(true);
-                return new Payload(gameController.getCroppedImages(),
-                        "Congratulations! You've Won!",
-                        gameController.wonGame(),
-                        gameController.gameOver());
+
+                return parsePayload(baos, gameController.getCroppedImages(), "Congratulations! You've Won!");
             } else if (answeredCorrectly) {
                 int bufferedImageIndex = gameController.getCurrentGame().getNumberOfQuestionsAnsweredCorrectly();
-                return new Payload(gameController.getCroppedImages().subList(0, bufferedImageIndex),
-                        "You answered correctly!",
-                        false,
-                        false);
+                gameController.setWonGame(false);
+                gameController.setGameOver(false);
+                return parsePayload(baos, gameController.getCroppedImages().subList(0, bufferedImageIndex), "You answered correctly!");
+
             } else {
-                return new Payload(null,
+                gameController.setWonGame(false);
+                gameController.setGameOver(false);
+                return parsePayload(baos, null,
                         String.format("Terribly sorry but you've answered incorrectly. You have %d incorrect responses remaining.",
-                                RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS - gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly()),
-                        false,
-                        false);
+                                RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS - gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly()));
             }
+        }
+
+        public Payload parsePayload(ByteArrayOutputStream baos, List<BufferedImage> croppedImages, String message) {
+
+            if (croppedImages != null) {
+                return new Payload(croppedImages.stream().map(bufferedImage -> {
+                    try {
+                        ImageIO.write(bufferedImage, "jpg", baos);
+                        baos.flush();
+                    } catch (IOException e) {
+                        /*IGNORED*/
+                    }
+                    return baos.toByteArray();
+                }).collect(Collectors.toList()),
+                        message,
+                        gameController.wonGame(),
+                        gameController.gameOver());
+            }
+            return new Payload(null, message, gameController.wonGame(), gameController.gameOver());
         }
 
         private boolean gameIsNotOver() {

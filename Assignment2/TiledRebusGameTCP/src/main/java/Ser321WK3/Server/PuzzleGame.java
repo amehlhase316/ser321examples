@@ -1,9 +1,9 @@
 package Ser321WK3.Server;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -40,7 +40,6 @@ public class PuzzleGame {
 
     private static List<PuzzleQuestion> parsePuzzleQuestions() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
             return objectMapper.readValue(Paths.get(PUZZLE_QUESTIONS_FILE_PATH).toFile(), PuzzleQuestions.class).getPuzzleQuestions();
         } catch (IOException e) {
@@ -54,10 +53,6 @@ public class PuzzleGame {
         return ThreadLocalRandom.current().nextInt(min, max);
     }
 
-    private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
-        return ImageIO.read(fileToConvert);
-    }
-
     public static List<File> getImageFiles() {
         return imageFiles;
     }
@@ -66,6 +61,10 @@ public class PuzzleGame {
         return Arrays.stream(new File("puzzles").listFiles())
                 .filter(file -> file.getName().contains(".jpg") || file.getName().contains(".png"))
                 .collect(Collectors.toList());
+    }
+
+    private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
+        return ImageIO.read(fileToConvert);
     }
 
     public PuzzleQuestion getRandomlySelectedQuestion() {

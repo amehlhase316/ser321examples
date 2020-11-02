@@ -7,7 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.codehaus.jackson:jackson-jaxrs:1.9.0" level="application" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -27,5 +26,6 @@
     <orderEntry type="library" name="org.junit.jupiter:junit-jupiter-api:5.7.0" level="application" />
     <orderEntry type="library" name="commons-cli:commons-cli:1.4" level="application" />
     <orderEntry type="library" name="org.awaitility:awaitility:4.0.3" level="application" />
+    <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.10.2" level="application" />
   </component>
 </module>
