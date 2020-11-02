@@ -53,7 +53,7 @@ public class TiledRebusGameTCPClient {
             System.out.printf("%nData received from the server: %s%n", receivedDataString.get());
             Payload gameSetupPayload = parsePayload(receivedDataString.get());
             int gridDimension = initializeGame(gameGui, gameSetupPayload);
-            outputStream.writeUTF(new Payload(Integer.toString(gridDimension), false, false).toString());
+            outputStream.writeUTF(new Payload(null, Integer.toString(gridDimension), false, false).toString());
             outputStream.flush();
             setReceivedData(receivedDataString, "");
 
@@ -71,7 +71,7 @@ public class TiledRebusGameTCPClient {
                 } while (receivedDataString.get().isEmpty());
 
                 System.out.printf("%nUser input being sent to the Server: %s%n", receivedDataString.get());
-                outputStream.writeUTF(new Payload(receivedDataString.get(), false, false).toString());
+                outputStream.writeUTF(new Payload(null, receivedDataString.get(), false, false).toString());
                 setReceivedData(receivedDataString, "");
 
                 do {
@@ -90,7 +90,7 @@ public class TiledRebusGameTCPClient {
         } finally {
             try {
                 clientSocket.close();
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 /*IGNORED*/
             }
         }

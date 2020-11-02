@@ -3,9 +3,12 @@ package Ser321WK3.Server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import Ser321WK3.Payload;
@@ -16,6 +19,8 @@ import static Ser321WK3.CustomTCPUtilities.setReceivedData;
 import static Ser321WK3.CustomTCPUtilities.waitForData;
 
 public class TiledRebusGameTCPServer {
+
+    private static final List<Connection> connectedClients = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -30,17 +35,40 @@ public class TiledRebusGameTCPServer {
             System.exit(1);
         }
 
-        final RebusPuzzleGameController gameController;
-        try {
-            ServerSocket listener = new ServerSocket(parsedPort);
-            gameController = new RebusPuzzleGameController();
-            while (true) {
-                Socket socket = listener.accept();
-                new Connection(socket, gameController);
+        do {
+            try {
+                startServer(parsedPort);
+            } catch (IOException e) {
+                handleIOException(e);
             }
-        } catch (IOException e) {
-            System.out.println("Error while listening on socket: " + e.getMessage());
+        } while (true);
+    }
+
+    private static void handleIOException(IOException e) {
+        if (connectedClients.isEmpty()) {
             e.printStackTrace();
+        } else {
+            for (int i = 0; i < connectedClients.size(); i++) {
+                shutdownClient(i);
+            }
+        }
+    }
+
+    private static void shutdownClient(int clientIndex) {
+        try {
+            Connection client = connectedClients.remove(clientIndex);
+            client.getClientSocket().close();
+        } catch (IOException ioException) {
+            /*IGNORE*/
+        }
+    }
+
+    private static void startServer(int parsedPort) throws IOException {
+        ServerSocket listener = new ServerSocket(parsedPort);
+        RebusPuzzleGameController gameController = new RebusPuzzleGameController();
+        while (true) {
+            Socket socket = listener.accept();
+            connectedClients.add(new Connection(socket, gameController));
         }
     }
 
@@ -49,6 +77,7 @@ public class TiledRebusGameTCPServer {
         private final Socket clientSocket;
         private DataInputStream inputStream;
         private DataOutputStream outputStream;
+        private boolean isPrimaryConnection;
 
         public Connection(final Socket clientSocket, final RebusPuzzleGameController gameController) {
             this.clientSocket = clientSocket;
@@ -63,28 +92,21 @@ public class TiledRebusGameTCPServer {
             }
         }
 
+        public Socket getClientSocket() {
+            return clientSocket;
+        }
+
         @Override
         public void run() {
             Payload parsedPayload;
             AtomicReference<String> receivedDataString = new AtomicReference<>("");
             try {
                 if (gameController.getCurrentGame() == null) {
-                    outputStream.writeUTF(initializeRebusPuzzleGameRequest().toString());
-                    waitForInputFromClient(receivedDataString);
-
-                    parsedPayload = parsePayload(receivedDataString.get());
-                    setReceivedData(receivedDataString, "");
-
-                    System.out.printf("%nReceived payload from Client: %s%n", parsedPayload.toString());
-                    int gridDimension = parseInt(parsedPayload.getMessage());
-                    gameController.setCurrentGame(new PuzzleGame(gridDimension));
-                    gameController.setGridDimension(gridDimension);
-                    outputStream.flush();
-                    gameController.setCurrentQuestion();
-                    gameController.fillCroppedImages();
+                    initializeGame(receivedDataString);
                 }
+
                 do {
-                    Payload questionOut = new Payload(gameController.getCurrentQuestion().getQuestion(), false, false);
+                    Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
                     outputStream.writeUTF(questionOut.toString());
 
                     waitForInputFromClient(receivedDataString);
@@ -99,13 +121,33 @@ public class TiledRebusGameTCPServer {
 
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    /*IGNORED*/
-                }
             }
+        }
+
+        private void initializeGame(AtomicReference<String> receivedDataString) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+            Payload parsedPayload;
+            outputStream.writeUTF(initializeRebusPuzzleGameRequest().toString());
+            waitForInputFromClient(receivedDataString);
+
+            parsedPayload = parsePayload(receivedDataString.get());
+            setReceivedData(receivedDataString, "");
+
+            System.out.printf("%nReceived payload from Client: %s%n", parsedPayload.toString());
+            int gridDimension = parseInt(parsedPayload.getMessage());
+            gameController.setCurrentGame(new PuzzleGame(gridDimension));
+            gameController.setGridDimension(gridDimension);
+            outputStream.flush();
+            gameController.setCurrentQuestion();
+            gameController.fillCroppedImages();
+            setPrimaryConnection(true);
+        }
+
+        public boolean primaryConnection() {
+            return isPrimaryConnection;
+        }
+
+        public void setPrimaryConnection(boolean primaryConnection) {
+            isPrimaryConnection = primaryConnection;
         }
 
         private void waitForInputFromClient(AtomicReference<String> receivedDataString) throws IOException {
@@ -120,7 +162,7 @@ public class TiledRebusGameTCPServer {
 
         public Payload initializeRebusPuzzleGameRequest() {
             String message = "Enter an int >= 2: ";
-            return new Payload(message, false, false);
+            return new Payload(null, message, false, false);
         }
 
         private Payload play(Payload playerResponse) {
@@ -130,7 +172,7 @@ public class TiledRebusGameTCPServer {
             gameController.setCurrentQuestion();
             if (gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly() ==
                     RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS) {
-                return new Payload("Terribly sorry, but you have lost the game.", false, true);
+                return new Payload(null, "Terribly sorry, but you have lost the game.", false, true);
             } else if (gameController.getCurrentGame().getRandomlySelectedRebus().isCorrect(playerResponseMessage)) {
                 gameController.setWonGame(true);
                 gameController.setGameOver(true);
@@ -139,14 +181,15 @@ public class TiledRebusGameTCPServer {
                         gameController.wonGame(),
                         gameController.gameOver());
             } else if (answeredCorrectly) {
-                int bufferedImageIndex = gameController.getCurrentGame().getNumberOfQuestionsAnsweredCorrectly() - 1;
+                int bufferedImageIndex = gameController.getCurrentGame().getNumberOfQuestionsAnsweredCorrectly();
                 return new Payload(gameController.getCroppedImages().subList(0, bufferedImageIndex),
                         "You answered correctly!",
                         false,
                         false);
             } else {
-                return new Payload(String.format("Terribly sorry but you've answered incorrectly. You have %d incorrect responses remaining.",
-                        RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS - gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly()),
+                return new Payload(null,
+                        String.format("Terribly sorry but you've answered incorrectly. You have %d incorrect responses remaining.",
+                                RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS - gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly()),
                         false,
                         false);
             }

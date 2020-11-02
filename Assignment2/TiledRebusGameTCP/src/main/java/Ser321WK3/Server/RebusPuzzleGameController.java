@@ -1,6 +1,7 @@
 package Ser321WK3.Server;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +49,16 @@ public class RebusPuzzleGameController {
 
         for (int r = 0; r < gridDimension; r++) {
             for (int c = 0; c < gridDimension; c++) {
-                BufferedImage croppedImage = GridMaker.cropImage(image, c * cellWidth, r * cellHeight, cellWidth, cellHeight);
-                this.croppedImages.add(croppedImage);
+                BufferedImage croppedImage = null;
+                try {
+                    croppedImage = GridMaker.cropImage(image, c * cellWidth, r * cellHeight, cellWidth, cellHeight);
+                } catch (IOException e) {
+                    System.out.println("Something failed while splitting up the base images.");
+                    e.printStackTrace();
+                }
+                if (croppedImage != null) {
+                    this.croppedImages.add(croppedImage);
+                }
             }
         }
     }

@@ -31,9 +31,8 @@ public class GridMaker {
      *
      * https://javapointers.com/java/java-core/crop-image-java/
      */
-    public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height) {
-        BufferedImage croppedImage = bufferedImage.getSubimage(x, y, width, height);
-        return croppedImage;
+    public static BufferedImage cropImage(BufferedImage bufferedImage, int x, int y, int width, int height) throws IOException {
+        return bufferedImage.getSubimage(x, y, width, height);
     }
 
     /**

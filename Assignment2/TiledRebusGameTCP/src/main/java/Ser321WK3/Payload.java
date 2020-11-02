@@ -10,10 +10,10 @@ import java.util.List;
 
 
 public class Payload {
-    private final List<BufferedImage> croppedImages;
-    private final String message;
-    private final boolean wonGame;
-    private final boolean gameOver;
+    private List<BufferedImage> croppedImages;
+    private String message;
+    private boolean wonGame;
+    private boolean gameOver;
 
     public Payload(String message, boolean wonGame, boolean gameOver) {
         this(null, message, wonGame, gameOver);
@@ -30,20 +30,37 @@ public class Payload {
         this.gameOver = gameOver;
     }
 
-    public boolean wonGame() {
+
+    public List<BufferedImage> getCroppedImages() {
+        return croppedImages;
+    }
+
+    public void setCroppedImages(List<BufferedImage> croppedImages) {
+        this.croppedImages = croppedImages;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isWonGame() {
         return wonGame;
+    }
+
+    public void setWonGame(boolean wonGame) {
+        this.wonGame = wonGame;
     }
 
     public boolean gameOver() {
         return gameOver;
     }
 
-    public List<BufferedImage> getCroppedImages() {
-        return croppedImages;
-    }
-
-    public String getMessage() {
-        return message;
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 
     @Override
