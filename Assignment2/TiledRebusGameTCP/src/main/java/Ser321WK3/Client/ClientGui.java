@@ -21,9 +21,10 @@ import javax.swing.WindowConstants;
  * Notes ----------- > Does not show when created. show() must be called to show he GUI.
  */
 public class ClientGui implements OutputPanel.EventHandlers {
-    JDialog frame;
-    PicturePanel picturePanel;
-    OutputPanel outputPanel;
+    public JDialog frame;
+    public PicturePanel picturePanel;
+    public OutputPanel outputPanel;
+    private boolean userInputCompleted;
 
     /**
      * Construct dialog
@@ -52,6 +53,14 @@ public class ClientGui implements OutputPanel.EventHandlers {
         outputPanel = new OutputPanel();
         outputPanel.addEventHandlers(this);
         frame.add(outputPanel, c);
+    }
+
+    public boolean userInputCompleted() {
+        return userInputCompleted;
+    }
+
+    public void setUserInputCompleted(boolean userInputCompleted) {
+        this.userInputCompleted = userInputCompleted;
     }
 
     /**
@@ -125,6 +134,7 @@ public class ClientGui implements OutputPanel.EventHandlers {
      */
     @Override
     public String submitClicked() {
+        setUserInputCompleted(true);
         // Pulls the input box text
         String input = outputPanel.getInputText();
         // if has input

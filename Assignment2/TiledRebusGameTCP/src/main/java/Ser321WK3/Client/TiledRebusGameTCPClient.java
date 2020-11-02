@@ -6,13 +6,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 import Ser321WK3.Payload;
 
 import static Ser321WK3.CustomTCPUtilities.parseInt;
 import static Ser321WK3.CustomTCPUtilities.parsePayload;
+import static Ser321WK3.CustomTCPUtilities.setReceivedData;
+import static Ser321WK3.CustomTCPUtilities.waitForData;
 
 public class TiledRebusGameTCPClient {
+
+    public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
 
     public static void main(String[] args) {
         Socket clientSocket = null;
@@ -43,45 +48,84 @@ public class TiledRebusGameTCPClient {
             DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
 
             final ClientGui gameGui = new ClientGui();
-            String received = inputStream.readUTF();
-            Payload gameSetupPayload = parsePayload(received);
+            final AtomicReference<String> receivedDataString = new AtomicReference<>("");
+            waitForDataFromServer(inputStream, receivedDataString, null, 10);
+            System.out.printf("%nData received from the server: %s%n", receivedDataString.get());
+            Payload gameSetupPayload = parsePayload(receivedDataString.get());
             int gridDimension = initializeGame(gameGui, gameSetupPayload);
             outputStream.writeUTF(new Payload(Integer.toString(gridDimension), false, false).toString());
             outputStream.flush();
+            setReceivedData(receivedDataString, "");
 
             do {
+                waitForDataFromServer(inputStream, receivedDataString, gameGui, 10);
+                System.out.printf("%nData received from the server: %s%n", receivedDataString.get());
+                Payload serverPayload = parsePayload(receivedDataString.get());
+                setReceivedData(receivedDataString, "");
 
-                Payload serverPayload = parsePayload(inputStream.readUTF());
-                gameGui.outputPanel.appendOutput(serverPayload.getMessage());
-                gameGui.show(true);
-                displayPayloadImages(serverPayload, gameGui, gridDimension);
-                String userInput = gameGui.outputPanel.getInputText();
-                outputStream.writeUTF(new Payload(userInput, false, false).toString());
-                outputStream.flush();
-
-                gameGui.show(false);
-
-                serverPayload = parsePayload(inputStream.readUTF());
                 displayPayloadImages(serverPayload, gameGui, gridDimension);
                 gameGui.outputPanel.appendOutput(serverPayload.getMessage());
-                gameGui.show(true);
+
+                do {
+                    waitForData(null, gameGui, receivedDataString, 60);
+                } while (receivedDataString.get().isEmpty());
+
+                System.out.printf("%nUser input being sent to the Server: %s%n", receivedDataString.get());
+                outputStream.writeUTF(new Payload(receivedDataString.get(), false, false).toString());
+                setReceivedData(receivedDataString, "");
+
+                do {
+                    waitForData(inputStream, null, receivedDataString, 10);
+                } while (receivedDataString.get().isEmpty());
+
+                serverPayload = parsePayload(receivedDataString.get());
+                displayPayloadImages(serverPayload, gameGui, gridDimension);
+                gameGui.outputPanel.appendOutput(serverPayload.getMessage());
                 gameOver = serverPayload.gameOver();
             } while (!gameOver);
 
+            clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                /*IGNORED*/
+            }
         }
+    }
+
+    private static void waitForDataFromServer(DataInputStream inputStream, AtomicReference<String> receivedDataString,
+                                              ClientGui gameGui, int timeToWait) throws IOException {
+        do {
+            try {
+                waitForData(inputStream, gameGui, receivedDataString, timeToWait);
+            } catch (Exception e) {
+                /*IGNORE*/
+            }
+        } while (receivedDataString.get().isEmpty());
     }
 
     private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
         gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
-        gameGui.show(true);
-        int gridDimension;
+        gameGui.show(false);
+        AtomicReference<String> gridDimension = new AtomicReference<>("");
+        int returnValue;
         do {
-            gridDimension = gameSetup(gameGui);
-        } while (gridDimension < 2);
-        gameGui.newGame(gridDimension);
-        return gridDimension;
+            try {
+                waitForData(null, gameGui, gridDimension, 20);
+            } catch (Exception e) {
+                gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
+            }
+            returnValue = parseInt(gridDimension.get());
+            if (returnValue < 2) {
+                gameGui.outputPanel.setInputText("");
+                gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
+            }
+        } while (returnValue < 2);
+        gameGui.newGame(returnValue);
+        return returnValue;
     }
 
     private static void displayPayloadImages(Payload serverPayload, ClientGui gameGui, int gridDimension) {
@@ -101,13 +145,4 @@ public class TiledRebusGameTCPClient {
         }
     }
 
-    private static int gameSetup(ClientGui gameGui) {
-        gameGui.submitClicked();
-        int gridDimension = parseInt(gameGui.outputPanel.getCurrentInput());
-        if (gridDimension == 0) {
-            gameGui.outputPanel.setInputText("");
-            gameGui.outputPanel.appendOutput("Something went wrong. Please only enter an int >= 2.");
-        }
-        return gridDimension;
-    }
 }
