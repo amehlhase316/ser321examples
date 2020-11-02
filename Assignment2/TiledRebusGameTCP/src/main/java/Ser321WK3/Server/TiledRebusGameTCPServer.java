@@ -103,29 +103,38 @@ public class TiledRebusGameTCPServer {
 
         @Override
         public void run() {
-            Payload parsedPayload;
             AtomicReference<Payload> payloadAtomicReference = new AtomicReference<>(null);
-            try {
-                if (gameController.getCurrentGame() == null) {
+            if (gameController.getCurrentGame() == null) {
+                try {
                     initializeGame(payloadAtomicReference);
+                } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                    System.out.println("Something went wrong initializing the game.");
+                    e.printStackTrace();
+                }
+            }
+
+            do {
+                Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
+                try {
+                    writePayloadOut(questionOut, outputStream);
+                } catch (IOException e) {
+                    System.out.println("Something went wrong while asking a question from the server.");
+                    e.printStackTrace();
                 }
 
-                do {
-                    Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
-                    writePayloadOut(questionOut, outputStream);
+                waitForInputFromClient(payloadAtomicReference);
+                System.out.println("Data received from client: " + payloadAtomicReference.get());
 
-                    waitForInputFromClient(payloadAtomicReference);
-                    System.out.println("Data received from client: " + payloadAtomicReference.get());
-
-                    Payload playResultOut = play(payloadAtomicReference.get());
+                Payload playResultOut = play(payloadAtomicReference.get());
+                try {
                     writePayloadOut(playResultOut, outputStream);
                     outputStream.flush();
-                    setReceivedData(payloadAtomicReference, null);
-                } while (gameIsNotOver());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                } catch (IOException e) {
+                    System.out.println("Something went wrong emptying the output stream.");
+                    e.printStackTrace();
+                }
+                setReceivedData(payloadAtomicReference, null);
+            } while (gameIsNotOver());
         }
 
         private void initializeGame(AtomicReference<Payload> payloadAtomicReference) throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {

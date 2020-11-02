@@ -1,9 +1,5 @@
 package Ser321WK3;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-
 import org.awaitility.Awaitility;
 
 import java.io.DataInputStream;
@@ -19,17 +15,9 @@ import Ser321WK3.Client.ClientGui;
 
 
 public class CustomTCPUtilities {
-    public static Payload parsePayload(String payload) {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        TypeFactory typeFactory = mapper.getTypeFactory();
-        try {
-            return mapper.readValue(payload, typeFactory.constructType(Payload.class));
-        } catch (Exception e) {
-            System.out.println("Error while parsing payload: " + payload);
-            e.printStackTrace();
-        }
-        return new Payload("", false, false);
+
+    private CustomTCPUtilities() {
+        throw new IllegalStateException("This is a Utility Class and should not be instantiated.");
     }
 
     public static int parseInt(String userInput) {
@@ -45,7 +33,7 @@ public class CustomTCPUtilities {
         receivedDataString.set(payload);
     }
 
-    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference, int timeToWait) throws IOException {
+    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference, int timeToWait) {
         if (inputStream == null) {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(gameGui::userInputCompleted);
             gameGui.setUserInputCompleted(false);
@@ -54,7 +42,7 @@ public class CustomTCPUtilities {
         } else {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(() -> {
                 setReceivedData(payloadAtomicReference, readPayload(inputStream));
-                return !(payloadAtomicReference.get() == null);
+                return payloadAtomicReference.get() != null;
             });
         }
     }
