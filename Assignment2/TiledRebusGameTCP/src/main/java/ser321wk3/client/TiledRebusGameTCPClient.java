@@ -30,9 +30,11 @@ public class TiledRebusGameTCPClient {
     private static int numberOfCorrectResponses;
     private static boolean gameOver;
     private static ClientGui gameGui;
+    private static Socket clientSocket;
+    private static DataInputStream inputStream;
+    private static DataOutputStream outputStream;
 
     public static void main(String[] args) {
-        Socket clientSocket = null;
 
         // Parse command line args into host:port.
         int parsedPort = 0;
@@ -53,14 +55,32 @@ public class TiledRebusGameTCPClient {
         }
 
         // Connect to the server.
+        connectToTheServer(parsedPort, parsedIPAddress);
+
         try {
-            clientSocket = new Socket(parsedIPAddress, parsedPort);
+            playGame(inputStream, outputStream);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Something went wrong during a game sequence. Exiting...");
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    private static void reconnectToTheServer() throws IOException {
+        int port = clientSocket.getPort();
+        String host = clientSocket.getInetAddress().getHostAddress();
+        clientSocket.close();
+        connectToTheServer(port, host);
+    }
+
+    private static void connectToTheServer(int parsedPort, String hostIpAddress) {
+        try {
+            clientSocket = new Socket(hostIpAddress, parsedPort);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Something failed during Socket connection with the server.");
             e.printStackTrace();
         }
-        DataInputStream inputStream = null;
-        DataOutputStream outputStream = null;
+
         try {
             Objects.requireNonNull(clientSocket);
             inputStream = new DataInputStream(clientSocket.getInputStream());
@@ -70,11 +90,9 @@ public class TiledRebusGameTCPClient {
             e.printStackTrace();
             System.exit(-1);
         }
-
-        playGame(inputStream, outputStream);
     }
 
-    private static void playGame(DataInputStream inputStream, DataOutputStream outputStream) {
+    private static void playGame(DataInputStream inputStream, DataOutputStream outputStream) throws IOException {
         gameGui = new ClientGui();
 
         GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
@@ -91,29 +109,29 @@ public class TiledRebusGameTCPClient {
         } while (!gameOver);
     }
 
-    private static void endGameSequence(DataInputStream inputStream, DataOutputStream outputStream) {
-        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
-        receiveQuestionFromServer(inputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
-        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
-        waitForUserInput(gameGui, PAYLOAD_ATOMIC_REFERENCE);
-        if (!PAYLOAD_ATOMIC_REFERENCE.get().getMessage().toLowerCase().contains("y")) {
-            PAYLOAD_ATOMIC_REFERENCE.get().setGameOver(true);
-            respondToServerQuestion(outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
-            Runtime.getRuntime().exit(0);
-        } else {
-            PAYLOAD_ATOMIC_REFERENCE.get().setGameOver(false);
-            respondToServerQuestion(outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
-            resetGameState(inputStream, outputStream);
-        }
-    }
-
-    private static void resetGameState(DataInputStream inputStream, DataOutputStream outputStream) {
+    private static void resetGameState(DataInputStream inputStream, DataOutputStream outputStream) throws IOException {
         setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
         gameOver = false;
         numberOfCorrectResponses = 0;
         gameGui.close();
-
+        reconnectToTheServer();
+        gameGui = new ClientGui();
+        gameGui.show(false);
         GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
+        playGame(inputStream, outputStream);
+    }
+
+    private static void endGameSequence(DataInputStream inputStream, DataOutputStream outputStream) throws IOException {
+        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
+        gameGui.outputPanel.appendOutput("Would you like to play again? Y/N ");
+        waitForUserInput(gameGui, PAYLOAD_ATOMIC_REFERENCE);
+        if (PAYLOAD_ATOMIC_REFERENCE.get().getMessage().toLowerCase().contains("y")) {
+            PAYLOAD_ATOMIC_REFERENCE.get().setGameOver(true);
+            writePayloadOut(PAYLOAD_ATOMIC_REFERENCE.get(), outputStream);
+            resetGameState(inputStream, outputStream);
+        } else {
+            Runtime.getRuntime().exit(0);
+        }
     }
 
     private static boolean receiveQuestionResponseFromServer(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {

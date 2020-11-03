@@ -29,7 +29,7 @@ public class TiledRebusGameTCPServer {
     private static final List<Connection> connectedClients = new ArrayList<>();
     private static final Logger LOGGER = Logger.getLogger(TiledRebusGameTCPServer.class.getName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         int parsedPort = 0;
         try {
@@ -52,19 +52,26 @@ public class TiledRebusGameTCPServer {
         }
     }
 
-    private static void startServer(int parsedPort) {
+    private static void startServer(int parsedPort) throws IOException {
 
         try (ServerSocket listener = new ServerSocket(parsedPort)) {
-
-            RebusPuzzleGameController gameController = new RebusPuzzleGameController();
             while (!jvmIsShuttingDown()) {
-                Socket socket = listener.accept();
-                Connection newConnection = new Connection(socket, gameController);
-                connectedClients.add(newConnection);
+                Socket clientListener = null;
+                try {
+                    clientListener = listener.accept();
+                    DataInputStream inputStream = new DataInputStream(clientListener.getInputStream());
+                    DataOutputStream outputStream = new DataOutputStream(clientListener.getOutputStream());
+                    Connection clientConnection = new Connection(new RebusPuzzleGameController(), clientListener, inputStream, outputStream);
+                    connectedClients.add(clientConnection);
+                    clientConnection.start();
+                } catch (Exception e) {
+                    clientListener.close();
+                    LOGGER.log(Level.SEVERE, () -> "Something wen wrong while starting a new client.");
+                }
             }
         } catch (IOException e) {
-            for (Connection client : connectedClients) {
-                shutdownClient(client);
+            for (Connection clientConnection : connectedClients) {
+                shutdownClient(clientConnection);
             }
             e.printStackTrace();
         }
@@ -73,21 +80,18 @@ public class TiledRebusGameTCPServer {
     private static final class Connection extends Thread {
         private final RebusPuzzleGameController gameController;
         private final Socket clientSocket;
-        private DataInputStream inputStream;
-        private DataOutputStream outputStream;
+        private final DataInputStream inputStream;
+        private final DataOutputStream outputStream;
         private boolean isPrimaryConnection;
 
-        public Connection(final Socket clientSocket, final RebusPuzzleGameController gameController) {
-            this.clientSocket = clientSocket;
+        public Connection(RebusPuzzleGameController gameController,
+                          Socket clientSocket,
+                          DataInputStream inputStream,
+                          DataOutputStream outputStream) {
             this.gameController = gameController;
-            try {
-                inputStream = new DataInputStream(clientSocket.getInputStream());
-                outputStream = new DataOutputStream(clientSocket.getOutputStream());
-                this.start();
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, () -> "Connection setup failed: " + e.getMessage());
-                e.printStackTrace();
-            }
+            this.clientSocket = clientSocket;
+            this.inputStream = inputStream;
+            this.outputStream = outputStream;
         }
 
         public Socket getClientSocket() {
@@ -106,10 +110,20 @@ public class TiledRebusGameTCPServer {
                 }
             }
 
-            playGame(payloadAtomicReference);
+            try {
+                playGame(payloadAtomicReference);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                clientSocket.close();
+                Thread.currentThread().interrupt();
+            } catch (IOException e) {
+                /*IGNORE*/
+            }
         }
 
-        private void playGame(AtomicReference<Payload> payloadAtomicReference) {
+        private void playGame(AtomicReference<Payload> payloadAtomicReference) throws IOException {
             do {
                 Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
                 LOGGER.info("Puzzle Answer: " + gameController.getCurrentGame().getRandomlySelectedRebus().getRebusAnswer());
@@ -121,6 +135,7 @@ public class TiledRebusGameTCPServer {
                     e.printStackTrace();
                 }
 
+                setReceivedData(payloadAtomicReference, null);
                 waitForInputFromClient(payloadAtomicReference);
                 LOGGER.info("Data received from client: " + payloadAtomicReference.get());
 
@@ -134,35 +149,16 @@ public class TiledRebusGameTCPServer {
                 try {
                     writePayloadOut(playResultOut, outputStream);
                     outputStream.flush();
+                    if (playResultOut.gameOver()) {
+                        waitForInputFromClient(payloadAtomicReference);
+                        gameController.setGameOver(payloadAtomicReference.get().gameOver());
+                    }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong emptying the output stream.");
                     e.printStackTrace();
                 }
-                setReceivedData(payloadAtomicReference, null);
-                if (gameOver()) {
-                    try {
-                        askIfClientWantsToPlayAgain(payloadAtomicReference);
-                    } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE, "Something went wrong during the end of game sequence.");
-                        e.printStackTrace();
-                    }
-                }
             } while (!gameOver());
-        }
-
-        private void askIfClientWantsToPlayAgain(AtomicReference<Payload> payloadAtomicReference) throws IOException {
-            writePayloadOut(new Payload("Would you like to play another game?: y/N", gameController.wonGame(),
-                    gameController.gameOver()), outputStream);
-            waitForInputFromClient(payloadAtomicReference);
-            if (!payloadAtomicReference.get().gameOver()) {
-                resetGame(payloadAtomicReference);
-            }
-        }
-
-        private void resetGame(AtomicReference<Payload> payloadAtomicReference) throws IOException {
-            gameController.setGameOver(false);
-            gameController.setWonGame(false);
-            initializeGame(payloadAtomicReference);
+            clientSocket.close();
         }
 
         private void initializeGame(AtomicReference<Payload> payloadAtomicReference) throws IOException {
