@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -19,22 +20,24 @@ import javax.imageio.ImageIO;
 
 public class PuzzleGame {
 
+    public static final String REBUS_PUZZLES_JSON = "puzzles/RebusPuzzles.json";
     private static final String PUZZLE_QUESTIONS_FILE_PATH = "puzzles/PuzzleQuestions.json";
-    private static final List<File> imageFiles = getRebusImageFiles();
     private final List<PuzzleQuestion> gameQuestions;
+    private final RawPuzzles rawPuzzles;
     private final int numberOfQuestionsAvailableToAnswer;
     private final Rebus randomlySelectedRebus;
     private int numberOfQuestionsAnsweredIncorrectly;
     private int numberOfQuestionsAnsweredCorrectly;
 
     public PuzzleGame(int numberOfQuestionsAvailableToAnswer) throws IOException {
-        this(parsePuzzleQuestions(), numberOfQuestionsAvailableToAnswer);
+        this(parsePuzzleQuestions(), Objects.requireNonNull(parseRebusPuzzleFilesWithAnswers()), numberOfQuestionsAvailableToAnswer);
     }
 
-    public PuzzleGame(List<PuzzleQuestion> gameQuestions, int numberOfQuestionsAvailableToAnswer) throws IOException {
+    public PuzzleGame(List<PuzzleQuestion> gameQuestions, RawPuzzles rawPuzzles, int numberOfQuestionsAvailableToAnswer) throws IOException {
         this.gameQuestions = gameQuestions;
+        this.rawPuzzles = rawPuzzles;
         this.numberOfQuestionsAvailableToAnswer = numberOfQuestionsAvailableToAnswer;
-        File randomlySelected = imageFiles.get(pickRandomly(0, imageFiles.size()));
+        File randomlySelected = new File(rawPuzzles.getPuzzles().get(pickRandomly(0, rawPuzzles.getPuzzles().size())).getFileName());
         this.randomlySelectedRebus = new Rebus(convertFileToImage(randomlySelected), randomlySelected.getName());
     }
 
@@ -49,18 +52,28 @@ public class PuzzleGame {
         return Collections.emptyList();
     }
 
-    public static int pickRandomly(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max);
+    private static RawPuzzles parseRebusPuzzleFilesWithAnswers() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(Paths.get(REBUS_PUZZLES_JSON).toFile(), RawPuzzles.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static List<File> getImageFiles() {
-        return imageFiles;
+    public static int pickRandomly(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max);
     }
 
     private static List<File> getRebusImageFiles() {
         return Arrays.stream(new File("puzzles").listFiles())
                 .filter(file -> file.getName().contains(".jpg") || file.getName().contains(".png"))
                 .collect(Collectors.toList());
+    }
+
+    public RawPuzzles getRawPuzzles() {
+        return rawPuzzles;
     }
 
     private BufferedImage convertFileToImage(File fileToConvert) throws IOException {

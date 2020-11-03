@@ -28,11 +28,6 @@ class PuzzleGameTest {
     }
 
     @Test
-    void getImageFiles() throws IOException {
-        PuzzleGame.getImageFiles().forEach(file -> assertTrue(file.getName().contains(".jpg") || file.getName().contains(".png")));
-    }
-
-    @Test
     void getRandomlySelectedRebus() throws IOException {
         PuzzleGame testPuzzleGame = new PuzzleGame(2);
         Rebus testRebus = testPuzzleGame.getRandomlySelectedRebus();

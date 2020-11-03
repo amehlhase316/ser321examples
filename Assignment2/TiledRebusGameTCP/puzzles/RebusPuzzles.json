@@ -1,0 +1,40 @@
+{
+    "puzzles": [
+        {
+            "fileName": "puzzles/Best-Friends-Forever.jpg",
+            "answer": "Best Friends Forever"
+        },
+        {
+            "fileName": "puzzles/Hamilton.jpg",
+            "answer": "Hamilton"
+        },
+        {
+            "fileName": "puzzles/Head-Over-Heels.jpg",
+            "answer": "Head over heels"
+        },
+        {
+            "fileName": "puzzles/Musical.jpg",
+            "answer": "Musical"
+        },
+        {
+            "fileName": "puzzles/Nobody-Is-Above-Law.jpg",
+            "answer": "Nobody is above the law"
+        },
+        {
+            "fileName": "puzzles/Over-My-Dead-Body.jpg",
+            "answer": "Over my dead body"
+        },
+        {
+            "fileName": "puzzles/Pineapple-Upside-Down-Cake.jpg",
+            "answer": "Pineapple upside down cake"
+        },
+        {
+            "fileName": "puzzles/The-Ball-Is-In-Your-Court.jpg",
+            "answer": "The ball is in your court"
+        },
+        {
+            "fileName": "puzzles/Too-Funny-For-Words.jpg",
+            "answer": "Too funny for words"
+        }
+    ]
+}
