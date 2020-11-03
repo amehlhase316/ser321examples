@@ -1,10 +1,10 @@
 apply plugin: 'java'
 
-description = "TCP Ser321WK3.Client Server Example"
+description = "TCP ser321wk3.client server Example"
 
 task runClient(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    description = "Run Ser321WK3.Client"
+    description = "Run ser321wk3.client"
     main = 'TCPClient'
     // default args
     args 'localhost' // host
@@ -14,7 +14,7 @@ task runClient(type: JavaExec) {
 
 task runServer(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    description = "Run Server"
+    description = "Run server"
     main = 'TCPServer'
     // default args
     args '9099' // port

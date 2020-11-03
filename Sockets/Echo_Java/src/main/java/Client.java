@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 
 /**
- * Ser321WK3.Client class to demonstrate a simple "echo" client-server connection using sockets.
+ * ser321wk3.client class to demonstrate a simple "echo" client-server connection using sockets.
  *
  * @version October 2020
  */

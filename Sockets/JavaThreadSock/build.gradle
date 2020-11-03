@@ -1,10 +1,10 @@
 // set as java application
 apply plugin: 'application'
 
-// Ser321WK3.Client and Server socket, socket can serve up to three clients
+// ser321wk3.client and server socket, socket can serve up to three clients
 task ThreadedSockServer(type: JavaExec) {
-    group 'Socket Server/Ser321WK3.Client'
-    description 'Creates Server and waits for clients to connect'
+    group 'Socket server/ser321wk3.client'
+    description 'Creates server and waits for clients to connect'
 
     classpath = sourceSets.main.runtimeClasspath
 
@@ -17,7 +17,7 @@ task ThreadedSockServer(type: JavaExec) {
 }
 
 task ThreadedSockClient(type: JavaExec) {
-    group 'Socket Server/Ser321WK3.Client'
+    group 'Socket server/ser321wk3.client'
     description 'Creates client and can send numbers to server'
 
     standardInput = System.in

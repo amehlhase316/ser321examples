@@ -1,4 +1,4 @@
-package Ser321WK3.Client;
+package ser321wk3.client;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -7,22 +7,29 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import Ser321WK3.Payload;
+import ser321wk3.Payload;
 
-import static Ser321WK3.CustomTCPUtilities.parseInt;
-import static Ser321WK3.CustomTCPUtilities.setReceivedData;
-import static Ser321WK3.CustomTCPUtilities.waitForData;
-import static Ser321WK3.CustomTCPUtilities.writePayloadOut;
+import static ser321wk3.CustomTCPUtilities.parseInt;
+import static ser321wk3.CustomTCPUtilities.setReceivedData;
+import static ser321wk3.CustomTCPUtilities.waitForData;
+import static ser321wk3.CustomTCPUtilities.writePayloadOut;
 
 public class TiledRebusGameTCPClient {
 
     public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
+    private static final Logger LOGGER = Logger.getLogger(TiledRebusGameTCPClient.class.getName());
+    private static final AtomicReference<Payload> PAYLOAD_ATOMIC_REFERENCE = new AtomicReference<>(null);
     private static int GRID_DIMENSION;
     private static int numberOfCorrectResponses;
+    private static boolean gameOver;
+    private static ClientGui gameGui;
 
     public static void main(String[] args) {
         Socket clientSocket = null;
@@ -39,56 +46,87 @@ public class TiledRebusGameTCPClient {
                 parsedIPAddress = args[0];
             } catch (Exception exc) {
                 exc.printStackTrace();
-                System.out.printf("\nImproper command-line argument structure: %s\n" +
-                        "\tShould be of the form: \"gradle runClient -Pport = <some port int> -Phost = <some host IP address>%n", Arrays.toString(args));
+                LOGGER.log(Level.SEVERE, String.format("\nImproper command-line argument structure: %s\n" +
+                        "\tShould be of the form: \"gradle runClient -Pport = <some port int> -Phost = <some host IP address>%n", Arrays.toString(args)));
                 System.exit(1);
             }
         }
 
         // Connect to the server.
-        boolean gameOver;
         try {
             clientSocket = new Socket(parsedIPAddress, parsedPort);
         } catch (IOException e) {
-            System.out.println("Something failed during Socket connection with the server.");
+            LOGGER.log(Level.SEVERE, "Something failed during Socket connection with the server.");
             e.printStackTrace();
         }
         DataInputStream inputStream = null;
         DataOutputStream outputStream = null;
         try {
+            Objects.requireNonNull(clientSocket);
             inputStream = new DataInputStream(clientSocket.getInputStream());
             outputStream = new DataOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
-            System.out.println("Something happened when opening data streams.");
+            LOGGER.log(Level.SEVERE, "Something happened when opening data streams.");
             e.printStackTrace();
             System.exit(-1);
         }
 
-        final ClientGui gameGui = new ClientGui();
-        final AtomicReference<Payload> payloadAtomicReference = new AtomicReference<>(null);
+        playGame(inputStream, outputStream);
+    }
 
-        GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, payloadAtomicReference);
+    private static void playGame(DataInputStream inputStream, DataOutputStream outputStream) {
+        gameGui = new ClientGui();
+
+        GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
 
         do {
-            receiveQuestionFromServer(inputStream, gameGui, payloadAtomicReference);
+            receiveQuestionFromServer(inputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
 
-            respondToServerQuestion(outputStream, gameGui, payloadAtomicReference);
+            respondToServerQuestion(outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
 
-            gameOver = receiveQuestionResponseFromServer(inputStream, gameGui, payloadAtomicReference);
+            gameOver = receiveQuestionResponseFromServer(inputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
+            if (gameOver) {
+                endGameSequence(inputStream, outputStream);
+            }
         } while (!gameOver);
+    }
+
+    private static void endGameSequence(DataInputStream inputStream, DataOutputStream outputStream) {
+        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
+        receiveQuestionFromServer(inputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
+        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
+        waitForUserInput(gameGui, PAYLOAD_ATOMIC_REFERENCE);
+        if (!PAYLOAD_ATOMIC_REFERENCE.get().getMessage().toLowerCase().contains("y")) {
+            PAYLOAD_ATOMIC_REFERENCE.get().setGameOver(true);
+            respondToServerQuestion(outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
+            Runtime.getRuntime().exit(0);
+        } else {
+            PAYLOAD_ATOMIC_REFERENCE.get().setGameOver(false);
+            respondToServerQuestion(outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
+            resetGameState(inputStream, outputStream);
+        }
+    }
+
+    private static void resetGameState(DataInputStream inputStream, DataOutputStream outputStream) {
+        setReceivedData(PAYLOAD_ATOMIC_REFERENCE, null);
+        gameOver = false;
+        numberOfCorrectResponses = 0;
+        gameGui.close();
+
+        GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, PAYLOAD_ATOMIC_REFERENCE);
     }
 
     private static boolean receiveQuestionResponseFromServer(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
         boolean gameOver;
         waitForDataFromServer(inputStream, payloadAtomicReference);
-        if (payloadAtomicReference.get().getMessage().contains("correctly")) {
+        if (payloadAtomicReference.get().getMessage().contains("correctly") || payloadAtomicReference.get().wonGame()) {
             numberOfCorrectResponses++;
         }
-        System.out.printf("%nData received from the Server: %s%n", payloadAtomicReference.get());
+        LOGGER.log(Level.SEVERE, String.format("%nData received from the server: %s%n", payloadAtomicReference.get()));
         try {
             insertPayloadImage(payloadAtomicReference.get(), gameGui);
         } catch (IOException e) {
-            System.out.println("Something happened while attempting to display images before restarting the loop");
+            LOGGER.log(Level.SEVERE, "Something happened while attempting to display images before restarting the loop");
             e.printStackTrace();
         }
         gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
@@ -99,11 +137,11 @@ public class TiledRebusGameTCPClient {
 
     private static void respondToServerQuestion(DataOutputStream outputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
         waitForUserInput(gameGui, payloadAtomicReference);
-        System.out.printf("%nUser input being sent to the Server: %s%n", payloadAtomicReference.get());
+        LOGGER.log(Level.INFO, String.format("%nUser input being sent to the server: %s%n", payloadAtomicReference.get()));
         try {
             writePayloadOut(payloadAtomicReference.get(), outputStream);
         } catch (IOException e) {
-            System.out.println("Something happened while sending User Input back to the server.");
+            LOGGER.log(Level.SEVERE, "Something happened while sending User Input back to the server.");
             e.printStackTrace();
         }
         setReceivedData(payloadAtomicReference, null);
@@ -111,20 +149,20 @@ public class TiledRebusGameTCPClient {
 
     private static void receiveQuestionFromServer(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
         waitForDataFromServer(inputStream, payloadAtomicReference);
-        System.out.printf("%nData received from the server: %s%n", payloadAtomicReference.get());
+        LOGGER.log(Level.INFO, String.format("%nData received from the server: %s%n", payloadAtomicReference.get()));
         gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
         setReceivedData(payloadAtomicReference, null);
     }
 
     private static int initializeGame(DataInputStream inputStream, DataOutputStream outputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
         waitForDataFromServer(inputStream, payloadAtomicReference);
-        System.out.printf("%nData received from the server: %s%n", payloadAtomicReference.get());
+        LOGGER.log(Level.INFO, String.format("%nData received from the server: %s%n", payloadAtomicReference.get()));
         int gridDimension = initializeGame(gameGui, payloadAtomicReference.get());
         try {
             writePayloadOut(new Payload(null, Integer.toString(gridDimension), false, false), outputStream);
             outputStream.flush();
         } catch (IOException e) {
-            System.out.println("Something happened during a write/flush operation.");
+            LOGGER.log(Level.SEVERE, "Something happened during a write/flush operation.");
             e.printStackTrace();
         }
         setReceivedData(payloadAtomicReference, null);
@@ -173,12 +211,12 @@ public class TiledRebusGameTCPClient {
     }
 
     private static void insertPayloadImage(Payload serverPayload, ClientGui gameGui) throws IOException {
-        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION)) {
+        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION) && serverPayload.getCroppedImage() != null) {
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(serverPayload.getCroppedImage()));
             int row = (numberOfCorrectResponses - 1) / GRID_DIMENSION;
             int col = (numberOfCorrectResponses % GRID_DIMENSION) - 1;
             col = (col >= 0 && col <= GRID_DIMENSION ? col : GRID_DIMENSION - 1);
-            System.out.printf("%nInserting a new image in row: %d\tcol: %d%n", row, col);
+            LOGGER.log(Level.INFO, String.format("%nInserting a new image in row: %d\tcol: %d%n", row, col));
             gameGui.insertImage(image, row, col);
         }
     }

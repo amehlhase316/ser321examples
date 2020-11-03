@@ -1,6 +1,6 @@
 apply plugin: 'java'
 
-description = "Ser321WK3.Client Server Socket Example"
+description = "ser321wk3.client server Socket Example"
 
 task runBrowser(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
@@ -28,10 +28,10 @@ task runGetIP(type: JavaExec) {
     args 'devhints.io' // url
 }
 
-// the Ser321WK3.Client and Server belong together
+// the ser321wk3.client and server belong together
 task runDatagramReceive(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    group = "Datagram Server/Ser321WK3.Client"
+    group = "Datagram server/ser321wk3.client"
     description = "Datagram Receive"
     main = 'DatagramReceive'
     // default args
@@ -40,7 +40,7 @@ task runDatagramReceive(type: JavaExec) {
 
 task runDatagramSend(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
-    group = "Datagram Server/Ser321WK3.Client"
+    group = "Datagram server/ser321wk3.client"
     description = "Datagram Send"
     main = 'DatagramSend'
     // default args
@@ -48,12 +48,12 @@ task runDatagramSend(type: JavaExec) {
     args 'my message' // message
 }
 
-// Ser321WK3.Client and Server socket, socket can serve up to three clients
+// ser321wk3.client and server socket, socket can serve up to three clients
 // The port is defined directly in the Java files. For practice consider changing
 // the tasks to add the port as input to the Gradle task
 task SocketServer(type: JavaExec) {
-    group 'TCP Server/Ser321WK3.Client'
-    description 'Creates Server socket waits for up to 3 messages'
+    group 'TCP server/ser321wk3.client'
+    description 'Creates server socket waits for up to 3 messages'
 
     classpath = sourceSets.main.runtimeClasspath
 
@@ -61,7 +61,7 @@ task SocketServer(type: JavaExec) {
 }
 
 task SocketClient(type: JavaExec) {
-    group 'TCP Server/Ser321WK3.Client'
+    group 'TCP server/ser321wk3.client'
     description 'Creates client socket sends a message and number to server'
 
     classpath = sourceSets.main.runtimeClasspath

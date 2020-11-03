@@ -1,4 +1,4 @@
-package Ser321WK3.Client;
+package ser321wk3.client;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -19,7 +19,7 @@ import javax.swing.WindowConstants;
  *
  * Notes ----------- > Does not show when created. show() must be called to show he GUI.
  */
-public class ClientGui implements Ser321WK3.Client.OutputPanel.EventHandlers {
+public class ClientGui implements ser321wk3.client.OutputPanel.EventHandlers {
     JDialog frame;
     PicturePanel picturePanel;
     OutputPanel outputPanel;

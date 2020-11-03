@@ -8,4 +8,9 @@
       <module name="Assignment2.TiledRebusGameUDP" target="11" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Assignment2.TiledRebusGameTCP.main" options="--add-exports jdk.hotspot.agent/sun.jvm.hotspot.runtime=ALL-UNNAMED" />
+    </option>
+  </component>
 </project>

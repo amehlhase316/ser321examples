@@ -1,5 +1,5 @@
 /*
-Simple Web Server in Java which allows you to call
+Simple Web server in Java which allows you to call
 localhost:9000/ and show you the root.html webpage from the www/root.html folder
 You can also do some other simple GET requests:
 1) /random shows you a random picture (well random from the set defined)
@@ -194,17 +194,17 @@ public class WebServer {
                 System.out.println("Received: " + line);
 
                 // find end of header("\n\n")
-              if (line == null || line.equals("")) {
-                done = true;
-              }
-              // parse GET format ("GET <path> HTTP/1.1")
-              else if (line.startsWith("GET")) {
-                int firstSpace = line.indexOf(" ");
-                int secondSpace = line.indexOf(" ", firstSpace + 1);
+                if (line == null || line.equals("")) {
+                    done = true;
+                }
+                // parse GET format ("GET <path> HTTP/1.1")
+                else if (line.startsWith("GET")) {
+                    int firstSpace = line.indexOf(" ");
+                    int secondSpace = line.indexOf(" ", firstSpace + 1);
 
-                // extract the request, basically everything after the GET up to HTTP/1.1
-                request = line.substring(firstSpace + 2, secondSpace);
-              }
+                    // extract the request, basically everything after the GET up to HTTP/1.1
+                    request = line.substring(firstSpace + 2, secondSpace);
+                }
 
             }
             System.out.println("FINISHED PARSING HEADER\n");
@@ -390,9 +390,9 @@ public class WebServer {
         try {
             URL url = new URL(aUrl);
             conn = url.openConnection();
-          if (conn != null) {
-            conn.setReadTimeout(20 * 1000); // timeout in 20 seconds
-          }
+            if (conn != null) {
+                conn.setReadTimeout(20 * 1000); // timeout in 20 seconds
+            }
             if (conn != null && conn.getInputStream() != null) {
                 in = new InputStreamReader(conn.getInputStream(), Charset.defaultCharset());
                 BufferedReader br = new BufferedReader(in);

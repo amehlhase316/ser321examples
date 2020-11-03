@@ -1,4 +1,4 @@
-package Ser321WK3.Server;
+package ser321wk3.server;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,8 +15,8 @@ public class Rebus {
         this.rebusAnswer = parseRebusAnswer(rebusAnswer);
     }
 
-    public static String stripSpacesAndPunctuation(String stringWithSpacesAndPuncuation) {
-        return stringWithSpacesAndPuncuation.replaceAll("([.\\w]{4})$", "").replaceAll("[^A-Za-z\\d]", "").toLowerCase();
+    public static String stripSpacesAndPunctuation(String stringWithSpacesAndPunctuation) {
+        return stringWithSpacesAndPunctuation.replaceAll("[^A-Za-z\\d]", "").toLowerCase();
     }
 
     @Override

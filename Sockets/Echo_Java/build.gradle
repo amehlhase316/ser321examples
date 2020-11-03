@@ -1,14 +1,14 @@
 apply plugin: 'java'
 
-description = "Echo Ser321WK3.Client Server Socket Example"
+description = "Echo ser321wk3.client server Socket Example"
 
 task runServer(type: JavaExec) {
-    description 'Creates Server socket waits for messages'
+    description 'Creates server socket waits for messages'
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Server'
-    // run with arguments e.g.: gradle Server -Pport=9099
+    main = 'server'
+    // run with arguments e.g.: gradle server -Pport=9099
 
     if (project.hasProperty('port')) {
         args(project.getProperty('port'));
@@ -21,9 +21,9 @@ task runClient(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
 
-    main = 'Ser321WK3.Client'
+    main = 'ser321wk3.client'
 
-    // run with arguments e.g.: gradle Ser321WK3.Client -Phost=localhost -Pport=9099
+    // run with arguments e.g.: gradle ser321wk3.client -Phost=localhost -Pport=9099
     if (project.hasProperty("host") && project.hasProperty('port')) {
         args(project.getProperty('host'), project.getProperty('port'));
     }

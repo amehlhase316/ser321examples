@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import Ser321WK3.Server.PuzzleGame;
-import Ser321WK3.Server.PuzzleQuestion;
-import Ser321WK3.Server.Rebus;
+import ser321wk3.server.PuzzleGame;
+import ser321wk3.server.PuzzleQuestion;
+import ser321wk3.server.Rebus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

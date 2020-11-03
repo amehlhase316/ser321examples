@@ -1,4 +1,4 @@
-package Ser321WK3.Client;
+package ser321wk3.client;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,6 +27,7 @@ public class OutputPanel extends JPanel {
     private JButton submit;
     private JTextArea area;
     private ArrayList<EventHandlers> handlers = new ArrayList<>();
+
     /**
      * Constructor
      */

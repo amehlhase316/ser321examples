@@ -21,7 +21,7 @@ task Gui(type: JavaExec) {
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Ser321WK3.Client.ClientGui'
+    main = 'ser321wk3.client.ClientGui'
     standardInput = System.in
 }
 
@@ -31,6 +31,6 @@ task Maker(type: JavaExec) {
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Server.GridMaker'
+    main = 'server.GridMaker'
     standardInput = System.in
 }

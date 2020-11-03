@@ -36,11 +36,11 @@ task runServer(type: JavaExec) {
     group 'server'
     description = 'Starts up a Rebus TCP game server with -Pport=<port : int> arg'
 
-    ext.javaMainClass = "Ser321WK3.Server.TiledRebusGameTCPServer"
+    ext.javaMainClass = "ser321wk3.server.TiledRebusGameTCPServer"
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Ser321WK3.Server.TiledRebusGameTCPServer'
+    main = 'ser321wk3.server.TiledRebusGameTCPServer'
     standardInput = System.in
     args port
 }
@@ -49,11 +49,11 @@ task runClient(type: JavaExec) {
     group 'client'
     description = 'Requires two arguments -Phost=<some host IP address> -Pport=<int : port>'
 
-    ext.javaMainClass = "Ser321WK3.Client.TiledRebusGameTCPClient"
+    ext.javaMainClass = "ser321wk3.client.TiledRebusGameTCPClient"
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Ser321WK3.Client.TiledRebusGameTCPClient'
+    main = 'ser321wk3.client.TiledRebusGameTCPClient'
     standardInput = System.in
     args = [host, port]
 }
@@ -64,7 +64,7 @@ task Gui(type: JavaExec) {
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Ser321WK3.Client.ClientGui'
+    main = 'ser321wk3.client.ClientGui'
     standardInput = System.in
 }
 
@@ -74,6 +74,6 @@ task Maker(type: JavaExec) {
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'Server.GridMaker'
+    main = 'server.GridMaker'
     standardInput = System.in
 }

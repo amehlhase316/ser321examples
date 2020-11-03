@@ -1,4 +1,4 @@
-package Ser321WK3;
+package ser321wk3;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -43,7 +43,7 @@ public class Payload implements Serializable {
         this.message = message;
     }
 
-    public boolean isWonGame() {
+    public boolean wonGame() {
         return wonGame;
     }
 

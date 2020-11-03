@@ -96,7 +96,7 @@ public class ThreadedSockServer extends Thread {
                 s = (String) in.readObject();
             }
             // on close, clean up
-            System.out.println("Ser321WK3.Client " + id + " closed connection.");
+            System.out.println("ser321wk3.client " + id + " closed connection.");
             in.close();
             out.close();
             conn.close();

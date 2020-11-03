@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 
 /**
  * Purpose: Example client for temperature conversion and file uploading. A GUI window object extending JFrame. The GUI is for constructing
- * Extend this class and access its protected members to develop a Ser321WK3.Client. The user selects the method name from the combo box
+ * Extend this class and access its protected members to develop a ser321wk3.client. The user selects the method name from the combo box
  * drop down list, provides values for up to 2 arguments and then selects the <b>Call Method</b> button. The extending class handles the
  * button push, calls the appropriate method and places any result in the <b>resultTextFld</b>.
  * <p>
@@ -62,7 +62,7 @@ public class ClientGui extends JFrame {
      * @param title    a short title used to create a title line for the Gui window's title.
      */
     public ClientGui(String[] fcnNames, String title) {
-        super("Ser321 " + title + " Temperature Conversion Ser321WK3.Client");
+        super("Ser321 " + title + " Temperature Conversion ser321wk3.client");
         Toolkit tk = Toolkit.getDefaultToolkit();
         dim = tk.getScreenSize();
         if (dim.width <= 1024) {

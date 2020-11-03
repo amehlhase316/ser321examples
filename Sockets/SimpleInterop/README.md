@@ -18,9 +18,9 @@ Building and running the server and terminal clients is done with Gradle.
 1. To run the Java Server
   1.1 From the 'Examples/Sockets', run: gradle SimpleInterop:Java:runServer
 
-2. To run the Java Ser321WK3.Client
+2. To run the Java ser321wk3.client
   2.1 From the 'Examples/Sockets', run: gradle SimpleInterop:Java:runClient
 
-3. To run the Cpp Ser321WK3.Client
+3. To run the Cpp ser321wk3.client
   3.1 From the 'Examples/Sockets', run: gradle SimpleInterop:Cpp:build
   3.2 Go into the 'SimpleInterop/Cpp/build/install/main/debug', then run, ./Cpp localhost "hello from C++" 8080

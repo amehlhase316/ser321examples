@@ -1,4 +1,4 @@
-package Ser321WK3.Client;
+package ser321wk3.client;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -53,6 +53,10 @@ public class ClientGui implements OutputPanel.EventHandlers {
         outputPanel = new OutputPanel();
         outputPanel.addEventHandlers(this);
         frame.add(outputPanel, c);
+    }
+
+    public void close() {
+        frame.dispose();
     }
 
     public boolean userInputCompleted() {

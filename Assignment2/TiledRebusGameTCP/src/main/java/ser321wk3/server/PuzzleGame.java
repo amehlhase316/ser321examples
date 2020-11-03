@@ -1,4 +1,4 @@
-package Ser321WK3.Server;
+package ser321wk3.server;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -37,8 +37,9 @@ public class PuzzleGame {
         this.gameQuestions = gameQuestions;
         this.rawPuzzles = rawPuzzles;
         this.numberOfQuestionsAvailableToAnswer = numberOfQuestionsAvailableToAnswer;
-        File randomlySelected = new File(rawPuzzles.getPuzzles().get(pickRandomly(0, rawPuzzles.getPuzzles().size())).getFileName());
-        this.randomlySelectedRebus = new Rebus(convertFileToImage(randomlySelected), randomlySelected.getName());
+        RawPuzzle randomPuzzle = rawPuzzles.getPuzzles().get(pickRandomly(0, rawPuzzles.getPuzzles().size()));
+        File randomlySelected = new File(randomPuzzle.getFileName());
+        this.randomlySelectedRebus = new Rebus(convertFileToImage(randomlySelected), randomPuzzle.getAnswer());
     }
 
     private static List<PuzzleQuestion> parsePuzzleQuestions() {

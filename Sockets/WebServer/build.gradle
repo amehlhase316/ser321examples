@@ -37,7 +37,7 @@ task FunWebServer(type: JavaExec) {
 
 task LordWhyWebServer(type: JavaExec) {
     group 'http'
-    description 'Complicated Http Server'
+    description 'Complicated Http server'
 
     classpath = sourceSets.main.runtimeClasspath
 
@@ -48,7 +48,7 @@ task LordWhyWebServer(type: JavaExec) {
 
 task LordWhyWebClient(type: JavaExec) {
     group 'http'
-    description 'Complicated Http Ser321WK3.Client'
+    description 'Complicated Http ser321wk3.client'
 
     classpath = sourceSets.main.runtimeClasspath
 
@@ -69,21 +69,21 @@ task JsonParser(type: JavaExec) {
 
 task MysteryWhyWebServer(type: JavaExec) {
     group 'http'
-    description 'Mysterious Http Server'
+    description 'Mysterious Http server'
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'mysteryWhyServer.Server'
+    main = 'mysteryWhyServer.server'
     standardInput = System.in
 }
 
 task MysteryWhyWebClient(type: JavaExec) {
     group 'http'
-    description 'Mysterious Http Ser321WK3.Client'
+    description 'Mysterious Http ser321wk3.client'
 
     classpath = sourceSets.main.runtimeClasspath
 
-    main = 'mysteryWhyServer.Ser321WK3.Client'
+    main = 'mysteryWhyServer.ser321wk3.client'
     standardInput = System.in
 }
 

@@ -1,4 +1,4 @@
-package Ser321WK3.Server;
+package ser321wk3.server;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

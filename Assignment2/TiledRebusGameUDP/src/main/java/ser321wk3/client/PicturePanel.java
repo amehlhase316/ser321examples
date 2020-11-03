@@ -1,4 +1,4 @@
-package Ser321WK3.Client;
+package ser321wk3.client;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;

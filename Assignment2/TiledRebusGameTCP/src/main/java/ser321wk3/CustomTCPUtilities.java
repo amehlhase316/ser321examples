@@ -1,4 +1,4 @@
-package Ser321WK3;
+package ser321wk3;
 
 import org.awaitility.Awaitility;
 
@@ -11,10 +11,12 @@ import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import Ser321WK3.Client.ClientGui;
+import ser321wk3.client.ClientGui;
 
 
 public class CustomTCPUtilities {
+
+    private static final Thread DUMMY_HOOK = new Thread();
 
     private CustomTCPUtilities() {
         throw new IllegalStateException("This is a Utility Class and should not be instantiated.");
@@ -54,5 +56,15 @@ public class CustomTCPUtilities {
 
     public static Payload readPayload(InputStream inputStream) throws IOException, ClassNotFoundException {
         return ((Payload) (new ObjectInputStream(inputStream)).readObject());
+    }
+
+    public static boolean jvmIsShuttingDown() {
+        try {
+            Runtime.getRuntime().addShutdownHook(DUMMY_HOOK);
+            Runtime.getRuntime().removeShutdownHook(DUMMY_HOOK);
+        } catch (IllegalStateException e) {
+            return true;
+        }
+        return false;
     }
 }
