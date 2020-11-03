@@ -21,6 +21,8 @@ import static Ser321WK3.CustomTCPUtilities.writePayloadOut;
 public class TiledRebusGameTCPClient {
 
     public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
+    private static int GRID_DIMENSION;
+    private static int numberOfCorrectResponses;
 
     public static void main(String[] args) {
         Socket clientSocket = null;
@@ -59,11 +61,62 @@ public class TiledRebusGameTCPClient {
         } catch (IOException e) {
             System.out.println("Something happened when opening data streams.");
             e.printStackTrace();
+            System.exit(-1);
         }
 
         final ClientGui gameGui = new ClientGui();
         final AtomicReference<Payload> payloadAtomicReference = new AtomicReference<>(null);
 
+        GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui, payloadAtomicReference);
+
+        do {
+            receiveQuestionFromServer(inputStream, gameGui, payloadAtomicReference);
+
+            respondToServerQuestion(outputStream, gameGui, payloadAtomicReference);
+
+            gameOver = receiveQuestionResponseFromServer(inputStream, gameGui, payloadAtomicReference);
+        } while (!gameOver);
+    }
+
+    private static boolean receiveQuestionResponseFromServer(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
+        boolean gameOver;
+        waitForDataFromServer(inputStream, payloadAtomicReference);
+        if (payloadAtomicReference.get().getMessage().contains("correctly")) {
+            numberOfCorrectResponses++;
+        }
+        System.out.printf("%nData received from the Server: %s%n", payloadAtomicReference.get());
+        try {
+            insertPayloadImage(payloadAtomicReference.get(), gameGui);
+        } catch (IOException e) {
+            System.out.println("Something happened while attempting to display images before restarting the loop");
+            e.printStackTrace();
+        }
+        gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
+        gameOver = payloadAtomicReference.get().gameOver();
+        setReceivedData(payloadAtomicReference, null);
+        return gameOver;
+    }
+
+    private static void respondToServerQuestion(DataOutputStream outputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
+        waitForUserInput(gameGui, payloadAtomicReference);
+        System.out.printf("%nUser input being sent to the Server: %s%n", payloadAtomicReference.get());
+        try {
+            writePayloadOut(payloadAtomicReference.get(), outputStream);
+        } catch (IOException e) {
+            System.out.println("Something happened while sending User Input back to the server.");
+            e.printStackTrace();
+        }
+        setReceivedData(payloadAtomicReference, null);
+    }
+
+    private static void receiveQuestionFromServer(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
+        waitForDataFromServer(inputStream, payloadAtomicReference);
+        System.out.printf("%nData received from the server: %s%n", payloadAtomicReference.get());
+        gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
+        setReceivedData(payloadAtomicReference, null);
+    }
+
+    private static int initializeGame(DataInputStream inputStream, DataOutputStream outputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
         waitForDataFromServer(inputStream, payloadAtomicReference);
         System.out.printf("%nData received from the server: %s%n", payloadAtomicReference.get());
         int gridDimension = initializeGame(gameGui, payloadAtomicReference.get());
@@ -75,43 +128,7 @@ public class TiledRebusGameTCPClient {
             e.printStackTrace();
         }
         setReceivedData(payloadAtomicReference, null);
-
-        do {
-            waitForDataFromServer(inputStream, payloadAtomicReference);
-            System.out.printf("%nData received from the server: %s%n", payloadAtomicReference.get());
-
-            try {
-                displayPayloadImages(payloadAtomicReference.get(), gameGui, gridDimension);
-            } catch (IOException e) {
-                System.out.println("Something happened while trying to display Payload images.");
-                e.printStackTrace();
-            }
-            gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
-            setReceivedData(payloadAtomicReference, null);
-
-            waitForUserInput(gameGui, payloadAtomicReference);
-
-            System.out.printf("%nUser input being sent to the Server: %s%n", payloadAtomicReference.get());
-            try {
-                writePayloadOut(payloadAtomicReference.get(), outputStream);
-            } catch (IOException e) {
-                System.out.println("Something happened while sending User Input back to the server.");
-                e.printStackTrace();
-            }
-            setReceivedData(payloadAtomicReference, null);
-
-            waitForDataFromServer(inputStream, payloadAtomicReference);
-            System.out.printf("%nData received from the Server: %s%n", payloadAtomicReference.get());
-            try {
-                displayPayloadImages(payloadAtomicReference.get(), gameGui, gridDimension);
-            } catch (IOException e) {
-                System.out.println("Something happened while attempting to display images before restarting the loop");
-                e.printStackTrace();
-            }
-            gameGui.outputPanel.appendOutput(payloadAtomicReference.get().getMessage());
-            gameOver = payloadAtomicReference.get().gameOver();
-            setReceivedData(payloadAtomicReference, null);
-        } while (!gameOver);
+        return gridDimension;
     }
 
     private static void waitForUserInput(ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference) {
@@ -155,22 +172,14 @@ public class TiledRebusGameTCPClient {
         return returnValue;
     }
 
-    private static void displayPayloadImages(Payload serverPayload, ClientGui gameGui, int gridDimension) throws IOException {
-        if (serverPayload.getCroppedImages() != null && !serverPayload.getCroppedImages().isEmpty()) {
-            int i = 0;
-            int j = 0;
-            for (byte[] imageBytes : serverPayload.getCroppedImages()) {
-                BufferedImage image;
-                if (i == gridDimension) {
-                    break;
-                }
-                if (j == gridDimension) {
-                    i++;
-                    j = 0;
-                }
-                image = ImageIO.read(new ByteArrayInputStream(imageBytes));
-                gameGui.insertImage(image, i, j++);
-            }
+    private static void insertPayloadImage(Payload serverPayload, ClientGui gameGui) throws IOException {
+        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION)) {
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(serverPayload.getCroppedImage()));
+            int row = (numberOfCorrectResponses - 1) / GRID_DIMENSION;
+            int col = (numberOfCorrectResponses % GRID_DIMENSION) - 1;
+            col = (col >= 0 && col <= GRID_DIMENSION ? col : GRID_DIMENSION - 1);
+            System.out.printf("%nInserting a new image in row: %d\tcol: %d%n", row, col);
+            gameGui.insertImage(image, row, col);
         }
     }
 

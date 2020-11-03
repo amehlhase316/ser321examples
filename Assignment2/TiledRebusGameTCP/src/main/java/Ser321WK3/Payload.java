@@ -4,11 +4,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
-import java.util.List;
 
 
 public class Payload implements Serializable {
-    private List<byte[]> croppedImages;
+    private byte[] croppedImage;
     private String message;
     private boolean wonGame;
     private boolean gameOver;
@@ -17,23 +16,23 @@ public class Payload implements Serializable {
         this(null, message, wonGame, gameOver);
     }
 
-    public Payload(List<byte[]> croppedImages,
+    public Payload(byte[] croppedImage,
                    String message,
                    boolean wonGame,
                    boolean gameOver) {
-        this.croppedImages = croppedImages;
+        this.croppedImage = croppedImage;
         this.message = message;
         this.wonGame = wonGame;
         this.gameOver = gameOver;
     }
 
 
-    public List<byte[]> getCroppedImages() {
-        return croppedImages;
+    public byte[] getCroppedImage() {
+        return croppedImage;
     }
 
-    public void setCroppedImages(List<byte[]> croppedImages) {
-        this.croppedImages = croppedImages;
+    public void setCroppedImage(byte[] croppedImage) {
+        this.croppedImage = croppedImage;
     }
 
     public String getMessage() {
