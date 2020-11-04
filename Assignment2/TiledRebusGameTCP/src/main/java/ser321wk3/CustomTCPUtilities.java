@@ -1,5 +1,9 @@
 package ser321wk3;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.awaitility.Awaitility;
 
@@ -9,8 +13,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
@@ -37,31 +39,24 @@ public class CustomTCPUtilities {
         return 0;
     }
 
-    public static void setReceivedData(AtomicReference<Payload> receivedDataString, Payload payload) {
-        receivedDataString.set(payload);
+    public static void setReceivedData(AtomicReference<CustomProtocol> receivedDataString, CustomProtocol protocol) {
+        receivedDataString.set(protocol);
     }
 
-    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<Payload> payloadAtomicReference, int timeToWait) {
+    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<CustomProtocol> protocolAtomicReference, int timeToWait) {
         if (inputStream == null) {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(gameGui::userInputCompleted);
             gameGui.setUserInputCompleted(false);
-            payloadAtomicReference.set(new Payload(gameGui.outputPanel.getCurrentInput(), false, false));
+            Payload responseToServer = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false);
+            CustomProtocolHeader header = new CustomProtocolHeader(CustomProtocolHeader.Operation.ANSWER, "16", "json");
+            setReceivedData(protocolAtomicReference, new CustomProtocol(header, responseToServer));
             gameGui.outputPanel.setInputText("");
         } else {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(() -> {
-                setReceivedData(payloadAtomicReference, readPayload(inputStream));
-                return payloadAtomicReference.get() != null;
+                setReceivedData(protocolAtomicReference, readCustomProtocol(inputStream));
+                return protocolAtomicReference.get() != null;
             });
         }
-    }
-
-    public static void writePayloadOut(Payload output, OutputStream outputStream) throws IOException {
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-        objectOutputStream.writeObject(output);
-    }
-
-    public static Payload readPayload(InputStream inputStream) throws IOException, ClassNotFoundException {
-        return ((Payload) (new ObjectInputStream(inputStream)).readObject());
     }
 
     public static boolean jvmIsShuttingDown() {
@@ -83,8 +78,22 @@ public class CustomTCPUtilities {
         return Base64.getEncoder().encodeToString(fileContent);
     }
 
-    public static BufferedImage convertBase65encodedStringToBufferedImage(String encodedImage) throws IOException {
+    public static BufferedImage convertBase64encodedStringToBufferedImage(String encodedImage) throws IOException {
         byte[] decodedImageBytes = Base64.getDecoder().decode(encodedImage);
         return ImageIO.read(new ByteArrayInputStream(decodedImageBytes));
+    }
+
+    public static void writeCustomProtocolOut(OutputStream outputStream, CustomProtocol protocol) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        outputStream.write(mapper.writeValueAsBytes(protocol));
+        outputStream.flush();
+    }
+
+    public static CustomProtocol readCustomProtocol(InputStream inputStream) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        TypeFactory typeFactory = mapper.getTypeFactory();
+
+        return mapper.readValue(new String(inputStream.readNBytes(inputStream.available())), typeFactory.constructType(CustomProtocol.class));
     }
 }

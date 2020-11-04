@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import ser321wk3.CustomProtocol;
+import ser321wk3.CustomProtocolHeader;
 import ser321wk3.Payload;
 
 import static ser321wk3.CustomTCPUtilities.convertImageFileToBase64encodedString;
@@ -23,7 +25,7 @@ import static ser321wk3.CustomTCPUtilities.jvmIsShuttingDown;
 import static ser321wk3.CustomTCPUtilities.parseInt;
 import static ser321wk3.CustomTCPUtilities.setReceivedData;
 import static ser321wk3.CustomTCPUtilities.waitForData;
-import static ser321wk3.CustomTCPUtilities.writePayloadOut;
+import static ser321wk3.CustomTCPUtilities.writeCustomProtocolOut;
 
 public class TiledRebusGameTCPServer {
 
@@ -101,7 +103,7 @@ public class TiledRebusGameTCPServer {
 
         @Override
         public void run() {
-            final AtomicReference<Payload> payloadAtomicReference = new AtomicReference<>(null);
+            final AtomicReference<CustomProtocol> payloadAtomicReference = new AtomicReference<>(null);
             if (gameController.getCurrentGame() == null) {
                 try {
                     initializeGame(payloadAtomicReference);
@@ -124,13 +126,14 @@ public class TiledRebusGameTCPServer {
             }
         }
 
-        private void playGame(AtomicReference<Payload> payloadAtomicReference) throws IOException {
+        private void playGame(AtomicReference<CustomProtocol> payloadAtomicReference) throws IOException {
             do {
                 Payload questionOut = new Payload(null, gameController.getCurrentQuestion().getQuestion(), false, false);
                 LOGGER.info("Puzzle Answer: " + gameController.getCurrentGame().getRandomlySelectedRebus().getRebusAnswer());
                 LOGGER.info("Question Answer: " + gameController.getCurrentQuestion().getAnswer());
+                CustomProtocolHeader header = new CustomProtocolHeader(CustomProtocolHeader.Operation.QUESTION, "16", "json");
                 try {
-                    writePayloadOut(questionOut, outputStream);
+                    writeCustomProtocolOut(outputStream, new CustomProtocol(header, questionOut));
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong while sending a question from the server.");
                     e.printStackTrace();
@@ -142,17 +145,18 @@ public class TiledRebusGameTCPServer {
 
                 Payload playResultOut = null;
                 try {
-                    playResultOut = play(payloadAtomicReference.get());
+                    playResultOut = play(payloadAtomicReference.get().getPayload());
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong while playing a round.");
                     e.printStackTrace();
                 }
+                CustomProtocolHeader responseHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.RESPONSE, "16", "json");
                 try {
-                    writePayloadOut(playResultOut, outputStream);
+                    writeCustomProtocolOut(outputStream, new CustomProtocol(responseHeader, playResultOut));
                     outputStream.flush();
                     if (playResultOut.gameOver()) {
                         waitForInputFromClient(payloadAtomicReference);
-                        gameController.setGameOver(payloadAtomicReference.get().gameOver());
+                        gameController.setGameOver(payloadAtomicReference.get().getPayload().gameOver());
                     }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong emptying the output stream.");
@@ -162,13 +166,14 @@ public class TiledRebusGameTCPServer {
             clientSocket.close();
         }
 
-        private void initializeGame(AtomicReference<Payload> payloadAtomicReference) throws IOException {
-            writePayloadOut(initializeRebusPuzzleGameRequest(), outputStream);
+        private void initializeGame(AtomicReference<CustomProtocol> payloadAtomicReference) throws IOException {
+            CustomProtocolHeader initializeHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16", "json");
+            writeCustomProtocolOut(outputStream, new CustomProtocol(initializeHeader, initializeRebusPuzzleGameRequest()));
             outputStream.flush();
             waitForInputFromClient(payloadAtomicReference);
 
             LOGGER.log(Level.INFO, String.format("%nReceived payload from client: %s%n", payloadAtomicReference.get().toString()));
-            int gridDimension = parseInt(payloadAtomicReference.get().getMessage());
+            int gridDimension = parseInt(payloadAtomicReference.get().getPayload().getMessage());
 
             gameController.setCurrentGame(new PuzzleGame(gridDimension));
             gameController.setGridDimension(gridDimension);
@@ -187,7 +192,7 @@ public class TiledRebusGameTCPServer {
             isPrimaryConnection = primaryConnection;
         }
 
-        private void waitForInputFromClient(AtomicReference<Payload> payloadAtomicReference) {
+        private void waitForInputFromClient(AtomicReference<CustomProtocol> payloadAtomicReference) {
             do {
                 try {
                     waitForData(inputStream, null, payloadAtomicReference, 120);

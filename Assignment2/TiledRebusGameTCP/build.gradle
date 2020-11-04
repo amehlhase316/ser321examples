@@ -13,10 +13,16 @@ dependencies {
     compile 'org.awaitility:awaitility:4.0.3'
     compile 'commons-io:commons-io:2.6'
     compile 'org.apache.commons:commons-lang3:3.9'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
 }
 
 repositories {
     mavenCentral()
+}
+
+test {
+    useJUnit()
 }
 
 
