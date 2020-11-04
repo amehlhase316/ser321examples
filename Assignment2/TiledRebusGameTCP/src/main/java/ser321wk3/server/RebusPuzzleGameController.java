@@ -1,6 +1,6 @@
 package ser321wk3.server;
 
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class RebusPuzzleGameController {
 
     public static final int NUMBER_OF_POSSIBLE_WRONG_ANSWERS = 3;
     private static final List<PuzzleQuestion> usedQuestions = new ArrayList<>();
-    private List<BufferedImage> croppedImages;
+    private List<File> croppedImages;
     private int gridDimension;
     private boolean wonGame;
     private boolean gameOver;
@@ -33,34 +33,8 @@ public class RebusPuzzleGameController {
         return ((gridDimension * gridDimension) + NUMBER_OF_POSSIBLE_WRONG_ANSWERS);
     }
 
-    public List<BufferedImage> getCroppedImages() {
+    public List<File> getCroppedImages() {
         return croppedImages;
-    }
-
-    public void fillCroppedImages() {
-        this.croppedImages = new ArrayList<>();
-        BufferedImage image = currentGame.getRandomlySelectedRebus().getRebusImage();
-        int divisibleHeight = image.getHeight() - (image.getHeight() % gridDimension);
-        int divisibleWidth = image.getWidth() - (image.getWidth() % gridDimension);
-        image = GridMaker.resize(image, divisibleWidth, divisibleHeight);
-
-        int cellHeight = divisibleHeight / gridDimension;
-        int cellWidth = divisibleWidth / gridDimension;
-
-        for (int r = 0; r < gridDimension; r++) {
-            for (int c = 0; c < gridDimension; c++) {
-                BufferedImage croppedImage = null;
-                try {
-                    croppedImage = GridMaker.cropImage(image, c * cellWidth, r * cellHeight, cellWidth, cellHeight);
-                } catch (IOException e) {
-                    System.out.println("Something failed while splitting up the base images.");
-                    e.printStackTrace();
-                }
-                if (croppedImage != null) {
-                    this.croppedImages.add(croppedImage);
-                }
-            }
-        }
     }
 
     public boolean gameOver() {
@@ -104,5 +78,9 @@ public class RebusPuzzleGameController {
 
     public void setCurrentGame(PuzzleGame currentGame) {
         this.currentGame = currentGame;
+    }
+
+    public void fillCroppedImages() throws IOException {
+        croppedImages = GridMaker.main(new String[]{currentGame.getRandomlySelectedRebus().getRebusImageFile().getAbsolutePath(), String.valueOf(gridDimension)});
     }
 }

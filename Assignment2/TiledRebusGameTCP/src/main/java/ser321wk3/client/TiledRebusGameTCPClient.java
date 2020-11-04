@@ -1,7 +1,6 @@
 package ser321wk3.client;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,10 +11,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
 import ser321wk3.Payload;
 
+import static ser321wk3.CustomTCPUtilities.convertBase65encodedStringToBufferedImage;
 import static ser321wk3.CustomTCPUtilities.parseInt;
 import static ser321wk3.CustomTCPUtilities.setReceivedData;
 import static ser321wk3.CustomTCPUtilities.waitForData;
@@ -140,7 +138,7 @@ public class TiledRebusGameTCPClient {
         if (payloadAtomicReference.get().getMessage().contains("correctly") || payloadAtomicReference.get().wonGame()) {
             numberOfCorrectResponses++;
         }
-        LOGGER.log(Level.SEVERE, String.format("%nData received from the server: %s%n", payloadAtomicReference.get()));
+        LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", payloadAtomicReference.get()));
         try {
             insertPayloadImage(payloadAtomicReference.get(), gameGui);
         } catch (IOException e) {
@@ -229,8 +227,8 @@ public class TiledRebusGameTCPClient {
     }
 
     private static void insertPayloadImage(Payload serverPayload, ClientGui gameGui) throws IOException {
-        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION) && serverPayload.getCroppedImage() != null) {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(serverPayload.getCroppedImage()));
+        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION) && serverPayload.getBase64encodedCroppedImage() != null) {
+            BufferedImage image = convertBase65encodedStringToBufferedImage(serverPayload.getBase64encodedCroppedImage());
             int row = (numberOfCorrectResponses - 1) / GRID_DIMENSION;
             int col = (numberOfCorrectResponses % GRID_DIMENSION) - 1;
             col = (col >= 0 && col <= GRID_DIMENSION ? col : GRID_DIMENSION - 1);

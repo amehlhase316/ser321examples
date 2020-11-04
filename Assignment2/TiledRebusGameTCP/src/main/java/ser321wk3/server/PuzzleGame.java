@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -15,8 +14,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 public class PuzzleGame {
 
@@ -39,7 +36,7 @@ public class PuzzleGame {
         this.numberOfQuestionsAvailableToAnswer = numberOfQuestionsAvailableToAnswer;
         RawPuzzle randomPuzzle = rawPuzzles.getPuzzles().get(pickRandomly(0, rawPuzzles.getPuzzles().size()));
         File randomlySelected = new File(randomPuzzle.getFileName());
-        this.randomlySelectedRebus = new Rebus(convertFileToImage(randomlySelected), randomPuzzle.getAnswer());
+        this.randomlySelectedRebus = new Rebus(randomlySelected, randomPuzzle.getAnswer());
     }
 
     private static List<PuzzleQuestion> parsePuzzleQuestions() {
@@ -75,10 +72,6 @@ public class PuzzleGame {
 
     public RawPuzzles getRawPuzzles() {
         return rawPuzzles;
-    }
-
-    private BufferedImage convertFileToImage(File fileToConvert) throws IOException {
-        return ImageIO.read(fileToConvert);
     }
 
     public PuzzleQuestion getRandomlySelectedQuestion() {

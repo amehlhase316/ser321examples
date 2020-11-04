@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 
 import ser321wk3.Payload;
 
+import static ser321wk3.CustomTCPUtilities.convertImageFileToBase64encodedString;
 import static ser321wk3.CustomTCPUtilities.jvmIsShuttingDown;
 import static ser321wk3.CustomTCPUtilities.parseInt;
 import static ser321wk3.CustomTCPUtilities.setReceivedData;
@@ -199,7 +200,7 @@ public class TiledRebusGameTCPServer {
         public Payload initializeRebusPuzzleGameRequest() throws IOException {
             gameController.setWonGame(false);
             gameController.setGameOver(false);
-            return parsePayload(null, null, "Enter an int >= 2: ");
+            return parsePayload(null, "Enter an int >= 2: ");
         }
 
         private Payload play(Payload playerResponse) throws IOException {
@@ -209,19 +210,22 @@ public class TiledRebusGameTCPServer {
             boolean answeredCorrectly = gameController.getCurrentGame().answerPuzzleQuestion(currentQuestion, playerResponseMessage);
             boolean playerLost = gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly() ==
                     RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS;
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             gameController.setCurrentQuestion();
+            String base64EncodedImage;
             if (solved) {
                 gameController.setWonGame(true);
                 gameController.setGameOver(true);
                 gameController.getCurrentGame().answerPuzzleQuestion(currentQuestion, currentQuestion.getAnswer());
 
-                return parsePayload(baos, gameController.getCroppedImages().get(gameController.getCroppedImages().size() - 1), "Congratulations! You've Won!");
+                base64EncodedImage = convertImageFileToBase64encodedString(gameController.getCroppedImages().get(gameController.getCroppedImages().size() - 1));
+                return parsePayload(base64EncodedImage, "Congratulations! You've Won!");
             } else if (answeredCorrectly) {
                 int bufferedImageIndex = gameController.getCurrentGame().getNumberOfQuestionsAnsweredCorrectly() - 1;
                 gameController.setWonGame(false);
                 gameController.setGameOver(false);
-                return parsePayload(baos, gameController.getCroppedImages().get(bufferedImageIndex), "You answered correctly!");
+
+                base64EncodedImage = convertImageFileToBase64encodedString(gameController.getCroppedImages().get(bufferedImageIndex));
+                return parsePayload(base64EncodedImage, "You answered correctly!");
 
             } else if (playerLost) {
                 gameController.setGameOver(true);
@@ -229,16 +233,16 @@ public class TiledRebusGameTCPServer {
             } else {
                 gameController.setWonGame(false);
                 gameController.setGameOver(false);
-                return parsePayload(baos, null,
+                return parsePayload(null,
                         String.format("Terribly sorry but you've answered incorrectly. You have %d incorrect responses remaining.",
                                 RebusPuzzleGameController.NUMBER_OF_POSSIBLE_WRONG_ANSWERS - gameController.getCurrentGame().getNumberOfQuestionsAnsweredIncorrectly()));
             }
         }
 
-        public Payload parsePayload(ByteArrayOutputStream baos, BufferedImage croppedImage, String message) throws IOException {
+        public Payload parsePayload(String croppedImage, String message) throws IOException {
 
             if (croppedImage != null) {
-                return new Payload(extractImageBytes(croppedImage, baos), message, gameController.wonGame(), gameController.gameOver());
+                return new Payload(croppedImage, message, gameController.wonGame(), gameController.gameOver());
             }
             return new Payload(null, message, gameController.wonGame(), gameController.gameOver());
         }

@@ -1,18 +1,24 @@
 package ser321wk3;
 
+import org.apache.commons.io.FileUtils;
 import org.awaitility.Awaitility;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import ser321wk3.client.ClientGui;
+import javax.imageio.ImageIO;
 
+import ser321wk3.client.ClientGui;
 
 public class CustomTCPUtilities {
 
@@ -66,5 +72,19 @@ public class CustomTCPUtilities {
             return true;
         }
         return false;
+    }
+
+    public static BufferedImage convertFileToImage(File fileToConvert) throws IOException {
+        return ImageIO.read(fileToConvert);
+    }
+
+    public static String convertImageFileToBase64encodedString(File imageFile) throws IOException {
+        byte[] fileContent = FileUtils.readFileToByteArray(imageFile);
+        return Base64.getEncoder().encodeToString(fileContent);
+    }
+
+    public static BufferedImage convertBase65encodedStringToBufferedImage(String encodedImage) throws IOException {
+        byte[] decodedImageBytes = Base64.getDecoder().decode(encodedImage);
+        return ImageIO.read(new ByteArrayInputStream(decodedImageBytes));
     }
 }

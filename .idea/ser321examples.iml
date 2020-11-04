@@ -18,14 +18,13 @@
     </orderEntry>
     <orderEntry type="library" name="Gradle: org.codehaus.jackson:jackson-mapper-asl:1.9.0" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.jackson:jackson-jaxrs:1.9.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="library" name="Gradle: org.codehaus.jackson:jackson-core-asl:1.9.0" level="project" />
     <orderEntry type="library" name="Gradle: org.json:json:20171018" level="project" />
     <orderEntry type="library" name="Gradle: org.json:json:20200518" level="project" />
     <orderEntry type="library" name="org.junit.jupiter:junit-jupiter-api:5.7.0" level="application" />
-    <orderEntry type="library" name="commons-cli:commons-cli:1.4" level="application" />
     <orderEntry type="library" name="org.awaitility:awaitility:4.0.3" level="application" />
     <orderEntry type="library" name="com.fasterxml.jackson.core:jackson-databind:2.10.2" level="application" />
+    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.9" level="application" />
   </component>
 </module>

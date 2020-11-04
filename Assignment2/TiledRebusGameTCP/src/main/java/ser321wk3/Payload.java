@@ -1,13 +1,13 @@
 package ser321wk3;
 
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
 
-
 public class Payload implements Serializable {
-    private byte[] croppedImage;
+    private String base64encodedCroppedImage;
     private String message;
     private boolean wonGame;
     private boolean gameOver;
@@ -16,23 +16,23 @@ public class Payload implements Serializable {
         this(null, message, wonGame, gameOver);
     }
 
-    public Payload(byte[] croppedImage,
+    public Payload(String base64encodedCroppedImage,
                    String message,
                    boolean wonGame,
                    boolean gameOver) {
-        this.croppedImage = croppedImage;
+        this.base64encodedCroppedImage = base64encodedCroppedImage;
         this.message = message;
         this.wonGame = wonGame;
         this.gameOver = gameOver;
     }
 
 
-    public byte[] getCroppedImage() {
-        return croppedImage;
+    public String getBase64encodedCroppedImage() {
+        return base64encodedCroppedImage;
     }
 
-    public void setCroppedImage(byte[] croppedImage) {
-        this.croppedImage = croppedImage;
+    public void setBase64encodedCroppedImage(String base64encodedCroppedImage) {
+        this.base64encodedCroppedImage = base64encodedCroppedImage;
     }
 
     public String getMessage() {

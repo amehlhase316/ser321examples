@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
  */
 public class GridMaker {
 
-    private static final List<BufferedImage> croppedImages = new ArrayList<>();
+    private static final List<File> croppedImages = new ArrayList<>();
 
     /**
      * Crops an image to the specified region. Creates a single image cell.
@@ -56,11 +56,11 @@ public class GridMaker {
         return resizedImage;
     }
 
-    public static List<BufferedImage> getCroppedImages() {
+    public static List<File> getCroppedImages() {
         return croppedImages;
     }
 
-    public static List<BufferedImage> main(String[] args) throws IOException {
+    public static List<File> main(String[] args) throws IOException {
         if (args.length == 0) {
             System.out.println("Maker --args\"<path to image to slice> <size : int>\"");
             System.exit(0);
@@ -86,12 +86,17 @@ public class GridMaker {
         int cellHeight = divisibleHeight / dimension;
         int cellWidth = divisibleWidth / dimension;
 
+        String oldFilename = path.getFilename();
         // for each crop section
         for (int r = 0; r < dimension; ++r) {
             for (int c = 0; c < dimension; ++c) {
                 // crop and output
                 BufferedImage output = cropImage(img, c * cellWidth, r * cellHeight, cellWidth, cellHeight);
-                croppedImages.add(output);
+                path.setFilename(oldFilename + "_" + r + "_" + c);
+                path.setExtension("jpg");
+                File pathFile = new File(path.toString());
+                ImageIO.write(output, "jpg", pathFile);
+                croppedImages.add(pathFile);
             }
         }
         return croppedImages;
