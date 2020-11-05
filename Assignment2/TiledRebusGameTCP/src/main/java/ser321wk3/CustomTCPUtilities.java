@@ -48,7 +48,12 @@ public class CustomTCPUtilities {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(gameGui::userInputCompleted);
             gameGui.setUserInputCompleted(false);
             Payload responseToServer = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false);
-            CustomProtocolHeader header = new CustomProtocolHeader(CustomProtocolHeader.Operation.ANSWER, "16", "json");
+            CustomProtocolHeader header;
+            if (gameGui.solve()) {
+                header = new CustomProtocolHeader(CustomProtocolHeader.Operation.SOLVE, "16", "json");
+            } else {
+                header = new CustomProtocolHeader(CustomProtocolHeader.Operation.ANSWER, "16", "json");
+            }
             setReceivedData(protocolAtomicReference, new CustomProtocol(header, responseToServer));
             gameGui.outputPanel.setInputText("");
         } else {
@@ -86,7 +91,6 @@ public class CustomTCPUtilities {
     public static void writeCustomProtocolOut(OutputStream outputStream, CustomProtocol protocol) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         outputStream.write(mapper.writeValueAsBytes(protocol));
-        outputStream.flush();
     }
 
     public static CustomProtocol readCustomProtocol(InputStream inputStream) throws IOException {
