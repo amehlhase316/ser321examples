@@ -1,22 +1,22 @@
-package Server;
+package ser321wk3.server;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class Rebus {
 
-    private final BufferedImage rebusImage;
+    private final File rebusImage;
     private final String rebusAnswer;
 
-    public Rebus(BufferedImage rebusImage, String rebusAnswer) {
+    public Rebus(File rebusImage, String rebusAnswer) {
         this.rebusImage = rebusImage;
         this.rebusAnswer = parseRebusAnswer(rebusAnswer);
     }
 
-    public static String stripSpacesAndPunctuation(String stringWithSpacesAndPuncuation) {
-        return stringWithSpacesAndPuncuation.replaceAll("([.\\w]{4})$", "").replaceAll("[^A-Za-z\\d]", "").toLowerCase();
+    public static String stripSpacesAndPunctuation(String stringWithSpacesAndPunctuation) {
+        return stringWithSpacesAndPunctuation.replaceAll("[^A-Za-z\\d]", "").toLowerCase();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Rebus {
         return this.rebusAnswer.equals(stripSpacesAndPunctuation(rebusAnswerUserGuess));
     }
 
-    public BufferedImage getRebusImage() {
+    public File getRebusImageFile() {
         return rebusImage;
     }
 

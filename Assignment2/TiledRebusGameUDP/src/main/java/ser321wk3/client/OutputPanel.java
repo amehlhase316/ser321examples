@@ -2,8 +2,6 @@ package ser321wk3.client;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -25,8 +23,11 @@ public class OutputPanel extends JPanel {
     private static final long serialVersionUID = 2L;
     private JTextField input;
     private JButton submit;
+    private JButton solveButton;
     private JTextArea area;
     private ArrayList<EventHandlers> handlers = new ArrayList<>();
+    private String currentInput;
+
 
     /**
      * Constructor
@@ -57,17 +58,29 @@ public class OutputPanel extends JPanel {
         c.gridx = 1;
         c.gridy = 0;
         submit = new JButton("Submit");
-        submit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (evt.getSource() == submit) {
-                    for (var handler : handlers) {
-                        handler.submitClicked();
-                    }
+        submit.addActionListener(evt -> {
+            if (evt.getSource() == submit) {
+                for (var handler : handlers) {
+                    currentInput = handler.submitClicked();
                 }
             }
         });
         add(submit, c);
+
+        c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 2;
+        c.gridy = 0;
+        solveButton = new JButton("SOLVE");
+        solveButton.setActionCommand("SOLVE");
+        solveButton.addActionListener(actionEvent -> {
+            if (actionEvent.getSource() == solveButton) {
+                for (var handler : handlers) {
+                    currentInput = handler.solveClicked();
+                }
+            }
+        });
+        add(solveButton, c);
 
         // Setup scrollable output text area
         c = new GridBagConstraints();
@@ -79,6 +92,10 @@ public class OutputPanel extends JPanel {
         area = new JTextArea();
         JScrollPane pane = new JScrollPane(area);
         add(pane, c);
+    }
+
+    public String getCurrentInput() {
+        return currentInput;
     }
 
     /**
@@ -125,6 +142,9 @@ public class OutputPanel extends JPanel {
         void inputUpdated(String input);
 
         // executes when the submit button is clicked
-        void submitClicked();
+        String submitClicked();
+
+        // executes when the solve button is clicked
+        String solveClicked();
     }
 }

@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import ser321wk3.server.PuzzleGame;
+import ser321wk3.server.PuzzleQuestion;
+import ser321wk3.server.Rebus;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,11 +25,6 @@ class PuzzleGameTest {
         assertEquals(0, testPuzzleGame.getNumberOfQuestionsAnsweredIncorrectly());
         assertFalse(testPuzzleGame.getGameQuestions().isEmpty());
         System.out.println(testPuzzleGame.getGameQuestions().subList(0, 4));
-    }
-
-    @Test
-    void getImageFiles() throws IOException {
-        PuzzleGame.getImageFiles().forEach(file -> assertTrue(file.getName().contains(".jpg") || file.getName().contains(".png")));
     }
 
     @Test
