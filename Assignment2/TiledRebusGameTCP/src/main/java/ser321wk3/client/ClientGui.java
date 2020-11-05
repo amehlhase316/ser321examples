@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
@@ -55,34 +53,11 @@ public class ClientGui implements OutputPanel.EventHandlers {
         c.fill = GridBagConstraints.BOTH;
         outputPanel = new OutputPanel();
         outputPanel.addEventHandlers(this);
-        JButton solveButton = new JButton("SOLVE");
-        solveButton.setVerticalTextPosition(AbstractButton.CENTER);
-        solveButton.setHorizontalTextPosition(AbstractButton.LEADING);
-        solveButton.setActionCommand("SOLVE");
-        solveButton.addActionListener(actionEvent -> {
-            this.setSolve(true);
-            this.setUserInputCompleted(true);
-            String input = outputPanel.getInputText();
-            // if has input
-            if (input.length() > 0) {
-                // append input to the output panel
-                outputPanel.appendOutput(input);
-            }
-        });
-        outputPanel.add(solveButton);
         frame.add(outputPanel, c);
     }
 
     public void setUserInputCompleted(boolean userInputCompleted) {
         this.userInputCompleted = userInputCompleted;
-    }
-
-    public boolean solve() {
-        return solve;
-    }
-
-    public void setSolve(boolean solve) {
-        this.solve = solve;
     }
 
     public void close() {
@@ -91,6 +66,14 @@ public class ClientGui implements OutputPanel.EventHandlers {
 
     public boolean userInputCompleted() {
         return userInputCompleted;
+    }
+
+    public boolean isSolve() {
+        return solve;
+    }
+
+    public void setSolve(boolean solve) {
+        this.solve = solve;
     }
 
     /**
@@ -165,6 +148,22 @@ public class ClientGui implements OutputPanel.EventHandlers {
     @Override
     public String submitClicked() {
         setUserInputCompleted(true);
+        // Pulls the input box text
+        String input = outputPanel.getInputText();
+        // if has input
+        if (input.length() > 0) {
+            // append input to the output panel
+            outputPanel.appendOutput(input);
+            // clear input text box
+            outputPanel.setInputText("");
+        }
+        return input;
+    }
+
+    @Override
+    public String solveClicked() {
+        setUserInputCompleted(true);
+        setSolve(true);
         // Pulls the input box text
         String input = outputPanel.getInputText();
         // if has input

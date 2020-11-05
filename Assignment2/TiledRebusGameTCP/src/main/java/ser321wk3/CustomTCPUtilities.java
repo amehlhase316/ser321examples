@@ -48,7 +48,7 @@ public class CustomTCPUtilities {
             gameGui.setUserInputCompleted(false);
             Payload responseToServer = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false);
             CustomProtocolHeader header;
-            if (gameGui.solve()) {
+            if (gameGui.isSolve()) {
                 header = new CustomProtocolHeader(CustomProtocolHeader.Operation.SOLVE, "16", "json");
             } else {
                 header = new CustomProtocolHeader(CustomProtocolHeader.Operation.ANSWER, "16", "json");
