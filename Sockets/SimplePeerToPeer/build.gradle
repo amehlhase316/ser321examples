@@ -1,0 +1,26 @@
+// set as java application
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20200518'
+}
+
+//define main class
+mainClassName = 'SimpleServer'
+
+task runPeer(type: JavaExec) {
+  description 'Runs a peer'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Peer'
+  standardInput = System.in
+
+  args 'name' // username
+  args '7000' // port
+
+}
