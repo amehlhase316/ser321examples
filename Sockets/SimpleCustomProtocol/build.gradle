@@ -1,0 +1,49 @@
+apply plugin: 'java'
+
+description = "Client Server Socket Example"
+
+ def host = 'localhost'
+ def port = 9099
+ def file = 'data.json'
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("host")) {
+      host = project.getProperty("host")
+    }
+    if (project.hasProperty("port")) {
+      port = project.getProperty("port")
+    }
+    if (project.hasProperty("file")) {
+      file = project.getProperty("file")
+    }
+}
+
+//gradle runClient -Pport=9099 -Phost='localhost' -Pfile='data.json'
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'client.SockBaseClient'
+  // default args
+  args host 
+  args port
+  args file
+}
+
+//gradle runServer -Pport=9099
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'server.SockBaseServer'
+  // default args
+  args port
+  args '1000' // sleep delay will always be this
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20200518'
+}
