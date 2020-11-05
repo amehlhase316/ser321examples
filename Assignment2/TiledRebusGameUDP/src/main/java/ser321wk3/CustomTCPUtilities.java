@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.imageio.ImageIO;
 
 import ser321wk3.client.ClientGui;
-import ser321wk3.client.TiledRebusGameTCPClient;
+import ser321wk3.client.TiledRebusGameUDPClient;
 
 public class CustomTCPUtilities {
 
@@ -62,7 +62,7 @@ public class CustomTCPUtilities {
                 return protocolAtomicReference.get() != null;
             });
             if (protocolAtomicReference.get().getHeader().getOperation() == CustomProtocolHeader.Operation.SHUTDOWN) {
-                TiledRebusGameTCPClient.endGame();
+                TiledRebusGameUDPClient.endGame();
             }
         }
     }

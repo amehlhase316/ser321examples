@@ -1,0 +1,85 @@
+// set as java application
+apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'idea'
+
+//define main class
+mainClassName = 'Concentration'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    compile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    compile 'org.awaitility:awaitility:4.0.3'
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.commons:commons-lang3:3.9'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnit()
+}
+
+
+if (project.hasProperty("port")) {
+    ext.port = project.getProperties().get("port")
+} else {
+    ext.port = "9000"
+}
+
+if (project.hasProperty("host")) {
+    ext.host = project.getProperties().get("host")
+} else {
+    ext.host = "localhost"
+}
+
+task runServer(type: JavaExec) {
+    group 'server'
+    description = 'Starts up a Rebus TCP game server with -Pport=<port : int> arg'
+
+    ext.javaMainClass = "ser321wk3.server.TiledRebusGameUDPServer"
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'ser321wk3.server.TiledRebusGameUDPServer'
+    standardInput = System.in
+    args port
+}
+
+task runClient(type: JavaExec) {
+    group 'client'
+    description = 'Requires two arguments -Phost=<some host IP address> -Pport=<int : port>'
+
+    ext.javaMainClass = "ser321wk3.client.TiledRebusGameUDPClient"
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'ser321wk3.client.TiledRebusGameUDPClient'
+    standardInput = System.in
+    args = [host, port]
+}
+
+task Gui(type: JavaExec) {
+    group 'gui'
+    description 'Displays a GUI for a game of concentration'
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'ser321wk3.client.ClientGui'
+    standardInput = System.in
+}
+
+task Maker(type: JavaExec) {
+    group 'maker'
+    description 'Takes an image and makes the rebus library'
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'server.GridMaker'
+    standardInput = System.in
+}

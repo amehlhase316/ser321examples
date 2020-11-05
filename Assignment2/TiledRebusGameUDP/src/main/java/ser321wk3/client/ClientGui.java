@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import javax.swing.JDialog;
 
-import static ser321wk3.client.TiledRebusGameTCPClient.endGame;
+import static ser321wk3.client.TiledRebusGameUDPClient.endGame;
 
 /**
  * The ClientGui class is a GUI frontend that displays an image grid, an input text box, a button, and a text area for status.

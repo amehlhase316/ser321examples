@@ -21,10 +21,10 @@ import static ser321wk3.CustomTCPUtilities.setReceivedData;
 import static ser321wk3.CustomTCPUtilities.waitForData;
 import static ser321wk3.CustomTCPUtilities.writeCustomProtocolOut;
 
-public class TiledRebusGameTCPClient {
+public class TiledRebusGameUDPClient {
 
     public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
-    private static final Logger LOGGER = Logger.getLogger(TiledRebusGameTCPClient.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TiledRebusGameUDPClient.class.getName());
     private static final AtomicReference<CustomProtocol> PROTOCOL_ATOMIC_REFERENCE = new AtomicReference<>(null);
     private static int GRID_DIMENSION;
     private static int numberOfCorrectResponses;
