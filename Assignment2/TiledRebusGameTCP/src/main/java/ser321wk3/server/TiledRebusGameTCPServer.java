@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class TiledRebusGameTCPServer {
 
     private static final List<Connection> connectedClients = new ArrayList<>();
     private static final Logger LOGGER = Logger.getLogger(TiledRebusGameTCPServer.class.getName());
+    private static final AtomicBoolean BUSY = new AtomicBoolean(false);
 
     public static void main(String[] args) throws IOException {
 
@@ -60,12 +62,20 @@ public class TiledRebusGameTCPServer {
                     clientListener = listener.accept();
                     DataInputStream inputStream = new DataInputStream(clientListener.getInputStream());
                     DataOutputStream outputStream = new DataOutputStream(clientListener.getOutputStream());
-                    Connection clientConnection = new Connection(new RebusPuzzleGameController(), clientListener, inputStream, outputStream);
-                    connectedClients.add(clientConnection);
-                    clientConnection.start();
+                    if (!BUSY.get()) {
+                        Connection clientConnection = new Connection(new RebusPuzzleGameController(), clientListener, inputStream, outputStream);
+                        connectedClients.add(clientConnection);
+                        clientConnection.start();
+                        BUSY.set(true);
+                    } else {
+                        Payload rejectConnection = new Payload(null,
+                                "Sorry, but the server is currently busy. Try again later.", false, false);
+                        CustomProtocolHeader header = new CustomProtocolHeader(CustomProtocolHeader.Operation.BUSY, "16", "json");
+                        writeCustomProtocolOut(outputStream, new CustomProtocol(header, rejectConnection));
+                    }
                 } catch (Exception e) {
                     clientListener.close();
-                    LOGGER.log(Level.SEVERE, () -> "Something wen wrong while starting a new client.");
+                    LOGGER.log(Level.SEVERE, () -> "Something went wrong while starting a new client.");
                 }
             }
         } catch (IOException e) {
@@ -91,6 +101,7 @@ public class TiledRebusGameTCPServer {
             this.clientSocket = clientSocket;
             this.inputStream = inputStream;
             this.outputStream = outputStream;
+            Runtime.getRuntime().addShutdownHook(this);
         }
 
         public Socket getClientSocket() {
@@ -133,6 +144,7 @@ public class TiledRebusGameTCPServer {
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong while sending a question from the server.");
                     e.printStackTrace();
+                    closeConnection();
                 }
 
                 setReceivedData(protocolAtomicReference, null);
@@ -145,6 +157,7 @@ public class TiledRebusGameTCPServer {
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong while playing a round.");
                     e.printStackTrace();
+                    closeConnection();
                 }
                 CustomProtocolHeader responseHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.RESPONSE, "16", "json");
                 try {
@@ -152,8 +165,14 @@ public class TiledRebusGameTCPServer {
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong emptying the output stream.");
                     e.printStackTrace();
+                    closeConnection();
                 }
             } while (!gameOver());
+            closeConnection();
+        }
+
+        private void closeConnection() throws IOException {
+            BUSY.set(false);
             LOGGER.info("Game has concluded. Shutting down the client...");
             clientSocket.close();
         }

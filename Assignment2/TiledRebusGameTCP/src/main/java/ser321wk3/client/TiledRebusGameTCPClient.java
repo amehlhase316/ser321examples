@@ -58,7 +58,7 @@ public class TiledRebusGameTCPClient {
         connectToTheServer(parsedPort, parsedIPAddress);
 
         try {
-            playGame(inputStream, outputStream);
+            startGame(inputStream, outputStream);
         } catch (InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Something went wrong during a game sequence. Exiting...");
             e.printStackTrace();
@@ -86,10 +86,14 @@ public class TiledRebusGameTCPClient {
         }
     }
 
-    private static void playGame(DataInputStream inputStream, DataOutputStream outputStream) throws InterruptedException {
+    private static void startGame(DataInputStream inputStream, DataOutputStream outputStream) throws InterruptedException {
         gameGui = new ClientGui();
-
-        GRID_DIMENSION = initializeGame(inputStream, outputStream, gameGui);
+        gameGui.show(false);
+        boolean busy = receiveServerResponse(inputStream, gameGui);
+        if (busy) {
+            endGame();
+        }
+        GRID_DIMENSION = initializeGame(outputStream, gameGui);
 
         do {
             receiveQuestionFromServer(inputStream, gameGui);
@@ -98,26 +102,33 @@ public class TiledRebusGameTCPClient {
             respondToServerQuestion(outputStream, gameGui);
             setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
 
-            gameOver = receiveQuestionResponseFromServer(inputStream, gameGui);
+            gameOver = receiveServerResponse(inputStream, gameGui);
             setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         } while (!gameOver);
+        endGame();
+    }
+
+    private static void endGame() throws InterruptedException {
         gameGui.outputPanel.appendOutput("Shutting down...");
         Thread.sleep(3_000);
         gameGui.close();
         Runtime.getRuntime().exit(0);
     }
 
-    private static boolean receiveQuestionResponseFromServer(DataInputStream inputStream, ClientGui gameGui) {
+    private static boolean receiveServerResponse(DataInputStream inputStream, ClientGui gameGui) {
         boolean gameOver;
         waitForDataFromServer(inputStream);
-        if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage().contains("correctly") || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
+        if (PROTOCOL_ATOMIC_REFERENCE.get().getHeader().getOperation() == CustomProtocolHeader.Operation.BUSY) {
+            gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
+            return true;
+        } else if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage().contains("correctly") || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
             numberOfCorrectResponses++;
         }
         LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
         try {
             insertPayloadImage(PROTOCOL_ATOMIC_REFERENCE.get().getPayload(), gameGui);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something happened while attempting to display images before restarting the loop");
+            LOGGER.log(Level.SEVERE, "Something happened while attempting to display images before restarting the Q&A cycle.");
             e.printStackTrace();
         }
         gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
@@ -142,8 +153,7 @@ public class TiledRebusGameTCPClient {
         gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
     }
 
-    private static int initializeGame(DataInputStream inputStream, DataOutputStream outputStream, ClientGui gameGui) {
-        waitForDataFromServer(inputStream);
+    private static int initializeGame(DataOutputStream outputStream, ClientGui gameGui) {
         LOGGER.log(Level.INFO, () -> String.format("%nInitialization message received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
         int gridDimension = initializeGame(gameGui, PROTOCOL_ATOMIC_REFERENCE.get().getPayload());
         try {
@@ -179,7 +189,6 @@ public class TiledRebusGameTCPClient {
     }
 
     private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
-        gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
         gameGui.show(false);
         setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         int returnValue;
