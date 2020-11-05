@@ -3,11 +3,14 @@ package ser321wk3.client;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JDialog;
-import javax.swing.WindowConstants;
+
+import static ser321wk3.client.TiledRebusGameTCPClient.endGame;
 
 /**
  * The ClientGui class is a GUI frontend that displays an image grid, an input text box, a button, and a text area for status.
@@ -34,7 +37,19 @@ public class ClientGui implements OutputPanel.EventHandlers {
         frame = new JDialog();
         frame.setLayout(new GridBagLayout());
         frame.setMinimumSize(new Dimension(500, 500));
-        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                try {
+                    endGame();
+                } catch (InterruptedException interruptedException) {
+                    /*IGNORE*/
+                }
+                System.exit(0);
+            }
+        });
 
         // setup the top picture frame
         picturePanel = new PicturePanel();

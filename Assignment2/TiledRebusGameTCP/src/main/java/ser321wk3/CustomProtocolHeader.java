@@ -67,5 +67,5 @@ public class CustomProtocolHeader {
                 .toHashCode();
     }
 
-    public enum Operation {ANSWER, BUSY, QUESTION, INITIALIZE, RESPONSE, SOLVE}
+    public enum Operation {ANSWER, BUSY, INITIALIZE, QUESTION, RESPONSE, SHUTDOWN, SOLVE}
 }

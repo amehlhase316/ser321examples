@@ -108,8 +108,15 @@ public class TiledRebusGameTCPClient {
         endGame();
     }
 
-    private static void endGame() throws InterruptedException {
+    public static void endGame() throws InterruptedException {
         gameGui.outputPanel.appendOutput("Shutting down...");
+        CustomProtocolHeader shutdownHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.SHUTDOWN, "16", "json");
+        try {
+            writeCustomProtocolOut(outputStream, new CustomProtocol(shutdownHeader, null));
+        } catch (IOException e) {
+            LOGGER.severe("Something went wrong while signaling shutdown to the server.");
+            e.printStackTrace();
+        }
         Thread.sleep(3_000);
         gameGui.close();
         Runtime.getRuntime().exit(0);

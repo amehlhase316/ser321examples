@@ -201,14 +201,17 @@ public class TiledRebusGameTCPServer {
             isPrimaryConnection = primaryConnection;
         }
 
-        private void waitForInputFromClient(AtomicReference<CustomProtocol> payloadAtomicReference) {
+        private void waitForInputFromClient(AtomicReference<CustomProtocol> protocolAtomicReference) throws IOException {
             do {
                 try {
-                    waitForData(inputStream, null, payloadAtomicReference, 120);
+                    waitForData(inputStream, null, protocolAtomicReference, 120);
                 } catch (Exception e) {
                     /*IGNORE*/
                 }
-            } while (payloadAtomicReference.get() == null);
+            } while (protocolAtomicReference.get() == null);
+            if (protocolAtomicReference.get().getHeader().getOperation() == CustomProtocolHeader.Operation.SHUTDOWN) {
+                closeConnection();
+            }
         }
 
         public Payload initializeRebusPuzzleGameRequest() {
