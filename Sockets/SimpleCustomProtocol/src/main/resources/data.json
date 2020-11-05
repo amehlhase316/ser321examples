@@ -2,7 +2,7 @@
   {
     "operation": "add",
     "base": "2",
-    "response": "json"
+    "response": "string"
   },
   "payload": {
     "num1": "10",
