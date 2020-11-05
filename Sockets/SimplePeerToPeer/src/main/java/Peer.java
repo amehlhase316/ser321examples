@@ -86,7 +86,7 @@ public class Peer {
 					break;
 				} else {
 					// we are sending the message to our server thread. this one is then responsible for sending it to listening peers
-					serverThread.sendMessage("{'username': '"+ username +"','message':'" + message + "''}");
+					serverThread.sendMessage("{'username': '"+ username +"','message':'" + message + "'}");
 				}	
 			}
 			System.exit(0);

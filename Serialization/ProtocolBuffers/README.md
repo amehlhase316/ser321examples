@@ -14,7 +14,7 @@ The proto file can be compiled using
 
 gradle generateProto
 
-This will also be done when running or building though. 
+This will also be done when building the project. 
 
 You should see the compiled proto file in Java under build/generated/source/proto/main/java/buffers
 

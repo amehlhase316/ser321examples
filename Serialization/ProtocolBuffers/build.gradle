@@ -1,7 +1,8 @@
 plugins {
-  id "com.google.protobuf" version "0.8.13" apply false
+  id 'java'
+  id "com.google.protobuf" version "0.8.13" apply true
+
 }
-apply plugin: 'java'
 
 description = "Protocol Buffers Socket Example"
 
@@ -19,7 +20,6 @@ protobuf {
     protoc {
         artifact = 'com.google.protobuf:protoc:3.13.0'
     }
-
     generateProtoTasks {
     all().each { task ->
       task.builtins {
@@ -72,6 +72,7 @@ task runServer(type: JavaExec) {
 //gradle runClientPython -Pport=9099 -Phost='localhost' -Pfile='data10.json'
 task runClientPython(type:Exec) {
    dependsOn arguments
+
    workingDir 'src/main/python'
    
    commandLine 'python3', 'SocketClient.py', host, port, file

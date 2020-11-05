@@ -1,9 +1,11 @@
 import socket
 import sys
 import json
+# specify where the generated protofiles are
+sys.path.append('../../../build/generated/source/proto/main/python')
 
-from buffers.operation_pb2 import Operation
-from buffers.response_pb2 import Response
+from operation_pb2 import Operation
+from response_pb2 import Response
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
 
