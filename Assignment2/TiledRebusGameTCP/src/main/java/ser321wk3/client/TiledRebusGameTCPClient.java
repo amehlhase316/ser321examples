@@ -25,7 +25,7 @@ public class TiledRebusGameTCPClient {
 
     public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
     private static final Logger LOGGER = Logger.getLogger(TiledRebusGameTCPClient.class.getName());
-    private static final AtomicReference<CustomProtocol> PAYLOAD_ATOMIC_REFERENCE = new AtomicReference<>(null);
+    private static final AtomicReference<CustomProtocol> PROTOCOL_ATOMIC_REFERENCE = new AtomicReference<>(null);
     private static int GRID_DIMENSION;
     private static int numberOfCorrectResponses;
     private static boolean gameOver;
@@ -63,6 +63,7 @@ public class TiledRebusGameTCPClient {
             LOGGER.log(Level.SEVERE, "Something went wrong during a game sequence. Exiting...");
             e.printStackTrace();
             Thread.currentThread().interrupt();
+            Runtime.getRuntime().exit(-1);
         }
     }
 
@@ -79,7 +80,7 @@ public class TiledRebusGameTCPClient {
             inputStream = new DataInputStream(clientSocket.getInputStream());
             outputStream = new DataOutputStream(clientSocket.getOutputStream());
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something happened when opening data streams.");
+            LOGGER.log(Level.SEVERE, String.format("Something happened when opening data streams.%n%s", clientSocket.toString()));
             e.printStackTrace();
             System.exit(-1);
         }
@@ -92,13 +93,13 @@ public class TiledRebusGameTCPClient {
 
         do {
             receiveQuestionFromServer(inputStream, gameGui);
-            setReceivedData(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, null);
+            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
 
             respondToServerQuestion(outputStream, gameGui);
-            setReceivedData(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, null);
+            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
 
             gameOver = receiveQuestionResponseFromServer(inputStream, gameGui);
-            setReceivedData(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, null);
+            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         } while (!gameOver);
         gameGui.outputPanel.appendOutput("Shutting down...");
         Thread.sleep(3_000);
@@ -109,26 +110,26 @@ public class TiledRebusGameTCPClient {
     private static boolean receiveQuestionResponseFromServer(DataInputStream inputStream, ClientGui gameGui) {
         boolean gameOver;
         waitForDataFromServer(inputStream);
-        if (TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload().getMessage().contains("correctly") || TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
+        if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage().contains("correctly") || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
             numberOfCorrectResponses++;
         }
-        LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get()));
+        LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
         try {
-            insertPayloadImage(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload(), gameGui);
+            insertPayloadImage(PROTOCOL_ATOMIC_REFERENCE.get().getPayload(), gameGui);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Something happened while attempting to display images before restarting the loop");
             e.printStackTrace();
         }
-        gameGui.outputPanel.appendOutput(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload().getMessage());
-        gameOver = TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload().gameOver();
+        gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
+        gameOver = PROTOCOL_ATOMIC_REFERENCE.get().getPayload().gameOver();
         return gameOver;
     }
 
     private static void respondToServerQuestion(DataOutputStream outputStream, ClientGui gameGui) {
         waitForUserInput(gameGui);
-        LOGGER.log(Level.INFO, () -> String.format("%nUser input being sent to the server: %s%n", TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get()));
+        LOGGER.log(Level.INFO, () -> String.format("%nUser input being sent to the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
         try {
-            writeCustomProtocolOut(outputStream, TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get());
+            writeCustomProtocolOut(outputStream, PROTOCOL_ATOMIC_REFERENCE.get());
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Something happened while sending User Input back to the server.");
             e.printStackTrace();
@@ -137,14 +138,14 @@ public class TiledRebusGameTCPClient {
 
     private static void receiveQuestionFromServer(DataInputStream inputStream, ClientGui gameGui) {
         waitForDataFromServer(inputStream);
-        LOGGER.log(Level.INFO, () -> String.format("%nQuestion received from the server: %s%n", TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get()));
-        gameGui.outputPanel.appendOutput(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload().getMessage());
+        LOGGER.log(Level.INFO, () -> String.format("%nQuestion received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
+        gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
     }
 
     private static int initializeGame(DataInputStream inputStream, DataOutputStream outputStream, ClientGui gameGui) {
         waitForDataFromServer(inputStream);
-        LOGGER.log(Level.INFO, () -> String.format("%nInitialization message received from the server: %s%n", TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get()));
-        int gridDimension = initializeGame(gameGui, TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get().getPayload());
+        LOGGER.log(Level.INFO, () -> String.format("%nInitialization message received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
+        int gridDimension = initializeGame(gameGui, PROTOCOL_ATOMIC_REFERENCE.get().getPayload());
         try {
             CustomProtocolHeader initializeGameHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16", "json");
             Payload initializeGamePayload = new Payload(null, Integer.toString(gridDimension), false, false);
@@ -153,42 +154,42 @@ public class TiledRebusGameTCPClient {
             LOGGER.log(Level.SEVERE, "Something happened during a write operation.");
             e.printStackTrace();
         }
-        setReceivedData(TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, null);
+        setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         return gridDimension;
     }
 
     private static void waitForUserInput(ClientGui gameGui) {
         do {
             try {
-                waitForData(null, gameGui, TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, 60);
+                waitForData(null, gameGui, PROTOCOL_ATOMIC_REFERENCE, 60);
             } catch (Exception e) {
                 /*IGNORED*/
             }
-        } while (TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get() == null);
+        } while (PROTOCOL_ATOMIC_REFERENCE.get() == null);
     }
 
     private static void waitForDataFromServer(DataInputStream inputStream) {
         do {
             try {
-                waitForData(inputStream, null, TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE, 10);
+                waitForData(inputStream, null, PROTOCOL_ATOMIC_REFERENCE, 10);
             } catch (Exception e) {
                 /*IGNORE*/
             }
-        } while (TiledRebusGameTCPClient.PAYLOAD_ATOMIC_REFERENCE.get() == null);
+        } while (PROTOCOL_ATOMIC_REFERENCE.get() == null);
     }
 
     private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
         gameGui.outputPanel.appendOutput(gameSetupPayload.getMessage());
         gameGui.show(false);
-        AtomicReference<CustomProtocol> gridDimension = new AtomicReference<>(null);
+        setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         int returnValue;
         do {
             try {
-                waitForData(null, gameGui, gridDimension, 20);
+                waitForData(null, gameGui, PROTOCOL_ATOMIC_REFERENCE, 20);
             } catch (Exception e) {
                 gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
             }
-            returnValue = parseInt(gridDimension.get().getPayload().getMessage());
+            returnValue = parseInt(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
             if (returnValue < 2) {
                 gameGui.outputPanel.setInputText("");
                 gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);

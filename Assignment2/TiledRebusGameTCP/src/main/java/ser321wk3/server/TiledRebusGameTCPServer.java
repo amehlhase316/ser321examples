@@ -212,8 +212,12 @@ public class TiledRebusGameTCPServer {
                 gameController.setGameOver(solved);
                 gameController.getCurrentGame().answerPuzzleQuestion(currentQuestion, currentQuestion.getAnswer());
 
-                base64EncodedImage = convertImageFileToBase64encodedString(gameController.getCroppedImages().get(gameController.getCroppedImages().size() - 1));
-                return parsePayload(base64EncodedImage, "Congratulations! You've Won!");
+                if (solved) {
+                    base64EncodedImage = convertImageFileToBase64encodedString(gameController.getCroppedImages().get(gameController.getCroppedImages().size() - 1));
+                    return parsePayload(base64EncodedImage, "Congratulations! You've Won!");
+                } else {
+                    return parsePayload(null, "Unfortunately you guessed incorrectly. The game is over.");
+                }
             } else if (playerResponse.get().getHeader().getOperation() == CustomProtocolHeader.Operation.ANSWER) {
                 int bufferedImageIndex = gameController.getCurrentGame().getNumberOfQuestionsAnsweredCorrectly() - 1;
                 gameController.setWonGame(false);
