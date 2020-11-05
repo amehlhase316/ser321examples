@@ -14,18 +14,32 @@ public class Payload {
     private String message;
     private boolean wonGame;
     private boolean gameOver;
+    private boolean answerIsCorrect;
 
     @JsonCreator
     public Payload(@JsonProperty("base64encodedCroppedImage") String base64encodedCroppedImage,
                    @JsonProperty("message") String message,
                    @JsonProperty("wonGame") boolean wonGame,
-                   @JsonProperty("gameOver") boolean gameOver) {
+                   @JsonProperty("gameOver") boolean gameOver,
+                   @JsonProperty("answerIsCorrect") boolean answerIsCorrect) {
         this.base64encodedCroppedImage = base64encodedCroppedImage;
         this.message = message;
         this.wonGame = wonGame;
         this.gameOver = gameOver;
+        this.answerIsCorrect = answerIsCorrect;
     }
 
+    public boolean isAnswerIsCorrect() {
+        return answerIsCorrect;
+    }
+
+    public void setAnswerIsCorrect(boolean answerIsCorrect) {
+        this.answerIsCorrect = answerIsCorrect;
+    }
+
+    public boolean answeredCorrectly() {
+        return isAnswerIsCorrect();
+    }
 
     public String getBase64encodedCroppedImage() {
         return base64encodedCroppedImage;

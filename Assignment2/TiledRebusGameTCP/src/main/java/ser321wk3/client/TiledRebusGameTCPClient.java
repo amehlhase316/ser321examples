@@ -113,6 +113,8 @@ public class TiledRebusGameTCPClient {
         CustomProtocolHeader shutdownHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.SHUTDOWN, "16", "json");
         try {
             writeCustomProtocolOut(outputStream, new CustomProtocol(shutdownHeader, null));
+            inputStream.close();
+            outputStream.close();
         } catch (IOException e) {
             LOGGER.severe("Something went wrong while signaling shutdown to the server.");
             e.printStackTrace();
@@ -128,7 +130,7 @@ public class TiledRebusGameTCPClient {
         if (PROTOCOL_ATOMIC_REFERENCE.get().getHeader().getOperation() == CustomProtocolHeader.Operation.BUSY) {
             gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
             return true;
-        } else if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage().contains("correctly") || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
+        } else if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().isAnswerIsCorrect() || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
             numberOfCorrectResponses++;
         }
         LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
@@ -160,12 +162,12 @@ public class TiledRebusGameTCPClient {
         gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
     }
 
-    private static int initializeGame(DataOutputStream outputStream, ClientGui gameGui) {
+    private static int initializeGame(DataOutputStream outputStream, ClientGui gameGui) throws InterruptedException {
         LOGGER.log(Level.INFO, () -> String.format("%nInitialization message received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
         int gridDimension = initializeGame(gameGui, PROTOCOL_ATOMIC_REFERENCE.get().getPayload());
         try {
             CustomProtocolHeader initializeGameHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16", "json");
-            Payload initializeGamePayload = new Payload(null, Integer.toString(gridDimension), false, false);
+            Payload initializeGamePayload = new Payload(null, Integer.toString(gridDimension), false, false, false);
             writeCustomProtocolOut(outputStream, new CustomProtocol(initializeGameHeader, initializeGamePayload));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Something happened during a write operation.");
@@ -195,7 +197,7 @@ public class TiledRebusGameTCPClient {
         } while (PROTOCOL_ATOMIC_REFERENCE.get() == null);
     }
 
-    private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) {
+    private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) throws InterruptedException {
         gameGui.show(false);
         setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
         int returnValue;
@@ -204,6 +206,9 @@ public class TiledRebusGameTCPClient {
                 waitForData(null, gameGui, PROTOCOL_ATOMIC_REFERENCE, 20);
             } catch (Exception e) {
                 gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
+            }
+            if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload() == null) {
+                endGame();
             }
             returnValue = parseInt(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
             if (returnValue < 2) {
@@ -219,7 +224,7 @@ public class TiledRebusGameTCPClient {
         if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION) && serverPayload.getBase64encodedCroppedImage() != null) {
             BufferedImage image = convertBase64encodedStringToBufferedImage(serverPayload.getBase64encodedCroppedImage());
             int row = (numberOfCorrectResponses - 1) / GRID_DIMENSION;
-            int col = (numberOfCorrectResponses % GRID_DIMENSION) - 1;
+            int col = (numberOfCorrectResponses - 1) % GRID_DIMENSION;
             col = (col >= 0 && col <= GRID_DIMENSION ? col : GRID_DIMENSION - 1);
             int finalCol = col;
             LOGGER.log(Level.INFO, () -> String.format("%nInserting a new image in row: %d\tcol: %d%n", row, finalCol));

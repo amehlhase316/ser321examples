@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.imageio.ImageIO;
 
 import ser321wk3.client.ClientGui;
+import ser321wk3.client.TiledRebusGameTCPClient;
 
 public class CustomTCPUtilities {
 
@@ -42,11 +43,11 @@ public class CustomTCPUtilities {
         receivedDataString.set(protocol);
     }
 
-    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<CustomProtocol> protocolAtomicReference, int timeToWait) {
+    public static void waitForData(DataInputStream inputStream, ClientGui gameGui, AtomicReference<CustomProtocol> protocolAtomicReference, int timeToWait) throws InterruptedException {
         if (inputStream == null) {
             Awaitility.await().atMost(timeToWait, TimeUnit.SECONDS).until(gameGui::userInputCompleted);
             gameGui.setUserInputCompleted(false);
-            Payload responseToServer = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false);
+            Payload responseToServer = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false, false);
             CustomProtocolHeader header;
             if (gameGui.isSolve()) {
                 header = new CustomProtocolHeader(CustomProtocolHeader.Operation.SOLVE, "16", "json");
@@ -60,6 +61,9 @@ public class CustomTCPUtilities {
                 setReceivedData(protocolAtomicReference, readCustomProtocol(inputStream));
                 return protocolAtomicReference.get() != null;
             });
+            if (protocolAtomicReference.get().getHeader().getOperation() == CustomProtocolHeader.Operation.SHUTDOWN) {
+                TiledRebusGameTCPClient.endGame();
+            }
         }
     }
 
