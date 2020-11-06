@@ -44,9 +44,6 @@
       <module name="Threads.ThreadsShareData" target="11" />
       <module name="Threads.ThreadsShareData.main" target="11" />
       <module name="Threads.ThreadsShareData.test" target="11" />
-      <module name="TiledRebusGameUDP" target="11" />
-      <module name="TiledRebusGameUDP.main" target="11" />
-      <module name="TiledRebusGameUDP.test" target="11" />
       <module name="TiledRebusGameUDP.TiledRebusGameTCP" target="11" />
       <module name="TiledRebusGameUDP.TiledRebusGameTCP.main" target="11" />
       <module name="TiledRebusGameUDP.TiledRebusGameTCP.test" target="11" />
