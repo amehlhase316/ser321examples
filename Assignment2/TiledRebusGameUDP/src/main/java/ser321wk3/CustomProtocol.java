@@ -8,15 +8,20 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class CustomProtocol {
+import java.io.Serializable;
+
+public class CustomProtocol implements Serializable {
     private final CustomProtocolHeader header;
     private final Payload payload;
+    private final String serialId;
 
     @JsonCreator
     public CustomProtocol(@JsonProperty("header") CustomProtocolHeader header,
-                          @JsonProperty("payload") Payload payload) {
+                          @JsonProperty("payload") Payload payload,
+                          @JsonProperty("serialId") String serialId) {
         this.header = header;
         this.payload = payload;
+        this.serialId = serialId;
     }
 
     public CustomProtocolHeader getHeader() {

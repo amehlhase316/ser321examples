@@ -9,7 +9,6 @@ mainClassName = 'Concentration'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
-    compile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     compile 'org.awaitility:awaitility:4.0.3'
     compile 'commons-io:commons-io:2.6'
     compile 'org.apache.commons:commons-lang3:3.9'
@@ -22,7 +21,7 @@ repositories {
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 

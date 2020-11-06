@@ -1,12 +1,20 @@
 package ser321wk3.client;
 
+import org.awaitility.Awaitility;
+
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,37 +23,37 @@ import ser321wk3.CustomProtocol;
 import ser321wk3.CustomProtocolHeader;
 import ser321wk3.Payload;
 
-import static ser321wk3.CustomTCPUtilities.convertBase64encodedStringToBufferedImage;
-import static ser321wk3.CustomTCPUtilities.parseInt;
-import static ser321wk3.CustomTCPUtilities.setReceivedData;
-import static ser321wk3.CustomTCPUtilities.waitForData;
-import static ser321wk3.CustomTCPUtilities.writeCustomProtocolOut;
+import static ser321wk3.CustomUDPUtilities.BYTE_ARRAY_SIZE;
+import static ser321wk3.CustomUDPUtilities.convertBase64encodedStringToBufferedImage;
+import static ser321wk3.CustomUDPUtilities.parseInt;
+import static ser321wk3.CustomUDPUtilities.readCustomProtocol;
+import static ser321wk3.CustomUDPUtilities.writeCustomProtocolOut;
 
 public class TiledRebusGameUDPClient {
 
     public static final String GAME_INITIALIZATION_ERROR_MESSAGE = "Something went wrong. Please only enter an int >= 2.";
     private static final Logger LOGGER = Logger.getLogger(TiledRebusGameUDPClient.class.getName());
-    private static final AtomicReference<CustomProtocol> PROTOCOL_ATOMIC_REFERENCE = new AtomicReference<>(null);
-    private static int GRID_DIMENSION;
+    private static final ByteBuffer byteBuffer = ByteBuffer.allocate(BYTE_ARRAY_SIZE);
+    private static final AtomicReference<InetAddress> address = new AtomicReference<>(null);
+    private static final AtomicInteger port = new AtomicInteger(0);
+    private static int gridDimension;
     private static int numberOfCorrectResponses;
     private static boolean gameOver;
     private static ClientGui gameGui;
-    private static Socket clientSocket;
-    private static DataInputStream inputStream;
-    private static DataOutputStream outputStream;
+    private static DatagramSocket udpSocket;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         // Parse command line args into host:port.
         int parsedPort = 0;
-        String parsedIPAddress = "localhost";
+        InetAddress parsedAddress = null;
         try {
             parsedPort = Integer.parseInt(args[0]);
-            parsedIPAddress = args[1];
+            parsedAddress = InetAddress.getByName(args[1]);
         } catch (Exception e) {
             try {
-                parsedPort = Integer.parseInt(args[1]);
-                parsedIPAddress = args[0];
+                parsedPort = parseInt(args[1]);
+                parsedAddress = InetAddress.getByName(args[0]);
             } catch (Exception exc) {
                 exc.printStackTrace();
                 LOGGER.log(Level.SEVERE, String.format("\nImproper command-line argument structure: %s\n" +
@@ -54,178 +62,146 @@ public class TiledRebusGameUDPClient {
             }
         }
 
-        // Connect to the server.
-        connectToTheServer(parsedPort, parsedIPAddress);
+        address.set(parsedAddress);
+        port.set(parsedPort);
 
         try {
-            startGame(inputStream, outputStream);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Something went wrong during a game sequence. Exiting...");
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-            Runtime.getRuntime().exit(-1);
-        }
-    }
-
-    private static void connectToTheServer(int parsedPort, String hostIpAddress) {
-        try {
-            clientSocket = new Socket(hostIpAddress, parsedPort);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something failed during Socket connection with the server.");
-            e.printStackTrace();
-        }
-
-        try {
-            Objects.requireNonNull(clientSocket);
-            inputStream = new DataInputStream(clientSocket.getInputStream());
-            outputStream = new DataOutputStream(clientSocket.getOutputStream());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, String.format("Something happened when opening data streams.%n%s", clientSocket.toString()));
+            udpSocket = new DatagramSocket();
+        } catch (SocketException e) {
+            LOGGER.log(Level.SEVERE, String.format("%nSomething went wrong while connecting to the UDP socket. Address: %s\tPort: %d%n", parsedAddress, parsedPort));
             e.printStackTrace();
             System.exit(-1);
         }
-    }
-
-    private static void startGame(DataInputStream inputStream, DataOutputStream outputStream) throws InterruptedException {
         gameGui = new ClientGui();
         gameGui.show(false);
-        boolean busy = receiveServerResponse(inputStream, gameGui);
-        if (busy) {
-            endGame();
+
+        initializeGame();
+        playGame();
+    }
+
+    private static void playGame() throws IOException, InterruptedException {
+        while (!gameOver) {
+            sendProtocolOut(new CustomProtocol(new CustomProtocolHeader(CustomProtocolHeader.Operation.QUESTION, "16", "json"),
+                    null, UUID.randomUUID().toString()), address.get(), port.get());
+            DatagramPacket question = receiveCustomProtocol();
+            address.set(question.getAddress());
+            port.set(question.getPort());
+            CustomProtocol userResponse;
+
+            do {
+                userResponse = getUserResponse(readCustomProtocol(new DataInputStream(new ByteArrayInputStream(question.getData()))));
+            } while (userResponse == null || userResponse.equals(question));
+
+            sendProtocolOut(userResponse, address.get(), port.get());
+
+            DatagramPacket serverResponse = receiveCustomProtocol();
+            address.set(serverResponse.getAddress());
+            port.set(serverResponse.getPort());
+
+            CustomProtocol serverResponseProtocol = readCustomProtocol(new DataInputStream(new ByteArrayInputStream(serverResponse.getData())));
+            gameOver = serverResponseProtocol.getPayload().isGameOver();
+            if (serverResponseProtocol.getPayload().answeredCorrectly()) {
+                numberOfCorrectResponses++;
+            }
+            insertPayloadImage(serverResponseProtocol.getPayload(), gameGui);
+            gameGui.outputPanel.appendOutput(serverResponseProtocol.getPayload().getMessage());
         }
-        GRID_DIMENSION = initializeGame(outputStream, gameGui);
-
-        do {
-            receiveQuestionFromServer(inputStream, gameGui);
-            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
-
-            respondToServerQuestion(outputStream, gameGui);
-            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
-
-            gameOver = receiveServerResponse(inputStream, gameGui);
-            setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
-        } while (!gameOver);
         endGame();
+    }
+
+    private static CustomProtocol getUserResponse(CustomProtocol question) {
+        gameGui.outputPanel.appendOutput(question.getPayload().getMessage());
+        try {
+            Awaitility.await().atMost(60, TimeUnit.SECONDS).until(() -> gameGui.userInputCompleted());
+            gameGui.setUserInputCompleted(false);
+        } catch (Exception e) {
+            return null;
+        }
+        CustomProtocolHeader.Operation responseOperation = (gameGui.isSolve() ? CustomProtocolHeader.Operation.SOLVE : CustomProtocolHeader.Operation.ANSWER);
+
+        Payload userResponse = new Payload(null, gameGui.outputPanel.getCurrentInput(), false, false, false);
+        CustomProtocolHeader userResponseHeader = new CustomProtocolHeader(responseOperation, "16", "json");
+        return new CustomProtocol(userResponseHeader, userResponse, UUID.randomUUID().toString());
+    }
+
+    private static void initializeGame() throws IOException, InterruptedException {
+        CustomProtocol initializeProtocol = new CustomProtocol(new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16",
+                "json"), null, UUID.randomUUID().toString());
+        sendProtocolOut(initializeProtocol, address.get(), port.get());
+
+        DatagramPacket initializePacket = receiveCustomProtocol();
+
+        initializeProtocol = readCustomProtocol(new DataInputStream(new ByteArrayInputStream(initializePacket.getData())));
+        if (serverIsBusy(initializeProtocol)) {
+            endGame();
+            return;
+        }
+        gameGui.outputPanel.appendOutput(initializeProtocol.getPayload().getMessage());
+
+        initializePacket = receiveCustomProtocol();
+        address.set(initializePacket.getAddress());
+        port.set(initializePacket.getPort());
+        initializeProtocol = readCustomProtocol(new DataInputStream(new ByteArrayInputStream(initializePacket.getData())));
+        if (serverIsBusy(initializeProtocol)) {
+            endGame();
+            return;
+        }
+        gameGui.outputPanel.appendOutput(initializeProtocol.getPayload().getMessage());
+
+        while (gridDimension < 2) {
+            Awaitility.await().atMost(30, TimeUnit.SECONDS).until(() -> gameGui.userInputCompleted());
+            gameGui.setUserInputCompleted(false);
+            gridDimension = parseInt(gameGui.outputPanel.getCurrentInput());
+            if (gridDimension < 2) {
+                gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
+            }
+        }
+        gameGui.newGame(gridDimension);
+
+        Payload initializePayload = new Payload(null, String.valueOf(gridDimension), false, false, false);
+        sendProtocolOut(new CustomProtocol(new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16", "json"),
+                initializePayload, UUID.randomUUID().toString()), address.get(), port.get());
+    }
+
+    private static boolean serverIsBusy(CustomProtocol initializeProtocol) {
+        return initializeProtocol.getHeader().getOperation() == CustomProtocolHeader.Operation.BUSY;
+    }
+
+
+    private static void sendProtocolOut(CustomProtocol protocol, InetAddress address, int port) throws IOException {
+        byteBuffer.clear();
+        writeCustomProtocolOut(byteBuffer, protocol);
+        DatagramPacket initializePacket = new DatagramPacket(byteBuffer.array(), byteBuffer.array().length, address, port);
+        udpSocket.send(initializePacket);
+        byteBuffer.clear();
+    }
+
+    private static DatagramPacket receiveCustomProtocol() throws IOException {
+        DatagramPacket initializePacket = new DatagramPacket(byteBuffer.array(), byteBuffer.limit());
+        udpSocket.receive(initializePacket);
+        return initializePacket;
     }
 
     public static void endGame() throws InterruptedException {
         gameGui.outputPanel.appendOutput("Shutting down...");
         CustomProtocolHeader shutdownHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.SHUTDOWN, "16", "json");
         try {
-            writeCustomProtocolOut(outputStream, new CustomProtocol(shutdownHeader, null));
-            inputStream.close();
-            outputStream.close();
+            sendProtocolOut(new CustomProtocol(shutdownHeader, null, UUID.randomUUID().toString()), address.get(), port.get());
         } catch (IOException e) {
-            LOGGER.severe("Something went wrong while signaling shutdown to the server.");
-            e.printStackTrace();
+            /*IGNORE*/
         }
         Thread.sleep(3_000);
         gameGui.close();
+        udpSocket.close();
         Runtime.getRuntime().exit(0);
     }
 
-    private static boolean receiveServerResponse(DataInputStream inputStream, ClientGui gameGui) {
-        boolean gameOver;
-        waitForDataFromServer(inputStream);
-        if (PROTOCOL_ATOMIC_REFERENCE.get().getHeader().getOperation() == CustomProtocolHeader.Operation.BUSY) {
-            gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
-            return true;
-        } else if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload().isAnswerIsCorrect() || PROTOCOL_ATOMIC_REFERENCE.get().getPayload().wonGame()) {
-            numberOfCorrectResponses++;
-        }
-        LOGGER.log(Level.SEVERE, () -> String.format("%nData received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
-        try {
-            insertPayloadImage(PROTOCOL_ATOMIC_REFERENCE.get().getPayload(), gameGui);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something happened while attempting to display images before restarting the Q&A cycle.");
-            e.printStackTrace();
-        }
-        gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
-        gameOver = PROTOCOL_ATOMIC_REFERENCE.get().getPayload().gameOver();
-        return gameOver;
-    }
-
-    private static void respondToServerQuestion(DataOutputStream outputStream, ClientGui gameGui) {
-        waitForUserInput(gameGui);
-        LOGGER.log(Level.INFO, () -> String.format("%nUser input being sent to the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
-        try {
-            writeCustomProtocolOut(outputStream, PROTOCOL_ATOMIC_REFERENCE.get());
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something happened while sending User Input back to the server.");
-            e.printStackTrace();
-        }
-    }
-
-    private static void receiveQuestionFromServer(DataInputStream inputStream, ClientGui gameGui) {
-        waitForDataFromServer(inputStream);
-        LOGGER.log(Level.INFO, () -> String.format("%nQuestion received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
-        gameGui.outputPanel.appendOutput(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
-    }
-
-    private static int initializeGame(DataOutputStream outputStream, ClientGui gameGui) throws InterruptedException {
-        LOGGER.log(Level.INFO, () -> String.format("%nInitialization message received from the server: %s%n", PROTOCOL_ATOMIC_REFERENCE.get()));
-        int gridDimension = initializeGame(gameGui, PROTOCOL_ATOMIC_REFERENCE.get().getPayload());
-        try {
-            CustomProtocolHeader initializeGameHeader = new CustomProtocolHeader(CustomProtocolHeader.Operation.INITIALIZE, "16", "json");
-            Payload initializeGamePayload = new Payload(null, Integer.toString(gridDimension), false, false, false);
-            writeCustomProtocolOut(outputStream, new CustomProtocol(initializeGameHeader, initializeGamePayload));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Something happened during a write operation.");
-            e.printStackTrace();
-        }
-        setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
-        return gridDimension;
-    }
-
-    private static void waitForUserInput(ClientGui gameGui) {
-        do {
-            try {
-                waitForData(null, gameGui, PROTOCOL_ATOMIC_REFERENCE, 60);
-            } catch (Exception e) {
-                /*IGNORED*/
-            }
-        } while (PROTOCOL_ATOMIC_REFERENCE.get() == null);
-    }
-
-    private static void waitForDataFromServer(DataInputStream inputStream) {
-        do {
-            try {
-                waitForData(inputStream, null, PROTOCOL_ATOMIC_REFERENCE, 10);
-            } catch (Exception e) {
-                /*IGNORE*/
-            }
-        } while (PROTOCOL_ATOMIC_REFERENCE.get() == null);
-    }
-
-    private static int initializeGame(ClientGui gameGui, Payload gameSetupPayload) throws InterruptedException {
-        gameGui.show(false);
-        setReceivedData(PROTOCOL_ATOMIC_REFERENCE, null);
-        int returnValue;
-        do {
-            try {
-                waitForData(null, gameGui, PROTOCOL_ATOMIC_REFERENCE, 20);
-            } catch (Exception e) {
-                gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
-            }
-            if (PROTOCOL_ATOMIC_REFERENCE.get().getPayload() == null) {
-                endGame();
-            }
-            returnValue = parseInt(PROTOCOL_ATOMIC_REFERENCE.get().getPayload().getMessage());
-            if (returnValue < 2) {
-                gameGui.outputPanel.setInputText("");
-                gameGui.outputPanel.appendOutput(GAME_INITIALIZATION_ERROR_MESSAGE);
-            }
-        } while (returnValue < 2);
-        gameGui.newGame(returnValue);
-        return returnValue;
-    }
-
     private static void insertPayloadImage(Payload serverPayload, ClientGui gameGui) throws IOException {
-        if (numberOfCorrectResponses <= (GRID_DIMENSION * GRID_DIMENSION) && serverPayload.getBase64encodedCroppedImage() != null) {
+        if (numberOfCorrectResponses <= (gridDimension * gridDimension) && serverPayload.getBase64encodedCroppedImage() != null) {
             BufferedImage image = convertBase64encodedStringToBufferedImage(serverPayload.getBase64encodedCroppedImage());
-            int row = (numberOfCorrectResponses - 1) / GRID_DIMENSION;
-            int col = (numberOfCorrectResponses - 1) % GRID_DIMENSION;
-            col = (col >= 0 && col <= GRID_DIMENSION ? col : GRID_DIMENSION - 1);
+            int row = (numberOfCorrectResponses - 1) / gridDimension;
+            int col = (numberOfCorrectResponses - 1) % gridDimension;
+            col = (col >= 0 && col <= gridDimension ? col : gridDimension - 1);
             int finalCol = col;
             LOGGER.log(Level.INFO, () -> String.format("%nInserting a new image in row: %d\tcol: %d%n", row, finalCol));
             gameGui.insertImage(image, row, col);

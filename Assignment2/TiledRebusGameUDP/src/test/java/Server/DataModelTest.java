@@ -7,16 +7,21 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import ser321wk3.CustomProtocol;
 import ser321wk3.CustomProtocolHeader;
-import ser321wk3.CustomTCPUtilities;
+import ser321wk3.CustomUDPUtilities;
 import ser321wk3.Payload;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ser321wk3.CustomUDPUtilities.writeCustomProtocolOut;
 
 public class DataModelTest {
 
@@ -53,8 +58,8 @@ public class DataModelTest {
 
     @Test
     public void testPayloadImageNotNull() throws IOException {
-        File image = new File("puzzles/Hamilton_0_0.jpg");
-        String encodedImage = CustomTCPUtilities.convertImageFileToBase64encodedString(image);
+        File image = new File("puzzles/Hamilton.jpg");
+        String encodedImage = CustomUDPUtilities.convertImageFileToBase64encodedString(image);
         Payload testPayload = new Payload(encodedImage, TEST_MESSAGE, TEST_WON_GAME, TEST_GAME_OVER, TEST_ANSWERED_CORRECTLY);
 
         byte[] serializedPayload = mapper.writeValueAsBytes(testPayload);
@@ -81,11 +86,11 @@ public class DataModelTest {
 
     @Test
     public void testCustomProtocol() throws IOException {
-        final File image = new File("puzzles/Hamilton_0_0.jpg");
-        final String encodedImage = CustomTCPUtilities.convertImageFileToBase64encodedString(image);
+        final File image = new File("puzzles/Hamilton.jpg");
+        final String encodedImage = CustomUDPUtilities.convertImageFileToBase64encodedString(image);
         final Payload testPayload = new Payload(encodedImage, TEST_MESSAGE, TEST_WON_GAME, TEST_GAME_OVER, TEST_ANSWERED_CORRECTLY);
         final CustomProtocolHeader testProtocolHeader = new CustomProtocolHeader(TEST_OPERATION, TEST_BASE, TEST_FORMAT);
-        final CustomProtocol testProtocol = new CustomProtocol(testProtocolHeader, testPayload);
+        final CustomProtocol testProtocol = new CustomProtocol(testProtocolHeader, testPayload, UUID.randomUUID());
 
         TypeFactory typeFactory = mapper.getTypeFactory();
 
@@ -95,5 +100,38 @@ public class DataModelTest {
         assertEquals(testProtocol, deserializedProtocol);
         assertEquals(testProtocolHeader, deserializedProtocol.getHeader());
         assertEquals(testPayload, deserializedProtocol.getPayload());
+    }
+
+    @Test
+    public void testCustomProtocolToByteArray() throws IOException {
+        final File image = new File("puzzles/Hamilton.jpg");
+        final String encodedImage = CustomUDPUtilities.convertImageFileToBase64encodedString(image);
+        final Payload testPayload = new Payload(encodedImage, TEST_MESSAGE, TEST_WON_GAME, TEST_GAME_OVER, TEST_ANSWERED_CORRECTLY);
+        final CustomProtocolHeader testProtocolHeader = new CustomProtocolHeader(TEST_OPERATION, TEST_BASE, TEST_FORMAT);
+        final CustomProtocol testProtocol = new CustomProtocol(testProtocolHeader, testPayload, UUID.randomUUID());
+
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        ByteBuffer buffer = ByteBuffer.allocate(1_000_000);
+        writeCustomProtocolOut(buffer, testProtocol);
+
+        CustomProtocol deserializedProtocol = CustomUDPUtilities.readCustomProtocol(new DataInputStream(new ByteArrayInputStream(buffer.array())));
+        assertEquals(testProtocol, deserializedProtocol);
+        assertEquals(testProtocolHeader, deserializedProtocol.getHeader());
+        assertEquals(testPayload, deserializedProtocol.getPayload());
+    }
+
+    @Test
+    public void testPayloadImageNotNullToByteArray() throws IOException {
+        File image = new File("puzzles/Hamilton.jpg");
+        String encodedImage = CustomUDPUtilities.convertImageFileToBase64encodedString(image);
+        Payload testPayload = new Payload(encodedImage, TEST_MESSAGE, TEST_WON_GAME, TEST_GAME_OVER, TEST_ANSWERED_CORRECTLY);
+
+        ByteBuffer buffer = ByteBuffer.allocate(1_000_000);
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        buffer.put(mapper.writeValueAsBytes(testPayload));
+
+        Payload deserializedPayload = mapper.readValue(buffer.array(), typeFactory.constructType(Payload.class));
+        assertEquals(testPayload, deserializedPayload);
+        assertEquals(encodedImage, deserializedPayload.getBase64encodedCroppedImage());
     }
 }
