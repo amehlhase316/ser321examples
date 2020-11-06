@@ -6,14 +6,6 @@
       <module name="Assignment2.main" target="11" />
       <module name="Assignment2.test" target="11" />
       <module name="Assignment2.TiledRebusGameUDP" target="11" />
-      <module name="network.examples.Network.FetchAPageTCP.test" target="11" />
-      <module name="network.examples.Network.HTTP-JSON.test" target="11" />
-      <module name="network.examples.Network.JSON.test" target="11" />
-      <module name="network.examples.Network.JsonRPCviaTCPStudent.main" target="11" />
-      <module name="network.examples.Network.SimpleGrabHttpURL.main" target="11" />
-      <module name="ser321examples.Network.FetchAPageTCP.main" target="11" />
-      <module name="ser321examples.Network.HTTP-JSON.main" target="11" />
-      <module name="ser321examples.Network.JSON.main" target="11" />
       <module name="Serialization.ClassMigration" target="11" />
       <module name="Serialization.ClassMigration.main" target="11" />
       <module name="Serialization.ClassMigration.test" target="11" />

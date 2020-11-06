@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FetchAPageTCP/Network.FetchAPageTCP.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FetchAPageTCP/Network.FetchAPageTCP.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FetchAPageTCP/Network.FetchAPageTCP.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FetchAPageTCP/Network.FetchAPageTCP.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HTTP-JSON/Network.HTTP-JSON.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HTTP-JSON/Network.HTTP-JSON.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HTTP-JSON/Network.HTTP-JSON.test.iml" filepath="$PROJECT_DIR$/.idea/modules/HTTP-JSON/Network.HTTP-JSON.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JSON/Network.JSON.main.iml" filepath="$PROJECT_DIR$/.idea/modules/JSON/Network.JSON.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JSON/Network.JSON.test.iml" filepath="$PROJECT_DIR$/.idea/modules/JSON/Network.JSON.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JsonRPCviaTCPStudent/Network.JsonRPCviaTCPStudent.main.iml" filepath="$PROJECT_DIR$/.idea/modules/JsonRPCviaTCPStudent/Network.JsonRPCviaTCPStudent.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SimpleGrabHttpURL/Network.SimpleGrabHttpURL.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SimpleGrabHttpURL/Network.SimpleGrabHttpURL.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FetchAPageTCP/network.examples.Network.FetchAPageTCP.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FetchAPageTCP/network.examples.Network.FetchAPageTCP.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HTTP-JSON/network.examples.Network.HTTP-JSON.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HTTP-JSON/network.examples.Network.HTTP-JSON.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/JSON/network.examples.Network.JSON.main.iml" filepath="$PROJECT_DIR$/.idea/modules/JSON/network.examples.Network.JSON.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/ser321examples.iml" filepath="$PROJECT_DIR$/.idea/ser321examples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Assignment2/Assignment2.iml" filepath="$PROJECT_DIR$/Assignment2/Assignment2.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ser321examples.iml" filepath="$PROJECT_DIR$/.idea/ser321examples.iml" />
     </modules>
   </component>
