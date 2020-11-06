@@ -39,7 +39,7 @@ public class GitRepoData {
     }
 
     @JsonTypeName("owner")
-    public static final class Owner {
+    public final class Owner {
         private final String login;
 
         @JsonCreator

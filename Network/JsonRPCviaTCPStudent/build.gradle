@@ -1,23 +1,23 @@
 apply plugin: 'java'
 
-description = "TCP Json RPC Client Server Example"
+description = "TCP Json RPC ser321wk3.client server Example"
 
 task runClient(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Client"
-  main = 'client.StudentCollectionClient'
-  standardInput = System.in
-  // default args
-  args '127.0.0.1' // host 
-  args '9099' // port 
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run ser321wk3.client"
+    main = 'client.StudentCollectionClient'
+    standardInput = System.in
+    // default args
+    args '127.0.0.1' // host
+    args '9099' // port
 }
 
 task runServer(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Server"
-  main = 'server.StudentCollectionTCPJsonRPCServer'
-  // default args
-  args '9099' // port 
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run server"
+    main = 'server.StudentCollectionTCPJsonRPCServer'
+    // default args
+    args '9099' // port
 }
 
 repositories {
