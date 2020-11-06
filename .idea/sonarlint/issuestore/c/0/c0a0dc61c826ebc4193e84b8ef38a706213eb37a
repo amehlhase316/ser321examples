@@ -1,0 +1,13 @@
+
+^
+java:S2095"JUse try-with-resources or close this "ServerSocket" in a "finally" clause.(Í·å†
+0
+java:S1220""Move this file to a named package.
+Q
+java:S1197"8Move the array designator from the variable to the type.(˘Ôæéˇˇˇˇˇ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(∫›êê
+L	java:S106"9Replace this use of System.out or System.err by a logger.(óØÛ‹
+K	java:S106"9Replace this use of System.out or System.err by a logger.(Ø••/
+L	java:S106"9Replace this use of System.out or System.err by a logger.(˘Å•ƒ
+>
+java:S1481"*Remove this unused "count" local variable.(Ê’øº

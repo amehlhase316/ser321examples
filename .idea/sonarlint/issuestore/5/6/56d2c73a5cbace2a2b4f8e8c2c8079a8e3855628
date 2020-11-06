@@ -1,0 +1,27 @@
+
+f
+java:S2095"MUse try-with-resources or close this "FileInputStream" in a "finally" clause.(ÛòøÂûÿÿÿÿ
+m	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ığÌØ
+N
+java:S1854":Remove this useless assignment to local variable "server".(Ñäê
+Q
+java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(é×ô¬ûÿÿÿÿ
+D
+java:S1172"+Remove this unused method parameter "port".(£™ùÿÿÿÿ
+L
+java:S4719"9Replace charset name argument with StandardCharsets.UTF_8(üôR
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(™ÊºŸúÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(«µ¦½ıÿÿÿÿ
+Q
+java:S1197"8Move the array designator from the variable to the type.(Ø»“ıÿÿÿÿ
+?
+java:S1481"+Remove this unused "server" local variable.(Ñäê
+D
+java:S1481"+Remove this unused "server" local variable.(À¨çùıÿÿÿÿ
+<
+java:S1481")Remove this unused "sock" local variable.(ò‰Á
+;
+java:S1481"'Remove this unused "in" local variable.(ô´ü
+A
+java:S1481"(Remove this unused "out" local variable.(ôı†óıÿÿÿÿ

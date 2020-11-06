@@ -1,0 +1,17 @@
+
+i
+java:S2095"PUse try-with-resources or close this "ObjectOutputStream" in a "finally" clause.(âá·´ùÿÿÿÿ
+h
+java:S2095"OUse try-with-resources or close this "ObjectInputStream" in a "finally" clause.(³¹Õ©şÿÿÿÿ
+C
+java:S3740"/Provide the parametrized type for this generic.(ä¡õÏ
+0
+java:S1220""Move this file to a named package.
+~
+java:S1149"eReplace the synchronized class "Vector" by an unsynchronized one such as "ArrayList" or "LinkedList".(¼ü¢Ñúÿÿÿÿ
+Q
+java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
+K	java:S106"9Replace this use of System.out or System.err by a logger.(´«¬u
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(ÍÅùÇüÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(Ö¥şÁüÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(“èöù

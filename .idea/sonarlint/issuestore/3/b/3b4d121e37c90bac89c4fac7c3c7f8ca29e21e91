@@ -1,0 +1,68 @@
+
+c
+java:S2095"JUse try-with-resources or close this "ServerSocket" in a "finally" clause.(ÛÄÚ‡ıÿÿÿÿ
+f
+java:S2095"MUse try-with-resources or close this "FileInputStream" in a "finally" clause.(ÛòøÂûÿÿÿÿ
+‚
+java:S1192"iDefine a constant instead of duplicating this literal "Content-Type: text/html; charset=utf-8\n" 8 times.(ÀŠşÿÿÿÿ
+k
+java:S1192"RDefine a constant instead of duplicating this literal "HTTP/1.1 200 OK\n" 6 times.(Ú÷ˆƒûÿÿÿÿ
+_
+java:S1192"FDefine a constant instead of duplicating this literal "UTF-8" 3 times.(Ê‰¾úÿÿÿÿ
+;
+java:S2189""Add an end condition to this loop.(˜ïˆÿÿÿÿÿ
+W
+java:S1155">Use isEmpty() to check whether the collection is empty or not.(…–©Ÿşÿÿÿÿ
+N
+java:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+N
+java:S1141"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+d	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Úâ†€
+d	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Úâ†€
+d	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Úâ†€
+r	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¬„¢»úÿÿÿÿ
+Y
+java:S2259"@A "NullPointerException" could be thrown; "in" is nullable here.(€¶º‡ıÿÿÿÿ
+P
+java:S2589"7Remove this expression which always evaluates to "true"(¦†âÿøÿÿÿÿ
+K
+java:S1135"2Complete the task associated to this TODO comment.(’©¼ùÿÿÿÿ
+^
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ñªÄùÿÿÿÿ
+E
+java:S3599",Use another way to initialize this instance.(ñªÄùÿÿÿÿ
+r
+java:S1171"YMove the contents of this initializer to a standard constructor or to field initializers.(ÒÌâ–øÿÿÿÿ
+K
+java:S1135"2Complete the task associated to this TODO comment.(ÕÌ®şÿÿÿÿ
+C
+java:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+S
+java:S1854":Remove this useless assignment to local variable "server".(¹ä†¾şÿÿÿÿ
+Q
+java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
+m
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Úâ†€
+N	java:S125"<This block of commented-out lines of code should be removed.(Ñ»ß=
+Q
+java:S1197"8Move the array designator from the variable to the type.(Ø»“ıÿÿÿÿ
+S
+java:S1854"?Remove this useless assignment to local variable "query_pairs".(Úâ†€
+f
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.(Å‘
+R
+java:S4719"9Replace charset name argument with StandardCharsets.UTF_8(Ÿ´Èˆúÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(™ÊºŸúÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(üåŠÚıÿÿÿÿ
+m
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Úâ†€
+F
+java:S1135"2Complete the task associated to this TODO comment.(‡É§Ï
+m
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Úâ†€
+L	java:S106"9Replace this use of System.out or System.err by a logger.(øŒ¼Æ
+F
+java:S1135"2Complete the task associated to this TODO comment.(‘Ö«
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(ºËù½ùÿÿÿÿ
+D
+java:S1481"+Remove this unused "server" local variable.(¹ä†¾şÿÿÿÿ

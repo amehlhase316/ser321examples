@@ -1,0 +1,12 @@
+
+0
+java:S1220""Move this file to a named package.
+Q
+java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(º˜²×ûÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(ŠšÆëıÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(÷±ÈÊ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(Ãî±ã
+L	java:S106"9Replace this use of System.out or System.err by a logger.(Ëú³©
+C
+java:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ

@@ -1,0 +1,20 @@
+
+^
+java:S2095"JUse try-with-resources or close this "ServerSocket" in a "finally" clause.(êáŒ 
+0
+java:S1220""Move this file to a named package.
+k
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ùï¾Žÿÿÿÿÿ
+Q
+java:S1197"8Move the array designator from the variable to the type.(ùï¾Žÿÿÿÿÿ
+r
+java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(Ý½Ë¡þÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(¹áÕ„ÿÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(—¯óÜ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(Ëö Šûÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(¦èÒª
+L	java:S106"9Replace this use of System.out or System.err by a logger.(âÛ™»
+L	java:S106"9Replace this use of System.out or System.err by a logger.(¿Šíò
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(ÞžÒ—üÿÿÿÿ
+>
+java:S1481"*Remove this unused "count" local variable.(æÕ¿¼

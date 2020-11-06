@@ -1,0 +1,17 @@
+
+;
+java:S2629Î"$Invoke method(s) only conditionally.(€Á«Ù
+P
+java:S1141>"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(‘ëı
+b
+java:S2259N"LA "NullPointerException" could be thrown; "clientListener" is nullable here.(©˜öÛ
+b
+java:S2259¨"KA "NullPointerException" could be thrown; "playResultOut" is nullable here.(ŒÎ¢™
+\
+java:S2142v"FEither re-interrupt this method or rethrow the "InterruptedException".(ò¶È
+\
+java:S2142~"FEither re-interrupt this method or rethrow the "InterruptedException".(ò¶È
+j
+java:S4042Å"NUse "java.nio.file.Files#delete" here for better messages on error conditions.(¼·áüÿÿÿÿ
+V	java:S899Å";Do something with the "boolean" value returned by "delete".(¼·áüÿÿÿÿ

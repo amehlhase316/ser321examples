@@ -1,53 +1,53 @@
 apply plugin: 'java'
 
-description = "UDP Client Server Example"
+description = "UDP ser321wk3.client server Example"
 
 //Example: gradle runClient --args="18.223.100.162 8888" -q --console=plain
 //-q --console=plain makes the console output a bit quieter
 task runClient(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Client"
-  main = 'UDPClient'
-  standardInput = System.in
-  // default args
-  args 'localhost' // port
-  args '9099' // delay
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run ser321wk3.client"
+    main = 'UDPClient'
+    standardInput = System.in
+    // default args
+    args 'localhost' // port
+    args '9099' // delay
 }
 
 //Example: gradle runServer --args="8888 5"
 task runServer(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Server"
-  main = 'UDPServer'
-  // default args
-  args '9099' // port
-  args '5' // delay
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run server"
+    main = 'UDPServer'
+    // default args
+    args '9099' // port
+    args '5' // delay
 }
 
 //Example gradle runClient2 --args="18.223.100.162 8888 huhuuhuhuhuh" -q --console=plain
 task runClient2(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Client 2"
-  main = 'UDPClient2'
-  // default args
-  args 'localhost' // host
-  args '9099' // port
-  args 'This is line one.\nThis is line two' // data
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run ser321wk3.client 2"
+    main = 'UDPClient2'
+    // default args
+    args 'localhost' // host
+    args '9099' // port
+    args 'This is line one.\nThis is line two' // data
 }
 
 //Example: gradle runServer2 --args="8888"
 task runServer2(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  description = "Run Server 2"
-  main = 'UDPServer2'
-  // default args
-  args '9099' // port
+    classpath = sourceSets.main.runtimeClasspath
+    description = "Run server 2"
+    main = 'UDPServer2'
+    // default args
+    args '9099' // port
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
-dependencies{
-  compile 'org.json:json:20171018'
+dependencies {
+    compile 'org.json:json:20171018'
 }

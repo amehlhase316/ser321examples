@@ -1,0 +1,43 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'Concentration'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.codehaus.jackson:jackson-jaxrs:1.9.0'
+    compile 'org.apache.commons:commons-lang3:3.9'
+    compile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    compile 'commons-cli:commons-cli:1.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+}
+
+test {
+    useJUnit()
+    maxHeapSize = '1G'
+}
+
+repositories {
+    mavenCentral()
+}
+
+task Gui(type: JavaExec) {
+    group 'gui'
+    description 'Displays a GUI for a game of concentration'
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'ser321wk3.client.ClientGui'
+    standardInput = System.in
+}
+
+task Maker(type: JavaExec) {
+    group 'maker'
+    description 'Takes an image and makes the rebus library'
+
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'server.GridMaker'
+    standardInput = System.in
+}

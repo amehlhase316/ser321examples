@@ -1,34 +1,34 @@
 // set as java application
 apply plugin: 'application'
 
-// Client and Server socket, socket can serve up to three clients
+// ser321wk3.client and server socket, socket can serve up to three clients
 task ThreadedSockServer(type: JavaExec) {
-  group 'Socket Server/Client'
-  description 'Creates Server and waits for clients to connect'
+    group 'Socket server/ser321wk3.client'
+    description 'Creates server and waits for clients to connect'
 
-  classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'ThreadedSockServer'
+    main = 'ThreadedSockServer'
 
-  // run with arguments e.g.: gradle ThreadedSockServer -Pport=9999
-  if (project.hasProperty("port")) {
-         args(project.getProperty('port'));
-  }
+    // run with arguments e.g.: gradle ThreadedSockServer -Pport=9999
+    if (project.hasProperty("port")) {
+        args(project.getProperty('port'));
+    }
 }
 
 task ThreadedSockClient(type: JavaExec) {
-  group 'Socket Server/Client'
-  description 'Creates client and can send numbers to server'
+    group 'Socket server/ser321wk3.client'
+    description 'Creates client and can send numbers to server'
 
-  standardInput = System.in
-  classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    classpath = sourceSets.main.runtimeClasspath
 
-  main = 'ThreadedSockClient'
+    main = 'ThreadedSockClient'
 
-  // run with arguments e.g.: gradle ThreadedSockClient -Phost=host -Pport=9999 -q --console=plain
-  if (project.hasProperty("host") && project.hasProperty("port")) {
-         args(project.getProperty('host'), project.getProperty('port'));
-  }
+    // run with arguments e.g.: gradle ThreadedSockClient -Phost=host -Pport=9999 -q --console=plain
+    if (project.hasProperty("host") && project.hasProperty("port")) {
+        args(project.getProperty('host'), project.getProperty('port'));
+    }
 }
 
 

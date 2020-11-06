@@ -1,0 +1,23 @@
+
+X
+java:S2095"DUse try-with-resources or close this "Socket" in a "finally" clause.(Â‡Š¹
+[
+java:S2259"BA "NullPointerException" could be thrown; "data" is nullable here.(˜ðšàúÿÿÿÿ
+Q
+java:S1197"8Move the array designator from the variable to the type.(ùï¾Žÿÿÿÿÿ
+4
+java:S1659" Declare "i2" on a separate line.(ª…®Ë
+N	java:S125"<This block of commented-out lines of code should be removed.(Çêú
+N	java:S125"<This block of commented-out lines of code should be removed.(Çêú
+L	java:S106"9Replace this use of System.out or System.err by a logger.(¡Õˆ³
+L	java:S106"9Replace this use of System.out or System.err by a logger.(þÁ
+X
+java:S2147"DCombine this catch with the one at line 45, which has the same body.(ðõÚÏ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(éí÷„ùÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(”°¤…
+C
+java:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+;
+java:S1481"'Remove this unused "i1" local variable.(ª…®Ë
+;
+java:S1481"'Remove this unused "i2" local variable.(ª…®Ë

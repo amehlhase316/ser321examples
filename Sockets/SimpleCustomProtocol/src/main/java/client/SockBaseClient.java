@@ -1,25 +1,27 @@
 package client;
 
-import java.net.*;
-import java.io.*;
-import java.util.Map;
-
-import java.nio.file.Paths;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.json.JSONException;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Reader;
+import java.net.Socket;
 
 
 class SockBaseClient {
-     
 
-     public static void main (String args[]) throws Exception {
+
+    public static void main(String args[]) throws Exception {
         Socket serverSock = null;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
         //PrintWriter out = null;
         //BufferedReader in = null;
-        int i1=0, i2=0;
+        int i1 = 0, i2 = 0;
         int port = 9099; // default port
 
         if (args.length != 3) {
@@ -34,16 +36,16 @@ class SockBaseClient {
             System.exit(2);
         }
         String filename = args[2];
-        
+
         // read JSON data from the file
         JSONObject data = null;
         try {
-          data = readJson(filename);
-          System.out.println(data);
+            data = readJson(filename);
+            System.out.println(data);
         } catch (IOException ex) {
-          ex.printStackTrace();
+            ex.printStackTrace();
         } catch (JSONException ex) {
-          ex.printStackTrace();
+            ex.printStackTrace();
         }
 
         try {
@@ -62,17 +64,23 @@ class SockBaseClient {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (in != null)   in.close();
-            if (out != null)  out.close();
-            if (serverSock != null) serverSock.close();
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            if (serverSock != null) {
+                serverSock.close();
+            }
         }
     }
 
     private static JSONObject readJson(String filename) throws IOException, JSONException {
-      Reader reader = new FileReader(filename);
-      JSONTokener jsonTokener = new JSONTokener(reader);
-      return new JSONObject(jsonTokener);
+        Reader reader = new FileReader(filename);
+        JSONTokener jsonTokener = new JSONTokener(reader);
+        return new JSONObject(jsonTokener);
     }
-    
+
 }
 

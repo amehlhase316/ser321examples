@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="Assignment2" target="11" />
+      <module name="Assignment2.main" target="11" />
+      <module name="Assignment2.test" target="11" />
+      <module name="Assignment2.TiledRebusGameUDP" target="11" />
+      <module name="network.examples.Network.FetchAPageTCP.test" target="11" />
+      <module name="network.examples.Network.HTTP-JSON.test" target="11" />
+      <module name="network.examples.Network.JSON.test" target="11" />
+      <module name="network.examples.Network.JsonRPCviaTCPStudent.main" target="11" />
+      <module name="network.examples.Network.SimpleGrabHttpURL.main" target="11" />
+      <module name="ser321examples.Network.FetchAPageTCP.main" target="11" />
+      <module name="ser321examples.Network.HTTP-JSON.main" target="11" />
+      <module name="ser321examples.Network.JSON.main" target="11" />
+      <module name="Serialization.ClassMigration" target="11" />
+      <module name="Serialization.ClassMigration.main" target="11" />
+      <module name="Serialization.ClassMigration.test" target="11" />
+      <module name="Serialization.GroupJson" target="11" />
+      <module name="Serialization.GroupJson.main" target="11" />
+      <module name="Serialization.GroupJson.test" target="11" />
+      <module name="Serialization.GroupSerialize" target="11" />
+      <module name="Serialization.GroupSerialize.main" target="11" />
+      <module name="Serialization.GroupSerialize.test" target="11" />
+      <module name="Serialization.UserXML" target="11" />
+      <module name="Serialization.UserXML.main" target="11" />
+      <module name="Serialization.UserXML.test" target="11" />
+      <module name="Threads.Deadlock" target="11" />
+      <module name="Threads.Deadlock.main" target="11" />
+      <module name="Threads.Deadlock.test" target="11" />
+      <module name="Threads.FileCopy" target="11" />
+      <module name="Threads.FileCopy.main" target="11" />
+      <module name="Threads.FileCopy.test" target="11" />
+      <module name="Threads.Firstthread" target="11" />
+      <module name="Threads.Firstthread.main" target="11" />
+      <module name="Threads.Firstthread.test" target="11" />
+      <module name="Threads.MusicThread" target="11" />
+      <module name="Threads.MusicThread.main" target="11" />
+      <module name="Threads.MusicThread.test" target="11" />
+      <module name="Threads.Synchronization" target="11" />
+      <module name="Threads.Synchronization.main" target="11" />
+      <module name="Threads.Synchronization.test" target="11" />
+      <module name="Threads.ThreadsShareData" target="11" />
+      <module name="Threads.ThreadsShareData.main" target="11" />
+      <module name="Threads.ThreadsShareData.test" target="11" />
+      <module name="TiledRebusGameUDP.main" target="11" />
+      <module name="TiledRebusGameUDP.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Assignment2.TiledRebusGameTCP.main" options="--add-exports jdk.hotspot.agent/sun.jvm.hotspot.runtime=ALL-UNNAMED" />
+    </option>
+  </component>
+</project>

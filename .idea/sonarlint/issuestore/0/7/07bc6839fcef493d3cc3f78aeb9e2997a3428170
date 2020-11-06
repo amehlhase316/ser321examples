@@ -1,0 +1,24 @@
+
+]
+java:S2095"JUse try-with-resources or close this "ServerSocket" in a "finally" clause.(Í€
+;
+java:S2189""Add an end condition to this loop.(˜ïˆÿÿÿÿÿ
+>
+java:S5411"*Use the primitive boolean expression here.(±”¼
+0
+java:S1220""Move this file to a named package.
+L
+java:S1197"8Move the array designator from the variable to the type.(äÍÚŒ
+Q
+java:S1197"8Move the array designator from the variable to the type.(²Á€œüÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(·Ú¼×úÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(Ôâÿšşÿÿÿÿ
+L	java:S106"9Replace this use of System.out or System.err by a logger.(Èû’
+C
+java:S2093"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+N
+java:S1161":Add the "@Override" annotation above this method signature(“–ış
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(£–™»ÿÿÿÿÿ
+2
+java:S2178"Correct this "&" to "&&".(÷¯½ûÿÿÿÿ
+Q	java:S106"9Replace this use of System.out or System.err by a logger.(éõÙ­ıÿÿÿÿ

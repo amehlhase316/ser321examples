@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output-test url="file://$MODULE_DIR$/../../../Network/HTTP-JSON/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../Network/HTTP-JSON/src/test" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="network.examples.Network.HTTP-JSON.main" />
+    <orderEntry type="library" name="Gradle: org.json:json:20171018" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.6" level="project" />
+  </component>
+</module>
