@@ -9,7 +9,7 @@ task runClient(type: JavaExec) {
   // default args
   args 'localhost' // host
   args '9099' // port
-  args 'r'
+  args 'y'
   args '10' // int value to write
   args '20' // int value to write
 }
