@@ -18,11 +18,7 @@ My program is designed to "fail early". That is, it will fail immediately if giv
 but once it is running, it handles what it is capable of handling (i.e. IllegalArgumentExceptions from the user). Other exceptions <br />
 external to the application are simply thrown higher until a shutdown sequence is reached.
 
-a) A description of your project and a detailed description of what it does <br />
-b) An explanation of how we can run the program <br />
-c) A UML diagram showing the back and forth between client and server <br />
-d) A description of your protocol header and payload similar to what you usually see <br />
-when a protocol is described. e) Explain how you designed your program to be robust (see later under constraints)
-
 [Github Link](https://github.com/cekraus1/ser321examples/tree/master)
+
+![TCP_UML](../TCP_UML.jpg)
 
