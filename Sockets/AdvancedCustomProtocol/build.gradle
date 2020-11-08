@@ -1,0 +1,55 @@
+// set as java application
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+   // https://mvnrepository.com/artifact/org.json/json
+compile group: 'org.json', name: 'json', version: '20200518'
+}
+
+
+//define main class
+mainClassName = 'Concentration'
+
+task TCPServer(type: JavaExec) {
+  group 'tcp'
+  description 'Displays a GUI for a game of concentration'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'fauxSolution.tcp.Server'
+  standardInput = System.in
+}
+
+task TCPClient(type: JavaExec) {
+  group 'tcp'
+  description 'Takes an image and makes the rebus library'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'fauxSolution.tcp.Client'
+  standardInput = System.in
+}
+
+task UDPServer(type: JavaExec) {
+  group 'udp'
+  description 'Displays a GUI for a game of concentration'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'fauxSolution.udp.Server'
+  standardInput = System.in
+}
+
+task UDPClient(type: JavaExec) {
+  group 'udp'
+  description 'Takes an image and makes the rebus library'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'fauxSolution.udp.Client'
+  standardInput = System.in
+}
