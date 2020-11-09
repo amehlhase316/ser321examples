@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package operation;
+
+option java_package = "buffers";
+option java_outer_classname = "ResponseProtos";
+
+message Response {
+  optional string resultString = 1;
+}

@@ -1,27 +1,23 @@
 package client;
 
-import org.json.JSONException;
+import java.net.*;
+import java.io.*;
+import java.util.Map;
+
+import java.nio.file.Paths;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
-import java.net.Socket;
+import org.json.JSONException;
 
 
 class SockBaseClient {
+     
 
-
-    public static void main(String args[]) throws Exception {
+     public static void main (String args[]) throws Exception {
         Socket serverSock = null;
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
-        //PrintWriter out = null;
-        //BufferedReader in = null;
-        int i1 = 0, i2 = 0;
+        int i1=0, i2=0;
         int port = 9099; // default port
 
         if (args.length != 3) {
@@ -36,16 +32,16 @@ class SockBaseClient {
             System.exit(2);
         }
         String filename = args[2];
-
+        
         // read JSON data from the file
         JSONObject data = null;
         try {
-            data = readJson(filename);
-            System.out.println(data);
+          data = readJson(filename);
+          System.out.println(data);
         } catch (IOException ex) {
-            ex.printStackTrace();
+          ex.printStackTrace();
         } catch (JSONException ex) {
-            ex.printStackTrace();
+          ex.printStackTrace();
         }
 
         try {
@@ -58,29 +54,41 @@ class SockBaseClient {
 
             // read from the server
             in = new ObjectInputStream(serverSock.getInputStream());
-            String result = (String) in.readObject();
 
-            System.out.println("Result is " + result);
+            String parsedResult = "";
+            String responseType = data.getJSONObject("header").getString("response");
+            responseType = responseType.toLowerCase();
+
+            System.out.println("Requested response type: " + responseType.toUpperCase());
+
+            if (responseType.equals("json")){
+                //getting result from JSON
+                parsedResult = String.valueOf(new JSONObject((String) in.readObject()).get("result"));
+            }
+            else {
+                parsedResult = (String) in.readObject();
+            }
+            
+
+            System.out.println("Result is " + parsedResult);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-            if (serverSock != null) {
-                serverSock.close();
-            }
+            if (in != null)   in.close();
+            if (out != null)  out.close();
+            if (serverSock != null) serverSock.close();
         }
     }
 
     private static JSONObject readJson(String filename) throws IOException, JSONException {
-        Reader reader = new FileReader(filename);
-        JSONTokener jsonTokener = new JSONTokener(reader);
-        return new JSONObject(jsonTokener);
+      // read json from build directory, so the getResource is needed
+      File file = new File(
+        SockBaseClient.class.getResource("/"+filename).getFile()
+      );
+      Reader reader = new FileReader(file);
+      JSONTokener jsonTokener = new JSONTokener(reader);
+      return new JSONObject(jsonTokener);
     }
-
+    
 }
 
