@@ -1,0 +1,80 @@
+plugins {
+  id 'java'
+  id "com.google.protobuf" version "0.8.13" apply true
+
+}
+
+description = "Protocol Buffers Socket Example"
+
+repositories {
+    mavenCentral()
+}
+
+// json and protobuf dependencies 
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20200518'
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.13.0'
+    }
+    generateProtoTasks {
+    all().each { task ->
+      task.builtins {
+        // Generates Python code in the output folder:
+        python { }
+
+      }
+    }
+  }
+}
+ def host = 'localhost'
+ def port = 9099
+ def file = 'data.json'
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("host")) {
+      host = project.getProperty("host")
+    }
+    if (project.hasProperty("port")) {
+      port = project.getProperty("port")
+    }
+    if (project.hasProperty("file")) {
+      file = project.getProperty("file")
+    }
+}
+
+//gradle runClient -Pport=9099 -Phost='localhost' -Pfile='data.json'
+task runClient(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'client.SockBaseClient'
+  // default args
+  args host 
+  args port
+  args file
+}
+
+//gradle runServer -Pport=9099
+task runServer(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'server.SockBaseServer'
+  // default args
+  args port
+  args '1000' // sleep delay will always be this
+}
+
+// runs Python client through command line
+//gradle runClientPython -Pport=9099 -Phost='localhost' -Pfile='data10.json'
+task runClientPython(type:Exec) {
+   dependsOn arguments
+
+   workingDir 'src/main/python'
+   
+   commandLine 'python3', 'SocketClient.py', host, port, file
+} 
+

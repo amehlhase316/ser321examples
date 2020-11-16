@@ -22,7 +22,9 @@ class SockBaseServer {
         if (args.length != 2) {
           System.out.println("Expected arguments: <port(int)> <delay(int)>");
           System.exit(1);
-		}
+		    }
+        System.out.println("Running on port: " + args[0]);
+        System.out.println("Sleep delay is :" + args[1] + " miliseconds");
         
         try {
           port = Integer.parseInt(args[0]);
@@ -64,6 +66,8 @@ class SockBaseServer {
                 String num2 = getNum(payload, "num2");
 
                 Base base = new Base();
+
+                // String type result by default
                 String result = null;
 
                 if (operation == Operations.ADD) {
@@ -72,6 +76,11 @@ class SockBaseServer {
                 } else if (operation == Operations.SUB) {
                   result = base.substract(num1, num2, baseN);
 		  System.out.println("base " + baseN + ": " + num1 + " - " + num2 + " = " + result);
+                }
+
+                if (response == Response.JSON){
+                  //just building a JSON strinng
+                  result = "{'result':" + result + "}";
                 }
 
                 out.writeObject(result);
@@ -91,6 +100,7 @@ class SockBaseServer {
 
     private static Operations getOperation(Map header) throws RuntimeException {
       String operation = (String) header.get("operation");
+      operation = operation.toLowerCase();
       if (operation.equals("add")) {
         return Operations.ADD;
       } else if (operation.equals("sub")) {
@@ -102,8 +112,12 @@ class SockBaseServer {
 
     private static Response getResponse(Map header) throws RuntimeException {
       String response = (String) header.get("response");
+      response = response.toLowerCase();
       if (response.equals("json")) {
         return Response.JSON;
+      }
+      if (response.equals("string")){
+        return Response.STRING;
       } else {
         throw new java.lang.RuntimeException("Response type not found!");
       }
@@ -119,5 +133,6 @@ enum Operations {
   SUB
 }
 enum Response {
-  JSON
+  JSON,
+  STRING
 }
