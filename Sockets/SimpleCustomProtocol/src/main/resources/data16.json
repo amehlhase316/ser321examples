@@ -1,0 +1,11 @@
+{"header":
+  {
+    "operation": "add",
+    "base": "16",
+    "response": "json"
+  },
+  "payload": {
+    "num1": "1A",
+    "num2": "B1"
+  }
+}

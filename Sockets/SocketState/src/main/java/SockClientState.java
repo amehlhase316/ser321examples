@@ -17,9 +17,9 @@ class SockClientState {
 
         String host = args[0]; // host
         try {
-          port = Integer.parseInt(args[1]);
-          i1 = Integer.parseInt(args[3]); // value1
-          i2 = Integer.parseInt(args[4]); // value2
+          port = Integer.parseInt(args[1]); // port
+          i1 = Integer.parseInt(args[3]); // clientID
+          i2 = Integer.parseInt(args[4]); // value to add
         } catch (NumberFormatException nfe) {
           System.out.println("[Port|value1|value2] must be an integer");
           System.exit(2);
@@ -30,18 +30,18 @@ class SockClientState {
 			out = sock.getOutputStream();
 			in = sock.getInputStream();
 
-			cmd = args[2].charAt(0);
+			cmd = args[2].charAt(0); // 't' or 'r'
 			out.write(cmd);
 			switch (cmd) {
 			case 'r':
-				out.write(i1);
+				out.write(i1); // just write clientID so the server can reset their total
 				break;
-			default: 
+			default: // send client id and value to add
 				out.write(i1);
 				out.write(i2);
 			}
-			int result = in.read();
-			System.out.println("Result is " + result);
+			int result = in.read(); // read in server response
+			System.out.println("Result is " + result); // print whatever the server send
 		} catch (NumberFormatException nfe) {
 			System.out.println("Command line args must be integers");
 			System.exit(2);

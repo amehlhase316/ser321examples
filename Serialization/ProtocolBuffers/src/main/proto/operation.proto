@@ -1,0 +1,25 @@
+syntax = "proto2";
+
+package operation;
+
+option java_package = "buffers";
+option java_outer_classname = "OperationProtos";
+
+message Operation {
+  optional string val1 = 1;
+  optional string val2 = 2;
+  optional string base = 3;
+  enum OperationType {
+    ADD = 0;
+    SUB = 1;
+    MUL = 2;
+    DIV = 3;
+  }
+  enum ResponseType {
+    JSON = 0;
+    STRING = 1;
+  }
+  optional OperationType operationType = 4 [default = ADD];
+  optional ResponseType responseType = 5 [default = JSON];
+
+}
