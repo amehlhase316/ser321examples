@@ -1,4 +1,3 @@
-import ser321.media.*; // access the GUI classes.
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
@@ -95,35 +94,34 @@ public class MusicThread extends MusicLibraryGui implements
             (DefaultMutableTreeNode)model.getRoot();
          String user = System.getProperty("user.name");
          System.out.println("user name is: "+user);
-         String sourceNames[] = {user,"Alone In Iz World","HanohanoCowboy",
-                                 "All The Greatest Hits","ComeMonday"};
-         DefaultMutableTreeNode [] nodeArray =
-            new DefaultMutableTreeNode[sourceNames.length];
-         nodeArray[0] = root;
-         root.setUserObject(user);
-         for(int i=1; i<sourceNames.length; i++){
-            nodeArray[i] = new DefaultMutableTreeNode(sourceNames[i]);
-            if (i==1){
-               // insert node labelled Alone In Iz World as child of root.
-               model.insertNodeInto(nodeArray[i], root,
-                                    model.getChildCount(root));
-            }else if (i==2){
-               // insert node labelled HanohanoCowboy as new last child of
-               // the node labelled Alone in Iz World.
-               model.insertNodeInto(nodeArray[2], nodeArray[1],
-                                    model.getChildCount(nodeArray[1]));
-            }else if (i==3){
-               // insert node labelled All The Greatest Hits as new last
-               // child of root.
-               model.insertNodeInto(nodeArray[3], root,
-                                    model.getChildCount(root));
-            }else if (i==4){
-               // insert node labelled ComeMonday as new last
-               // child of node labelled All The Greatest Hits.
-               model.insertNodeInto(nodeArray[4], nodeArray[3],
-                                    model.getChildCount(nodeArray[3]));
-            }
-         }
+         //String sourceNames[] = {user,"Alone In Iz World","HanohanoCowboy",
+         //                        "All The Greatest Hits","ComeMonday"};
+	 File file = new File("./music");
+	 File[] directories = file.listFiles(new FilenameFilter() {
+		 @Override
+		 public boolean accept(File current, String name) {
+		     return new File(current, name).isDirectory();
+		 }
+	     });
+         root.setUserObject("music");
+	 DefaultMutableTreeNode dirNode = null;
+	 DefaultMutableTreeNode wavNode = null;
+	 for (int i = 0; i < directories.length; i++) {
+	     // create a node for this directory
+	     dirNode = new DefaultMutableTreeNode(directories[i].getName()); 
+	     model.insertNodeInto(dirNode, root, model.getChildCount(root));
+	     // within each directory find the .wav files
+	     File[] wavFiles = directories[i].listFiles(new FilenameFilter() {
+		     @Override
+		     public boolean accept(File dir, String name) {
+			 return name.endsWith(".wav");
+		     }
+		 });
+	     for (int j = 0; j < wavFiles.length; j++) {
+		 wavNode = new DefaultMutableTreeNode(wavFiles[j].getName().replaceFirst("[.][^.]+$", ""));
+		 model.insertNodeInto(wavNode, dirNode, 0); //model.getChildCount(prevNode));
+	     }
+	 }
          // expand all the nodes in the JTree
          for(int r =0; r < tree.getRowCount(); r++){
             tree.expandRow(r);
@@ -152,9 +150,10 @@ public class MusicThread extends MusicLibraryGui implements
          tree.removeTreeSelectionListener(this);
          DefaultMutableTreeNode node = (DefaultMutableTreeNode)
             tree.getLastSelectedPathComponent();
-         String nodeLabel = (String)node.getUserObject();
-         titleJTF.setText(nodeLabel);
-         System.out.println("Selected node labelled: "+nodeLabel);
+	 if (node != null) {
+	     String nodeLabel = (String)node.getUserObject();
+	     titleJTF.setText(nodeLabel);
+	 }
       }catch (Exception ex){
          ex.printStackTrace();
       }
@@ -164,40 +163,47 @@ public class MusicThread extends MusicLibraryGui implements
    public void actionPerformed(ActionEvent e) {
       if(e.getActionCommand().equals("Exit")) {
          System.exit(0);
-      }else if(e.getActionCommand().equals("Save")) {
-         System.out.println("Save Selected");
-      }else if(e.getActionCommand().equals("Add")) {
-         System.out.println("Add Selected");
-         DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-         DefaultMutableTreeNode root =
-            (DefaultMutableTreeNode)model.getRoot();
-         clearTree(root, model);
-         initializeTree();
       }else if(e.getActionCommand().equals("Play")) {
          try{
             System.out.println("Play Selected");
             // get the currently selected node in the tree.
             // if the user hasn't already selected a node for which
             // there must be a wav file then exit ungracefully!
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-               tree.getLastSelectedPathComponent();
-            String nodeLabel = (String)node.getUserObject();
             if(player != null && player.isAlive()){
                System.out.println("Already playing: Interrupting the thread");
                stopPlaying = true;
                Thread.sleep(500); // give the thread time to complete
                stopPlaying = false;
             }
-            player = new PlayWavThread(nodeLabel, this);
+	    String jTreeVarSelectedPath = "";
+	    Object[] paths = tree.getSelectionPath().getPath();
+	    for (int i=0; i<paths.length; i++) {
+		jTreeVarSelectedPath += paths[i];
+		if (i+1 <paths.length ) {
+		    jTreeVarSelectedPath += File.separator;
+		}
+	    }
+            player = new PlayWavThread(jTreeVarSelectedPath, this);
             player.start();
          }catch (InterruptedException ex){ // sleep may throw this exception
             System.out.println("MusicThread sleep was interrupted.");
             ex.printStackTrace();
          }
-      }else if(e.getActionCommand().equals("Remove")) {
-         System.out.println("Remove Selected");
+      } else if (e.getActionCommand().equals("Stop")) {
+	  try {
+	      if(player != null && player.isAlive()){
+		  System.out.println("Already playing: Interrupting the thread");
+		  stopPlaying = true;
+		  Thread.sleep(500); // give the thread time to complete
+		  stopPlaying = false;
+	      }
+	  } catch (InterruptedException ex){ // sleep may throw this exception
+            System.out.println("MusicThread stop.");
+            ex.printStackTrace();
+         }
+      } else {
+	  System.out.println(e.getActionCommand() + " Selected");
       }
-
    }
 
    private void clearTree(DefaultMutableTreeNode root, DefaultTreeModel model){
@@ -253,7 +259,7 @@ class PlayWavThread extends Thread {
       AudioFormat audioFormat;
       SourceDataLine sourceLine;
       try{
-         Thread.sleep(200); //wait 200 milliseconds before playing the file.
+         Thread.sleep(100); //wait 200 milliseconds before playing the file.
          System.out.println("Playing the wav file: " +aTitle);
          //String fn = (aTitle.startsWith("Han")) ? aTitle+".mp3" : aTitle+".wav";
          String fn = aTitle+".wav";
