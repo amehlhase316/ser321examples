@@ -1,0 +1,97 @@
+plugins {
+  id 'java'
+  id "com.google.protobuf" version "0.8.13" apply true
+}
+
+description = "gRPC Example"
+
+repositories {
+    mavenCentral()
+}
+
+// protobuf dependencies
+dependencies {
+    implementation 'io.grpc:grpc-netty-shaded:1.33.1'
+    implementation 'io.grpc:grpc-protobuf:1.33.1'
+    implementation 'io.grpc:grpc-stub:1.33.1'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
+}
+task pythonProto(type:Exec) {
+  commandLine 'python3', '-m', 'grpc_tools.protoc', '-Isrc/main/proto', '--python_out=build/generated/source/proto/main/python', '--grpc_python_out=build/generated/source/proto/main/grpc/echo', 'src/main/proto/echomessage.proto'
+}
+
+protobuf {
+  protoc {
+    artifact = "com.google.protobuf:protoc:3.12.0"
+  }
+  plugins {
+    grpc {
+      artifact = 'io.grpc:protoc-gen-grpc-java:1.33.1'
+    }
+  }
+  generateProtoTasks {
+    all()*.plugins {
+      grpc {}
+      python {}
+    }
+  }
+}
+
+
+def host = 'localhost'
+def port = 9099
+def message = "Hello there Server"
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("host")) {
+      host = project.getProperty("host")
+    }
+    if (project.hasProperty("port")) {
+      port = project.getProperty("port")
+    }
+    if (project.hasProperty("message")) {
+      message = project.getProperty("message")
+    }
+}
+
+//gradle runClientJava -Pport=9099 -Phost='localhost'
+task runClientJava(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'EchoClient'
+  // default args
+  args host 
+  args port
+  args message 
+}
+
+//gradle runServer -Pport=9099
+task runServerJava(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'EchoServer'
+  // default args
+  args port
+}
+
+// runs Python client through command line
+//gradle runClientPython -Pport=9099 -Phost='localhost'
+task runClientPython(type:Exec) {
+   dependsOn arguments
+   workingDir 'src/main/python'
+   
+   commandLine 'python3', 'echo_client.py', host, port, message
+} 
+
+// runs Python server through command line
+//gradle runServerPython -Pport=9099
+task runServerPython(type:Exec) {
+   dependsOn arguments
+   workingDir 'src/main/python'
+   
+   commandLine 'python3', 'echo_server.py', port
+}

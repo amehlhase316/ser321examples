@@ -1,0 +1,4 @@
+subprojects {
+  group = "middleware.examples"
+}
+

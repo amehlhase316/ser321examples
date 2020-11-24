@@ -1,0 +1,45 @@
+plugins {
+  id 'java'
+}
+
+description = "Topic"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+}
+
+def topicName = 'MyTopic'
+def userName = 'default'
+def password = 'default'
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("topicName")) {
+      topicName = project.getProperty("topicName")
+    }
+    if (project.hasProperty("userName")) {
+      userName = project.getProperty("userName")
+    }
+    if (project.hasProperty("password")) {
+      password = project.getProperty("password")
+    }
+}
+
+//gradle runTopicExample -PtopicName=MyTopic -PuserName=default -Ppassword=default
+task runTopicExample(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Topic"
+  main = 'TopicExample'
+  standardInput = System.in
+  // default args
+  args topicName
+  args userName
+  args password
+}

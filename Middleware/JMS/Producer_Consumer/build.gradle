@@ -1,0 +1,76 @@
+plugins {
+  id 'java'
+}
+
+description = "Producer Consumer"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+}
+
+def jmsHost = 'localhost'
+def jmsPort = 61616
+def queueName = 'MyQueue'
+def message = 'Hello from Gradle'
+def timeout = 5000
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("jmsHost")) {
+      jmsHost = project.getProperty("jmsHost")
+    }
+    if (project.hasProperty("jmsPort")) {
+      jmsPort = project.getProperty("jmsPort")
+    }
+    if (project.hasProperty("queueName")) {
+      queueName = project.getProperty("queueName")
+    }
+    if (project.hasProperty("message")) {
+      message = project.getProperty("message")
+    }
+    if (project.hasProperty("timeout")) {
+      timeout = project.getProperty("timeout")
+    }
+}
+
+//gradle runProducer -Phost=localhost -Pport=61616 -PqueueName=MyQueue -Pmessage=Blanket
+task runProducer(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Producer"
+  main = 'QProducer'
+  // default args
+  args jmsHost
+  args jmsPort
+  args queueName
+  args message
+}
+
+//gradle runProducerJNDI -Pmessage=Blanket
+task runProducerJNDI(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Producer"
+  main = 'QProducerJNDI'
+  // default args
+  args message
+}
+
+//gradle runConsumer -Phost=localhost -Pport=61616 -PqueueName=MyQueue -Ptimeout=10000
+task runConsumer(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Consumer"
+  main = 'QConsumer'
+  args jmsHost
+  args jmsPort
+  args queueName
+  args timeout
+}
+
