@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+package operation;
+
+option java_package = "buffers";
+option java_outer_classname = "ResponseProtos";
+
+message Response {
+  enum ResponseType {
+    SINGLESERVER = 1;
+    SERVERLIST = 2;
+  	SERVICESLIST = 3;
+  	ERROR = 4;
+  }
+  
+  optional ResponseType responseType = 1;
+  optional bool isSuccess = 2;
+  
+  message Connection {
+  	optional string uri = 1 [default = "localhost"];
+  	optional int32 port = 2 [default = 9000];
+  	optional int32 discoveryPort = 3 [default = 9020];
+  	optional string protocol = 4 [default = "Protobuf"];
+  }
+  
+  message Connections {
+  	repeated Connection connections = 1;
+  }
+  
+  message Services {
+  	repeated string names = 1;
+  }
+  
+  oneof result {
+  	string errorString = 3;
+  	Connection connection = 4;
+  	Connections connections = 5;
+  	Services services = 6;
+  }
+}

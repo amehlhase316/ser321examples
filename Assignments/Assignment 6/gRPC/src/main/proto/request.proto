@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package request;
+
+option java_package = "buffers";
+option java_outer_classname = "RequestProtos";
+
+message Request {
+  enum RequestType {
+    REGISTER = 0;
+    FINDSERVER = 1;
+    FINDSERVERS = 2;
+    GETSERVICES = 3;
+  }
+ 
+  optional RequestType requestType = 1 [default = REGISTER];
+
+  message Connection{
+  	optional string uri = 1 [default = "localhost"];
+  	optional int32 discoveryPort = 2 [default = 9020];
+  	optional int32 port = 3 [default = 9000];
+  	optional string protocol = 4 [default = "Protobuf"];
+  	repeated string services = 5;
+  }
+  
+  oneof body {
+  	Connection connection = 2;
+  	string serviceName = 3;
+  }
+}

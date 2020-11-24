@@ -1,0 +1,182 @@
+plugins {
+  id 'java'
+  id "com.google.protobuf" version "0.8.13" apply true
+
+}
+
+description = "Protocol Buffers Socket Example"
+
+repositories {
+    mavenCentral()
+}
+
+repositories {
+   flatDir {
+       dirs 'lib'
+   }
+}
+
+// json and protobuf dependencies 
+dependencies {
+    compile (name:'Registry', ext:'jar')
+    compile group: 'org.json', name: 'json', version: '20200518'
+    implementation 'io.grpc:grpc-netty-shaded:1.33.1'
+    implementation 'io.grpc:grpc-protobuf:1.33.1'
+    implementation 'io.grpc:grpc-stub:1.33.1'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.13.0'
+    }
+    plugins {
+      grpc {
+        artifact = 'io.grpc:protoc-gen-grpc-java:1.33.1'
+      }
+    }
+    generateProtoTasks {
+      all()*.plugins {
+        grpc {}
+      }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+ // host and port of registration node
+ def registryHost = "localhost" // for reaching the classes registry node use "ser321test.duckdns.org"
+ def protobufPort = 9000 // port where the protobuf registry runs on -- for reaching the classes registry node use 8080
+ def jsonPort = 9001 // port where the json registry runs on
+ def grpcPort = 9002 // port where the json registry runs on
+
+ // port and host of a service node
+ def servicePort = 8000; // port for the service node
+ def serviceHost = 'localhost'; // host for the service node
+ def nodeName = "test" // Name of node to be registered
+
+ // for json and protobuf: port where service can be found (getService method)
+ def discoveryPort = 10000 // port where the node runs a registry thread for the registry to call getSerices
+
+ // Method to Echo in client
+ def message = "Hello you" // for the echo service in the node
+
+ 
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("nodeName")) {
+      nodeName = project.getProperty("nodeName")
+    }
+    if (project.hasProperty("jsonPort")) {
+      jsonPort = project.getProperty("jsonPort")
+    }
+    if (project.hasProperty("registryHost")) {
+      registryHost = project.getProperty("registryHost")
+    }
+    if (project.hasProperty("grpcPort")) {
+      grpcPort = project.getProperty("grpcPort")
+    }
+    if (project.hasProperty("protobufPort")) {
+      protobufPort = project.getProperty("protobufPort")
+    }
+    if (project.hasProperty("servicePort")) {
+      servicePort = project.getProperty("servicePort")
+    }
+    if (project.hasProperty("discoveryPort")) {
+      discoveryPort = project.getProperty("discoveryPort")
+    }
+    if (project.hasProperty("message")) {
+      messase = project.getProperty("message")
+    }
+    if (project.hasProperty("serviceHost")) {
+      serviceHost = project.getProperty("serviceHost")
+    }
+}
+
+// Task that runs the registry server
+task runRegistryServer(type: JavaExec) {
+group "registry"
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'registry.Server'
+  // default args
+  args protobufPort
+  args jsonPort
+  args grpcPort
+}
+
+// runs a test that creates some services that can be discovered
+task runDiscovery(type: JavaExec) {
+	group "registry"
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run ProtoBuf Discovery"
+  main = 'test.DiscoveryServers'
+}
+
+// registers the json services created with runDiscovery
+task testJsonRegistration(type: JavaExec) {
+	group "registry"
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run JSON Discovery"
+  main = 'test.TestJson'
+}
+
+// registers the protobuf services created with runDiscovery
+task testProtobufRegistration(type: JavaExec) {
+	group "registry"
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Protobuf Discovery"
+  main = 'test.TestProtobuf'
+}
+
+// ####### Client Server example with grpc
+
+// runs a client which will run some commands on a node and also on the registration node
+task runClientJava(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Client"
+  main = 'example.grpcclient.EchoClient'
+  standardInput = System.in
+  // default args
+  args serviceHost 
+  args servicePort
+  args registryHost
+  args grpcPort
+  args message 
+}
+
+// runs a service node which already has the echo and joke service included
+task runNode(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Server"
+  main = 'example.grpcclient.Node'
+  // default args
+  args registryHost
+  args grpcPort
+  args serviceHost
+  args servicePort
+  args nodeName
+}
+
+
+// How I ran it:
+// ser321test.duckdns.org is my IP on the first AWS instance
+// on AWS instance: 
+
+// gradle runRegistryServer -PgrpcPort=8080
+
+// On a different AWS instance (could be the same one though just different ports)
+// gradle runNode -PnodeName="amehlhas" -PgrpcPort=8080 -PregistryHost="ser321test.duckdns.org" -PserviceHost="18.220.233.57" -PdiscoveryPort=8888 -PservicePort=8880
+
+// on my local machine
+//gradle runClientJava -PgrpcPort=8080 -PregistryHost="ser321test.duckdns.org" -PserviceHost="18.220.233.57" -PservicePort=8880

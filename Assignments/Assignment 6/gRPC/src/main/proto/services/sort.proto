@@ -1,0 +1,36 @@
+// This is for you to call a sorting algorithm and sort a given array from the client. 
+// The sorting algorithms can be taken from an online source you
+// do not have to implement them from scratch, just make sure you include your sources.
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "SortProto";
+
+package services;
+
+service Sort {
+  rpc sort (SortRequest) returns (SortResponse) {}
+}
+
+// The request message includes an array of ints and a sorting algo
+message SortRequest {
+  Algo algo = 1; 
+  repeated int32 data = 2 [packed=true]; // represents the array to be sorted
+}
+
+// The response message
+message SortResponse {
+  bool isSuccess = 1;
+  repeated int32 data = 2 [packed=true]; // represents the sorted array
+  string error = 3; // Error message, a String of your choice to show what went wrong
+}
+
+// enum for the sorting (for enum also see the initial Protobuf example in the repo how to do it in Java)
+enum Algo {
+    MERGE = 0;
+    QUICK = 1;
+    INTERN = 2; // would be the sorting algorithm that is already in the language you use
+  }
