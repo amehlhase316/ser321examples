@@ -1,0 +1,32 @@
+// This service can do simple calulations and gets an arbitrary number of inputs to then add/subt/mul/divide them. 
+// Handle error cases when needed.
+// Subt will take the first number and subtract all the other numbers.
+// Multiply will multiply all given numbers.
+// Divide will use the first number and divide it by all other numbers, e.g. [10, 5, 3] ==> 10/(5+8)
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "CalcProto";
+
+package services;
+
+service Calc {
+  rpc add (CalcRequest) returns (CalcResponse) {}
+  rpc subtract (CalcRequest) returns (CalcResponse) {}
+  rpc multiply (CalcRequest) returns (CalcResponse) {}
+  rpc divide (CalcRequest) returns (CalcResponse) {}
+}
+
+// The request message can include any number of input values, all of them are then used for the method chosen
+message CalcRequest {
+  repeated double num = 1;
+}
+
+// The response message
+message CalcResponse {
+  bool isSuccess = 1;
+  double solution = 2;
+  string error = 3; // Error message, a String of your choice to show what went wrong
+}

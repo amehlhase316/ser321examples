@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "JokeProto";
+
+package services;
+
+service Joke {
+  rpc getJoke (JokeReq) returns (JokeRes) {}
+  rpc setJoke (JokeSetReq) returns (JokeSetRes) {}
+}
+
+// The request message
+message JokeReq {
+  int32 number = 1;
+}
+
+// The response message
+message JokeRes {
+  repeated string joke = 1;
+}
+
+
+// The request message
+message JokeSetReq {
+  string joke = 1;
+}
+
+// The response message
+message JokeSetRes {
+  bool ok = 1;
+  string message = 2;
+}

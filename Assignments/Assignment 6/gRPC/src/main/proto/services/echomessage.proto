@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "EchoProto";
+
+package services;
+
+service Echo {
+  rpc parrot (ClientRequest) returns (ServerResponse) {}
+}
+
+// The request message
+message ClientRequest {
+  string message = 1;
+}
+
+// The response message
+message ServerResponse {
+  string message = 1;
+}

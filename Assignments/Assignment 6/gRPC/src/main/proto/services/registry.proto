@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "RegistryProto";
+
+package services; 
+
+service Registry {
+  rpc register (RegisterReq) returns (ServicesListRes) {}
+  rpc getServices (GetServicesReq) returns (ServicesListRes) {}
+  rpc findServer(FindServerReq) returns (SingleServerRes) {}
+  rpc findServers(FindServersReq) returns (ServerListRes) {}
+}
+
+message GetServicesReq {
+}
+
+message RegisterReq {
+  Connection connection = 1;
+}
+
+message FindServerReq {
+  string serviceName = 1;
+}
+
+message FindServersReq {
+  string serviceName = 1;
+}
+
+message ServicesListRes {
+  bool isSuccess = 1;
+  string error = 2;
+  repeated string services = 3;
+}
+
+message SingleServerRes {
+  bool isSuccess = 1;
+  string error = 2;
+  Connection connection = 3;
+}
+
+message ServerListRes {
+  bool isSuccess = 1;
+  string error = 2;
+  
+  repeated Connection connections = 3;
+}
+
+message Connection {
+  string uri = 1;
+  int32 discoveryPort = 2;
+  int32 port = 3;
+  string protocol = 4;
+  string name = 5;
+}

@@ -1,0 +1,80 @@
+plugins {
+  id 'java'
+}
+
+description = "Publisher Subscriber"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+}
+
+def topicName = 'MyTopic'
+def clientName = 'MyClient'
+def userName = 'default'
+def password = 'default'
+def listenFor = 10
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("topicName")) {
+      topicName = project.getProperty("topicName")
+    }
+    if (project.hasProperty("userName")) {
+      userName = project.getProperty("userName")
+    }
+    if (project.hasProperty("password")) {
+      password = project.getProperty("password")
+    }
+    if (project.hasProperty("clientName")) {
+      clientName = project.getProperty("clientName")
+    }
+    if (project.hasProperty("listenFor")) {
+      listenFor = project.getProperty("listenFor")
+    }
+}
+
+//gradle runDemoPublisherModel -PtopicName=MyTopic -PuserName=default -Ppassword=default
+task runDemoPublisherModel(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Publisher"
+  main = 'DemoPublisherModel'
+  standardInput = System.in
+  // default args
+  args topicName
+  args userName
+  args password
+}
+
+//gradle runDemoSubscriberModel -PtopicName=MyTopic -PclientName=MyClient -PuserName=default -Ppassword=default -PlistenFor=10
+task runDemoSubscriberModel(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Subscriber"
+  main = 'DemoSubscriberModel'
+  standardInput = System.in
+  args topicName
+  args clientName
+  args userName
+  args password
+  args listenFor
+}
+
+//gradle runDemoSubscriberModelWithListener -PtopicName=MyTopic -PclientName=MyClient -PuserName=default -Ppassword=default
+task runDemoSubscriberModelWithListener(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Run Subscriber With Listener"
+  standardInput = System.in
+  main = 'DemoSubscriberModelWithListener'
+  args topicName
+  args clientName
+  args userName
+  args password
+}

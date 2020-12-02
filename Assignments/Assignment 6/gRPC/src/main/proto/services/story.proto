@@ -1,0 +1,42 @@
+// This service saves a story that clients have created sentence by sentence and keeps track of the story. 
+// A client can read the story or add a sentence. The server should maintain the state even after crashing.
+// So you should save the story in JSON or Protobuf, whatever you prefer. The story should be loaded when the server is started.  
+// You should make sure that the story cannot be changed by two people at the same time, so remember what you learned in the Threads lecture. 
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "StoryProto";
+
+package services;
+
+service Story {
+  rpc read (Empty) returns (ReadResponse) {}
+  rpc write (WriteRequest) returns (WriteResponse) {}
+}
+
+message Empty {
+
+}
+
+// The response message
+message ReadResponse {
+  bool isSuccess = 1;
+  string sentence = 2; // the sentence currently on the server
+  string error = 3; // Error message, a String of your choice to show what went wrong
+}
+
+
+// The request message adding a new word to a sentence
+message WriteRequest {
+  string new_sentence = 2; // A new sentence that will be added to the old ones, to build a story. 
+}
+
+// The response message
+message WriteResponse {
+  bool isSuccess = 1;
+  string story = 2; // The new storyline
+  string error = 3; // Error message, a String of your choice to show what went wrong
+}
+

@@ -1,0 +1,42 @@
+plugins {
+  id 'java'
+}
+
+description = "Producer Consumer"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
+}
+
+def jmsHost = 'localhost'
+def queueName = 'MyQueue'
+def sleepDelay = 1000
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+    if (project.hasProperty("jmsHost")) {
+      jmsHost = project.getProperty("jmsHost")
+    }
+    if (project.hasProperty("queueName")) {
+      queueName = project.getProperty("queueName")
+    }
+    if (project.hasProperty("sleepDelay")) {
+      sleepDelay = project.getProperty("sleepDelay")
+    }
+}
+
+//gradle runHelloWorld -Phost=localhost -PqueueName=MyQueue -PsleepDelay=1000
+task runHelloWorld(type: JavaExec) {
+  dependsOn arguments
+  classpath = sourceSets.main.runtimeClasspath
+  description = "Hello World"
+  main = 'App'
+  args jmsHost
+  args queueName
+  args sleepDelay
+}
+

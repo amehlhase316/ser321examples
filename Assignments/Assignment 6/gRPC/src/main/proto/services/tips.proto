@@ -1,0 +1,42 @@
+// This service saves tips that clients have added and keeps track of them. 
+// A client can read all tips or add a new one. The server should maintain the state even after crashing.
+// So you should save all the tips in a JSON or proto file (that is up to you). When starting the server the server should read the tips in. 
+// You should make sure that the story cannot be changed by two people at the same time, so remember what you learned in the Threads lecture. 
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "service";
+option java_outer_classname = "TipsProto";
+
+package services;
+import "services/story.proto";
+
+service Tips {
+  rpc read (Empty) returns (TipsReadResponse) {}
+  rpc write (TipsWriteRequest) returns (TipsWriteResponse) {}
+}
+
+// The response message when reading the tips
+message TipsReadResponse {
+  bool isSuccess = 1;
+  repeated Tip tips = 2; // all the tips peers entered so far
+  string error = 3; // Error message, a String of your choice to show what went wrong if an error occured
+}
+
+
+// The request message adding a new tip to the server
+message TipsWriteRequest {
+  Tip tip = 1;
+}
+
+// The response message
+message TipsWriteResponse {
+  bool isSuccess = 1;
+  string error = 3; // Error message 
+}
+
+message Tip {
+    string name = 1; // name of the person giving the tip
+    string tip = 2; // the tip -- should be an array
+}
