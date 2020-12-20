@@ -141,6 +141,10 @@ gradle-app.setting
 *.fls
 *.out
 
+## IntelliJ files :
+*.idea
+*.iml
+
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse
 
 *.pyc

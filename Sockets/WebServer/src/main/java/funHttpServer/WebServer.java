@@ -18,6 +18,7 @@ package funHttpServer;
 
 import java.io.*;
 import java.net.*;
+import org.json.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -229,8 +230,6 @@ class WebServer {
             builder.append("There must be two inputs to process");
           }
           
-          // TODO: Include error handling here with a correct error code and
-          // a response that makes sense
 
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
@@ -246,7 +245,23 @@ class WebServer {
           String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
           System.out.println(json);
 
-          builder.append("Check the todos mentioned in the Java source file");
+          JSONArray responseArray = new JSONArray(json);
+
+          builder.append("HTTP/1.1 200 OK\n");
+          builder.append("Content-Type: text/plain; charset=utf-8\n");
+          builder.append("\n");
+
+          for (int i = 0; i < responseArray.length(); i++){
+            JSONObject jsonObject = responseArray.getJSONObject(i);
+            JSONObject owner = jsonObject.getJSONObject("owner");
+            int id = jsonObject.getInt("id");
+
+            builder.append("Repo Name: " + jsonObject.getString("name") + "\n");
+            builder.append("Repo Id: " + jsonObject.getInt("id") + "\n");
+            builder.append("Repo Owner: " + owner.getString("login") + "\n\n");
+
+          }
+
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response
           // and list the owner name, owner id and name of the public repo on your webpage, e.g.
