@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 application {
     mainClassName = 'UserXMLSerialize'
     description = "XML Serialization Example"

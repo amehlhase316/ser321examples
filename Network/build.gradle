@@ -1,5 +1,0 @@
-subprojects {
-  group = "network.examples"
-  apply plugin: 'application'
-}
-

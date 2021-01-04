@@ -1,6 +1,0 @@
-include 'Deadlock'
-include 'Firstthread'
-include 'Synchronization'
-include 'FileCopy'
-include 'MusicThread'
-include 'ThreadsShareData'

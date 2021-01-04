@@ -1,3 +1,4 @@
+apply plugin: 'application'
 application {
     mainClassName = 'ThreadPoolExample'
     description = "Thread Pool Example"

@@ -1,3 +1,4 @@
+apply plugin: 'application'
 application {
     mainClassName = 'SynchronizedThreads'
     description = "Example Java Synchronized Threads"

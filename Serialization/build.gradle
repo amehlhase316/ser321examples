@@ -1,5 +1,0 @@
-subprojects {
-  group = "serialization.examples"
-  apply plugin: 'application'
-}
-

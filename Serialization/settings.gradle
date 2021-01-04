@@ -1,5 +1,0 @@
-include 'ClassMigration'
-include 'GroupJson'
-include 'GroupSerialize'
-include 'ProtocolBuffers'
-include 'UserXml'

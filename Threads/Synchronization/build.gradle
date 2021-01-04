@@ -1,3 +1,4 @@
+apply plugin: 'application'
 application {
     mainClassName = 'SynchExample'
     description = "Synchronization Example"
