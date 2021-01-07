@@ -2,7 +2,7 @@ apply plugin: 'java'
 
 description = "UDP Client Server Example"
 
-//Example: gradle runClient --args="18.223.100.162 8888" -q --console=plain
+//Example: gradle runClient --args="localhost 8888" -q --console=plain
 //-q --console=plain makes the console output a bit quieter
 task runClient(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
@@ -24,7 +24,7 @@ task runServer(type: JavaExec) {
   args '5' // delay
 }
 
-//Example gradle runClient2 --args="18.223.100.162 8888 huhuuhuhuhuh" -q --console=plain
+//Example gradle runClient2 --args='localhost 8888 "hey there"' -q --console=plain
 task runClient2(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   description = "Run Client 2"

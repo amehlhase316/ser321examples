@@ -2,6 +2,8 @@ apply plugin: 'java'
 
 description = "TCP Client Server Example"
 
+// gradle ruClient
+// gradle runClient --args='localhost 8000 "Hello there"'
 task runClient(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   description = "Run Client"
@@ -12,6 +14,8 @@ task runClient(type: JavaExec) {
   args 'This is line one.\nThis is line two' // data
 }
 
+// gradle runServer
+// gradle runServer --args='8000 1'
 task runServer(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   description = "Run Server"

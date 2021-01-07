@@ -4,15 +4,19 @@ import org.json.*;
 
 public class JSON {
    public static void main(final String args[]) {
-
+         // create a JSON String
          String json3 = "{'Organization':'ASU','Adress':{'first':'Poly','second':'Tempe'},'employees':[{ 'firstName':'John', 'lastName':'Doe' },{ 'firstName':'Anna', 'lastName':'Smith' },{ 'firstName':'Peter', 'lastName':'Jones' }]}";
          
+         // Json string to JSONObject
          JSONObject newObject = new JSONObject(json3);
          System.out.println(newObject.getString("Organization"));
          System.out.println(newObject.getJSONObject("Adress").getString("first"));
+
+         // create new JSON Array which pulles the employees from the newObject
          JSONArray employeeArray = newObject.getJSONArray("employees");
          System.out.println(employeeArray);
 
+         // create a new JSON array in which we will save all the first names
          JSONArray justFirstnames = new JSONArray();
          for(int i = 0; i < employeeArray.length(); i++){
             System.out.println(employeeArray.getJSONObject(i).getString("firstName"));

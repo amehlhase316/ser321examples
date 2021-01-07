@@ -1,0 +1,60 @@
+apply plugin: 'java'
+
+description = "Client Server Socket Example"
+
+// gradle runBrowser --args="https://google.com"
+// gradle runBrowser
+task runBrowser(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  
+  main = 'SimpleBrowser'
+  // default args
+  args 'https://devhints.io/bash' // url -- default argument
+}
+
+// gradle runGetNameForIP --args='8.8.4.4'
+task runGetNameForIP(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "IPs"
+  description = "Get url for IP"
+  main = 'GetNameForIP'
+  // default args
+  args '8.8.4.4' // IP -- default argument
+}
+
+// gradle runGetIP --args='google.com'
+task runGetIP(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "IPs"
+  description = "Get IP for url"
+  main = 'GetIP'
+  // default args
+  args 'devhints.io' // url -- default argument
+}
+
+// the Client and Server belong together
+// to run, you should run them in two terminals
+// per default these run on ONE computer (localhost) does not need to be specified
+// run receiver first then send
+
+// gradle runDatagramReceive
+task runDatagramReceive(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "Datagram Server/Client"
+  description = "Datagram Receive"
+  main = 'DatagramReceive'
+  // default args
+  args '9099' // port
+}
+
+// gradle runDatagramSend
+task runDatagramSend(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  group = "Datagram Server/Client"
+  description = "Datagram Send"
+  main = 'DatagramSend'
+  // default args
+  args '9099' // port
+  args 'my message' // message
+}
+

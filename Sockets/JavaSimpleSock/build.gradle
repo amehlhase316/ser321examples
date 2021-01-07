@@ -2,52 +2,6 @@ apply plugin: 'java'
 
 description = "Client Server Socket Example"
 
-task runBrowser(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  
-  main = 'SimpleBrowser'
-  // default args
-  args 'https://devhints.io/bash' // url
-}
-
-task runGetNameForIP(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  group = "IPs"
-  description = "Get url for IP"
-  main = 'GetNameForIP'
-  // default args
-  args '8.8.4.4' // IP
-}
-
-task runGetIP(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  group = "IPs"
-  description = "Get IP for url"
-  main = 'GetIP'
-  // default args
-  args 'devhints.io' // url
-}
-
-// the Client and Server belong together
-task runDatagramReceive(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  group = "Datagram Server/Client"
-  description = "Datagram Receive"
-  main = 'DatagramReceive'
-  // default args
-  args '9099' // port
-}
-
-task runDatagramSend(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  group = "Datagram Server/Client"
-  description = "Datagram Send"
-  main = 'DatagramSend'
-  // default args
-  args '9099' // port
-  args 'my message' // message
-}
-
 // Client and Server socket, socket can serve up to three clients
 // The port is defined directly in the Java files. For practice consider changing
 // the tasks to add the port as input to the Gradle task
