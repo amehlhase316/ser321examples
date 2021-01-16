@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 application {
     mainClassName = 'SimpleGrabHttpURL'
     description = "SimpleGrabHttpURL Example"
