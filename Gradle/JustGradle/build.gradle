@@ -12,6 +12,7 @@
 task('task1') {
      group = "Just a task"
      description = "Shows how doFirst and doLast works"
+     println("Hello task 1")
      doFirst {
      	println "first"
      }
@@ -24,6 +25,7 @@ task('task1') {
 task('task2') {
      group = "Just a task"
      description = "Shows how doFirst and doLast works -- reversed"
+     println("Hello task 2")
      doLast {
      	println "first"
      }
