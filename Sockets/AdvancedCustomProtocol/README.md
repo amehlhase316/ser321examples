@@ -1,7 +1,7 @@
 # Example Code for client asking for different data
 These examples show a TCP and the same code with UDP. 
 
-Created by David Clements so all kudos go to him!
+Created by David Clements so all kudos go to him! A [video]{https://youtu.be/QNGj_EvOHlw} he made about this to help understanding hat is going on in the code. 
 
 ## Description
 
