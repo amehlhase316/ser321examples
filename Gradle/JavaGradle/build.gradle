@@ -53,6 +53,13 @@ task runFraction(type: JavaExec) {
 
 // gradle runFrac -Pdenom=4 -Pnum=3 or as gradle runFrac -Pnum=3 -Pdenom=4
 task runFrac(type: JavaExec) {
+  group 'Fraction Tasks'
+  description 'Tasks which runs Fraction with no arguments'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Fraction'
+  
   // only works if two arguments are provided
   // Try: using default values in case non or only one parameter is provided
   if (project.hasProperty("denom") && project.hasProperty("num")) {
