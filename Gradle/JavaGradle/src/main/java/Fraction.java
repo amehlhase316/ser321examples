@@ -42,11 +42,26 @@ public class Fraction {
          // create a new instance
          // Fraction *frac = [[Fraction alloc] init];
          Fraction frac = new Fraction();
+         if (args.length == 2) {
+            int Pnum = 0;
+            int Pdenom = 0;
+            try {
+               Pnum = Integer.parseInt(args[0]);
+               Pdenom = Integer.parseInt(args[1]);
+            } catch (Exception e) {
+               System.out.println("Arguments: " + args[0] + ", " + args[1] + " must be integers.");
+               System.exit(1);
+            }
+            frac.setNumerator(Pnum);
+            frac.setDenominator(Pdenom);
 
-         // set the values
-         frac.setNumerator(1);
-         frac.setDenominator(3);
-
+         } else {
+            System.out.println("Exactly 2 arguments should be provided.\n gradle runFrace -Pnum=1 -Pdenom=2 \n " +
+                    "Using default values:");
+            // set the values
+            frac.setNumerator(1);
+            frac.setDenominator(3);
+         }
          // print it
          System.out.print("The fraction is: ");
          frac.print();

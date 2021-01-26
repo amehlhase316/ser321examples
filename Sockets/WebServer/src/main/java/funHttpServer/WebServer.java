@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
 
 class WebServer {
   public static void main(String args[]) {
-    WebServer server = new WebServer(9000);
+    WebServer server = new WebServer(8888);
   }
 
   /**
@@ -200,19 +200,34 @@ class WebServer {
           Map<String, String> query_pairs = new LinkedHashMap<String, String>();
           // extract path parameters
           query_pairs = splitQuery(request.replace("multiply?", ""));
+          if(query_pairs.size() == 2) {
 
-          // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+            try {
+              Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+              Integer num2 = Integer.parseInt(query_pairs.get("num2"));
 
-          // do math
-          Integer result = num1 * num2;
+              // do math
+              Integer result = num1 * num2;
 
-          // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
+              // Generate response
+              builder.append("HTTP/1.1 200 OK\n");
+              builder.append("Content-Type: text/html; charset=utf-8\n");
+              builder.append("\n");
+              builder.append("Result is: " + result);
+            } catch (Exception e) {
+              builder.append("HTTP/1.1 400 Bad Request\n");
+              builder.append("Content-Type: text/html; charset=utf-8\n");
+              builder.append("\n");
+              builder.append("Both query parameters should be integers");
+            }
+            // extract required fields from parameters
+
+          } else {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n");
+            builder.append("\n");
+            builder.append("Insufficient query amount, there should 2 numbers");
+          }
 
           // TODO: Include error handling here with a correct error code and
           // a response that makes sense
@@ -231,7 +246,11 @@ class WebServer {
           String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
           System.out.println(json);
 
-          builder.append("Check the todos mentioned in the Java source file");
+          //builder.append("Check the todos mentioned in the Java source file");
+          builder.append("HTTP/1.1 200 OK\n");
+          builder.append("Content-Type: application/json; charset=utf-8\n");
+          builder.append("\n");
+
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response
           // and list the owner name, owner id and name of the public repo on your webpage, e.g.
