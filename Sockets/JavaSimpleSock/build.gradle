@@ -53,7 +53,7 @@ task runDatagramSend(type: JavaExec) {
 // the tasks to add the port as input to the Gradle task
 task SocketServer(type: JavaExec) {
   group 'TCP Server/Client'
-  description 'Creates Server socket waits for up to 3 messages'
+  description 'Creates Server socket waits for unlimited messages'
 
   classpath = sourceSets.main.runtimeClasspath
 
@@ -64,6 +64,8 @@ task SocketClient(type: JavaExec) {
   group 'TCP Server/Client'
   description 'Creates client socket sends a message and number to server'
 
+  standardInput = System.in
+  
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'SockClient'

@@ -145,6 +145,9 @@ gradle-app.setting
 *.idea
 *.iml
 
+## VS CODE
+.vscode/
+
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse
 
 *.pyc
