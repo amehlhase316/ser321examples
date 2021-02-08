@@ -1,36 +1,26 @@
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 
 /**
  * A class to demonstrate a simple client-server connection using sockets.
  * Ser321 Foundations of Distributed Software Systems
  * see http://pooh.poly.asu.edu/Ser321
+ *
  * @author Tim Lindquist Tim.Lindquist@asu.edu
- *         Software Engineering, CIDSE, IAFSE, ASU Poly
+ * Software Engineering, CIDSE, IAFSE, ASU Poly
  * @version April 2020
- * 
  * @modified-by David Clements <dacleme1@asu.edu> September 2020
+ * @modified-by Kevin Moore <klmoor21@asu.edu> February 2021
  */
 class SockClient {
-  public static void main (String args[]) {
+  public static void main(String args[]) {
     Socket sock = null;
     String host = "localhost";
-    String message = "HI";
-    Integer number = 100;
+    String message = "";
+    Integer number = 0;
+    Scanner scanner = new Scanner(System.in);
 
-    // works with no inputs or 1, 2 or 3
-    // no error handling for wrong arguments
-    if (args.length >= 1){ // host, if provided
-      host=args[0];
-    }
-    if (args.length >= 2){
-      message = args[1];
-    }
-    // user provided message and number, ignore 2 arguments 
-    if (args.length >= 3){ 
-      number = Integer.valueOf(args[2]);
-    }
-    
     try {
       // open the connection
       sock = new Socket(host, 8888); // connect to host and socket on port 8888
@@ -38,16 +28,45 @@ class SockClient {
       OutputStream out = sock.getOutputStream();
       // create an object output writer (Java only)
       ObjectOutputStream os = new ObjectOutputStream(out);
-      // write the whole message
-      os.writeObject( message);
-      os.writeObject( number);
-      // make sure it wrote and doesn't get cached in a buffer
-      os.flush();
-
       ObjectInputStream in = new ObjectInputStream(sock.getInputStream());
-      String i = (String) in.readObject();
-      System.out.println(i);
-      sock.close(); // close socked after sending
-    } catch (Exception e) {e.printStackTrace();}
+
+      while (true) {
+        System.out.print("Please enter a String to send to the Server (enter \"exit\" to quit\"): ");
+        message = scanner.nextLine();
+        os.writeObject(message);
+
+        if (message.equalsIgnoreCase("exit")) {
+          number = 0;
+        } else {
+          System.out.print("Please enter a Number to send to the Server (enter 0 to quit\"): ");
+          number = scanner.nextInt();
+          scanner.nextLine();
+        }
+
+        //send the object on the output stream
+        os.writeObject(number);
+
+        //receive the response from the server
+        String i = (String) in.readObject();
+
+        //if sever is exiting, exit as well
+        if (i.equalsIgnoreCase("exiting")) {
+          System.out.println(i);
+          break;
+        }
+
+        System.out.println(i);
+      }
+
+      //close resources
+      scanner.close();
+      os.close();
+      in.close();
+      sock.close();
+    } catch(ConnectException e){
+      System.out.println("Connection Error");
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
