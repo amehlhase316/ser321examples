@@ -141,6 +141,9 @@ gradle-app.setting
 *.fls
 *.out
 
+##VSCode
+.vscode/
+
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse
 
 *.pyc
