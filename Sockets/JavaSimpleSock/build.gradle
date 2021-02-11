@@ -21,6 +21,7 @@ task SocketClient(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'SockClient'
+  standardInput = System.in
 
   // allows you to provide host, host&message, host&number, host&number&message (which order does not matter as long as named correctly)
   // run with arguments e.g.: gradle SocketClient -Phost=localhost -Pmessage=secret -Pnumber=5
