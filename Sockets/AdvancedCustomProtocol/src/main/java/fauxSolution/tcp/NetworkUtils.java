@@ -23,19 +23,20 @@ public class NetworkUtils {
   }
 
   // read the bytes on the stream
+  // read the bytes on the stream
   private static byte[] Read(InputStream in, int length) throws IOException {
     byte[] bytes = new byte[length];
+    System.out.println("Read in bytes: " + length);
     int bytesRead = 0;
     try {
       bytesRead = in.read(bytes, 0, length);
     } catch (IOException e1) {
       e1.printStackTrace();
     }
-
-    if (bytesRead != length) {
-      return null;
+    if (bytesRead < length && bytesRead > 0) {
+      byte[] newBytes = Read(in, length-bytesRead);
+      System.arraycopy(newBytes, 0, bytes, bytesRead, newBytes.length);
     }
-
     return bytes;
   }
 
