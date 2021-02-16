@@ -10,7 +10,7 @@ public class Server {
 public static void main (String args[]) {
         try {
                 if (args.length != 1) {
-                        System.out.println("Usage: gradle ThreadedSockClient -Pport=9099");
+                        System.out.println("Usage: gradle runServer -Pport=9099");
                         System.exit(0);
                 }
                 int port = -1;
