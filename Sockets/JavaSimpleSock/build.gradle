@@ -22,16 +22,4 @@ task SocketClient(type: JavaExec) {
 
   main = 'SockClient'
   standardInput = System.in
-
-  // allows you to provide host, host&message, host&number, host&number&message (which order does not matter as long as named correctly)
-  // run with arguments e.g.: gradle SocketClient -Phost=localhost -Pmessage=secret -Pnumber=5
-  if (project.hasProperty("host") && project.hasProperty("message") && project.hasProperty("number")) {
-    args(project.getProperty('host'), project.getProperty('message'), project.getProperty('number'));
-  } else if (project.hasProperty("host") && project.hasProperty("message")) {
-    args(project.getProperty('host'), project.getProperty('message'));
-  } else if (project.hasProperty("host") && project.hasProperty("number")) {
-    args(project.getProperty('host'), "Set by Gradle, since nothing provided: https://gph.is/2y76sj4", project.getProperty('number'));
-  }  else if (project.hasProperty("host")) {
-    args(project.getProperty('host'));
-  } 
 }
