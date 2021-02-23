@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+
 #define RCVBUFSIZE 32
 static const int MAXPENDING = 5;
 
@@ -23,23 +24,25 @@ int main(int argc, char *argv[]) {
 		exit_client("Parameter(s): <Server Port>");
     }
 
-	in_port_t server_port = atoi(argv[1]);
+	in_port_t server_port = atoi(argv[1]); //in_port_t is actually equivalent to uint16_t! (in.h)
 
 	// 2) Create a socket using TCP.
 	int server_sock;
-	if ((server_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+	if ((server_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) { //socket(domain, socket type (byte-stream), protocol), 											protocol macro defined in in.h, others in socket.h
 		exit_client("socket(): failed creation");
     }
 
 	//3) Construct the server address struct
-	struct sockaddr_in server_addr;
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	server_addr.sin_port = htons(server_port);
+	struct sockaddr_in server_addr; //struct defined in netinet/in.h
+	memset(&server_addr, 0, sizeof(server_addr)); //allocate memory for the struct
 
-    // 4) Bind to the local address
-	if (bind(server_sock, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) {
+	//assign necessary values to the struct (netinet/in.h)
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = htonl(INADDR_ANY); //sin_addr is actually another struct, we are assigning the value to it's s_addr 									field!
+	server_addr.sin_port = htons(server_port); //host to network short and host to network long convert the values to big-endian 								ordering (MSB first) for compatibility
+
+    // 4) Bind to the local address (Java takes care of this step for you)
+	if (bind(server_sock, (struct sockaddr*) &server_addr, sizeof(server_addr)) < 0) { //bind(socket, socketaddress, socket address 												length)
        exit_client("bind() failed");
     }
 
@@ -48,23 +51,23 @@ int main(int argc, char *argv[]) {
 	    exit_client("listen() failed");
     }
 
-
+	//infinite loop begins
 	for (;;) {
-      struct sockaddr_in client_addr;
-      socklen_t client_addr_len = sizeof(client_addr);
+      struct sockaddr_in client_addr; //struct to store the clients address
+      socklen_t client_addr_len = sizeof(client_addr); //store clients address length
 
-      // 6) Wait for a client to connect
-      int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_addr_len);
+      // 6) Wait for a client to connect (accept() blocks)
+      int client_sock = accept(server_sock, (struct sockaddr *)&client_addr, &client_addr_len); //creates client socket from listening 									queue with accept(server socket, client address, client address length)
       if (client_sock < 0) {
           exit_client("accept() failed");
       }
 
       // 7) Handle client connection.
-      char client_name[INET_ADDRSTRLEN];
+      char client_name[INET_ADDRSTRLEN]; //macro in in.h (16 characters)
       if (inet_ntop(AF_INET,
             &client_addr.sin_addr.s_addr,
-            client_name, sizeof(client_name)) != NULL) {
-          printf("Handling client %s/%d\n", client_name, ntohs(client_addr.sin_port));
+            client_name, sizeof(client_name)) != NULL) { //inet_ntop() converts the numeric address into a text string called client name
+          printf("Handling client %s/%d\n", client_name, ntohs(client_addr.sin_port)); //network to host short conversion
       } else {
           puts("Unable to get client address");
       }
@@ -73,12 +76,12 @@ int main(int argc, char *argv[]) {
 
 	}
 
-
+//Never reaches here!
 }
 
 
 void handle_client_socket(int client_sock) {
-    char buffer[RCVBUFSIZE];
+    char buffer[RCVBUFSIZE]; //defined in this file as 32 characters
 
     //1) Receive message.
     ssize_t numBytesRcvd = recv(client_sock, buffer, RCVBUFSIZE, 0);

@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
 	struct sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-	int rtnVal = inet_pton(AF_INET, server_ip_str, &server_addr.sin_addr.s_addr);
+	int rtnVal = inet_pton(AF_INET, server_ip_str, &server_addr.sin_addr.s_addr); //converts server ip from string to numeric struct form in server_addr.sin_addr.s_addr
 	if (rtnVal == 0) {
 	    exit_client("inet_pton(): invalid ip address");
     } else if (rtnVal < 0) {
 	    exit_client("inet_pton(): error when parsing");
     }
-	server_addr.sin_port = htons(server_port);
+	server_addr.sin_port = htons(server_port); //converts port number (host to network short) to correct bit ordering (big-endian)
 
     // 4) Establish the connection to the server.
 	if (connect(client_sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
