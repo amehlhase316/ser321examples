@@ -47,20 +47,20 @@ class SockBaseServer {
                 String result = null;
                 String num1 = op.getVal1();
                 String num2 = op.getVal2();
-                int baseN = Integer.parseInt(op.getBase());
+                int baseN = op.getBase();
 
                 Base base = new Base();
 
                 if (op.getOperationType() == Operation.OperationType.ADD) {
                   result = base.add(num1, num2, baseN);
-          System.out.println("base " + baseN + ": " + num1 + " + " + num2 + " = " + result);
+                  System.out.println("base " + baseN + ": " + num1 + " + " + num2 + " = " + result);
                 } else if (op.getOperationType() == Operation.OperationType.SUB) {
                   result = base.substract(num1, num2, baseN);
-          System.out.println("base " + baseN + ": " + num1 + " - " + num2 + " = " + result);
+                  System.out.println("base " + baseN + ": " + num1 + " - " + num2 + " = " + result);
                 }
                 if (op.getResponseType() == Operation.ResponseType.JSON){
                   //just building a JSON strinng
-                  result = result;
+                  result = "{'result':'" + result +"'}";
                 }
                 Response response = buildResponse(result);
                 response.writeDelimitedTo(out);

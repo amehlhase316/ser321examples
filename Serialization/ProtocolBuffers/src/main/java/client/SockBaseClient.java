@@ -86,7 +86,7 @@ class SockBaseClient {
       Operation.Builder op = Operation.newBuilder()
         .setVal1((String)payload.get("num1"))
         .setVal2((String)payload.get("num2"))
-        .setBase((String)header.get("base"))
+        .setBase(header.getInt("base"))
         .setOperationType(getOperationType((String)header.get("operation")))
         .setResponseType(getResponseType((String)header.get("response")));
       return op.build();

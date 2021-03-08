@@ -30,7 +30,7 @@ runServer
 You have two Clients one Python and one Java both using the Protobuf protocol and both can communicate with the server
 
 Both clients run per default on 
-host localhost, port 9099 and fil edata.json -- all these can be changed
+host localhost, port 9099 and file data.json -- all these can be changed
 Run Java:
 	runClient
 Run Python:

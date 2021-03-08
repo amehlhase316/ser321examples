@@ -1,7 +1,7 @@
 {"header":
   {
     "operation": "add",
-    "base": "2",
+    "base": 2,
     "response": "json"
   },
   "payload": {
