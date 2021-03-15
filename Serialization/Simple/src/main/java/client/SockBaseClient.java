@@ -39,7 +39,28 @@ class SockBaseClient {
 
             // read from the server
             in = serverSock.getInputStream();
+            
 
+            while (true){
+
+              System.out.println("Type anything");
+              BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+              String strToSend = stdin.readLine();
+
+              Request.Builder reqBuilder = Request.newBuilder();
+              reqBuilder.setOperationType(Request.OperationType.ADD);
+
+              reqBuilder.addNums(4);
+              reqBuilder.addNums(5);
+              reqBuilder.addNums(6);
+
+              Request req = reqBuilder.build();
+              req.writeDelimitedTo(out);
+
+              Response op = Response.parseDelimitedFrom(in);
+              System.out.println("Result is: " + op.getResult());
+
+          }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

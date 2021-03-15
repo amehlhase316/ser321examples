@@ -7,7 +7,12 @@ import buffers.OperationProtos.Request;
 import buffers.OperationProtos.Response;
 
 
-class SockBaseServer {
+class SockBaseServer extends Thread {
+    Socket socket = null;
+    public SockBaseServer(Socket sock){
+      this.socket = sock;
+    }
+
     public static void main (String args[]) throws Exception {
 
         int count = 0;
@@ -35,21 +40,50 @@ class SockBaseServer {
           e.printStackTrace();
           System.exit(2);
         }
-        while (serv.isBound() && !serv.isClosed()) {
-            System.out.println("Ready...");
-            try {
-                clientSocket = serv.accept();
-                in = clientSocket.getInputStream();
-                out = clientSocket.getOutputStream();
-                
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                if (out != null)  out.close();
-                if (in != null)   in.close();
-                if (clientSocket != null) clientSocket.close();
-            }
+        while(true) {
+          System.out.println("Waiting for connections");
+          clientSocket = serv.accept();
+
+          SockBaseServer s = new SockBaseServer(clientSocket);
+          s.start();
         }
+        
+    }
+
+    public void run(){
+      InputStream in = null;
+      OutputStream out = null;
+      while (true) {
+
+          System.out.println("Ready in Thread");
+          try {
+              in = socket.getInputStream();
+              out = socket.getOutputStream();
+              Request req = Request.parseDelimitedFrom(in);
+              System.out.println(req.toString());
+
+              int add = 0;
+              if (req.getOperationType() == Request.OperationType.ADD){
+                for (int num: req.getNumsList()){
+                  add += num;
+                }
+              }
+              System.out.println(add);
+
+              Response.Builder resBuilder = Response.newBuilder();
+
+              resBuilder.setSuccess(true);
+              resBuilder.setResult(add);
+              Response response = resBuilder.build();
+              response.writeDelimitedTo(out);
+              
+          } catch (Exception ex) {
+              ex.printStackTrace();
+          } finally {
+             
+          }
+      }
+
     }
 
 }
