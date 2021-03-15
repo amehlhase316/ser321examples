@@ -1,0 +1,28 @@
+Cheat Sheet
+
+// Reading from InputStream
+Operation op = Operation.parseDelimitedFrom(in);
+
+// Writing to out stream if "response" is a proto object and "out" and OutputStream
+response.writeDelimitedTo(out);
+
+// Building a builder object
+Response.Builder responseBuilder = Response.newBuilder();
+
+// setting values
+responseBuilder.setVal(1)
+
+// building the object
+Response response = responseBuilder.build()
+
+// getting values from object
+response.getVal()
+
+// iterating through repeated fields if proto has repeated field "nums" of type string
+for (String test: res.getNums()){}
+
+// add to repeated field
+res.addNums("hello");
+
+// get an ENUM
+Request.OperationType.ADD

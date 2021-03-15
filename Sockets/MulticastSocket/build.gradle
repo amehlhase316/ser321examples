@@ -16,7 +16,7 @@ task runSender(type: JavaExec) {
   description = "Run Sender"
   main = 'Sender'
   // default args
-  args 'my sender message' // message
+  args 'Hello Clients..... ' // message
   args '224.0.0.1' // multicast address
   args '6789' // port
 }
