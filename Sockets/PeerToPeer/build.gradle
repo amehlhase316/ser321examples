@@ -1,0 +1,46 @@
+// set as java application
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.json', name: 'json', version: '20200518'
+}
+
+def peerName = "test"
+def peer = 'localhost:8000'
+def leader = 'localhost:8000'
+def isLeader = false
+
+// task reading in the arguments if any given, if not the default from above will be used
+task arguments {
+	if (project.hasProperty("peerName")) {
+      peerName = project.getProperty("peerName")
+    }
+    if (project.hasProperty("peer")) {
+      peer = project.getProperty("peer")
+    }
+    if (project.hasProperty("leader")) {
+      leader = project.getProperty("leader")
+    }
+    if (project.hasProperty("isLeader")) {
+      isLeader = project.getProperty("isLeader")
+    }
+} 
+
+task runPeer(type: JavaExec) {
+  description 'Runs peer'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Peer'
+  standardInput = System.in
+
+  args peerName
+  args peer
+  args leader
+  args isLeader
+}
+
