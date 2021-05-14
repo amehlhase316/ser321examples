@@ -9,6 +9,9 @@ To see the proto file see: src/main/proto which is the default location for prot
 
 Gradle is already setup to compile the proto files. 
 
+Code walk-through done by a UGTA
+[Code walk-through] (https://youtu.be/ondKNrJc2rw)
+
 ### How to run it (optional)
 The proto file can be compiled using
 
