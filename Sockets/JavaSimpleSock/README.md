@@ -1,6 +1,8 @@
 ##### Author: Instructor team SE, ASU Polytechnic, CIDSE, SE
 * Version: February 2021
 
+The Code as is only runs on localhost and NOT on AWS, since the host and port are hardcoded! So this is different than the video on Canvas. 
+
 [Code walk through video](https://youtu.be/EiK0YhbjVuk)
 
 ##### Purpose
