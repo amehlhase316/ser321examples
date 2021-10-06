@@ -1,6 +1,9 @@
 import java.net.*;
 import java.io.*;
 
+/**
+ * A client class for client-server connections using a TCP connection.
+ */
 public class TCPClient {
 	public static void main (String args[]) {
 		// arguments supply message and hostname
@@ -19,8 +22,11 @@ public class TCPClient {
             System.exit(2);
         }
 		try{
-			s = new Socket(host, portNo);    
+			s = new Socket(host, portNo); //initialize socket with host and portNo
+			// Initialize a data input stream, this lets the application read primitive Java data types.
 			DataInputStream in = new DataInputStream( s.getInputStream());
+			// Initialize a data output stream this lets the application write data
+			// that can later be read by a data input stream.
 			DataOutputStream out =new DataOutputStream( s.getOutputStream());
 			out.writeUTF(message);      	// UTF is a string encoding 
 			String data = in.readUTF();	    // read a line of data from the stream
