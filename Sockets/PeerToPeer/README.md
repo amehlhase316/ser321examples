@@ -21,7 +21,7 @@ So just a peer who is not the leader, minimal with the "default" leader from abo
 	gradle runPeer -PpeerName=Anna -Ppeer="localhost:9000" -Pleader="localhost:8080" -q --console=plain
 
 If you want to change settings
-	gradle runPeer -PpeerName=Elsa -Ppeer="localhost:9000" -Pleader="localhost:8080" -q --console=plain
+	gradle runPeer -PpeerName=Elsa -Ppeer="localhost:9002" -Pleader="localhost:8080" -q --console=plain
 
 - isLeader is default false so you do not need to set it
 - leader: needs to be the same in ALL started peers no matter if leader or pawn
