@@ -11,14 +11,14 @@ This will start the leader on a default port and use localhost
 	gradle runPeer -PisLeader=true -q --console=plain
 
 If you want to change the leader settings
-	gradle runPeer -PpeerName=Hans -Ppeer="localhost:8080" -Pleader="localhost:8080" -PisLeader=true -q --console=plain
+	gradle runPeer -PpeerName=Hans -Ppeer="localhost:8080" -PisLeader=true -q --console=plain
 
 You can of course replace localhost with the IP of your AWS, Pi etc. 
 
 ### Running a Pawn
 
 So just a peer who is not the leader, minimal with the "default" leader from above
-	gradle runPeer -PpeerName=Anna -Ppeer="localhost:9000" -q --console=plain
+	gradle runPeer -PpeerName=Anna -Ppeer="localhost:9000" -Pleader="localhost:8080" -q --console=plain
 
 If you want to change settings
 	gradle runPeer -PpeerName=Elsa -Ppeer="localhost:9000" -Pleader="localhost:8080" -q --console=plain
