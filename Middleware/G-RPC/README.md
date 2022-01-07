@@ -19,7 +19,7 @@ These need to be installed
   4. pip install grpcio-tools
 
 ##### To compile grpc and protocol buffers for Gradle [from the `Sockets` directory]:
-- gradle generatProto
+- gradle generateProto
 - gradle pythonProto
 
 This will generate the py files for proto and grpc, sorry for the two separate calls.
