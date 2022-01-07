@@ -17,7 +17,7 @@ In the top level folder (`ActiveMQ`):
 
 You can run a project through:
  - gradle projectname:taskname
-    - gradle Producer_Consumer:runProducerJNDI -Pmessage=anketJNDI
+    - gradle Producer_Consumer:runProducerJNDI -Pmessage=BlanketJNDI
 
 #####  Pre-requisite for each project
 
