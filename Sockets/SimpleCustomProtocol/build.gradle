@@ -45,5 +45,5 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'org.json', name: 'json', version: '20200518'
 }
