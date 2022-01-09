@@ -26,6 +26,7 @@
   typedef void raw_type;       // Type used for raw data on this platform
 
 #include <errno.h>             // For errno
+#include <string.h>            // For memset()
 #include "UDPSocket.hpp"
 
 using namespace std;

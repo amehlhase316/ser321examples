@@ -23,4 +23,4 @@ Building and running the server and terminal clients is done with Gradle.
 
 3. To run the Cpp Client
   3.1 From the 'Examples/Sockets', run: gradle SimpleInterop:Cpp:build
-  3.2 Go into the 'SimpleInterop/Cpp/build/install/main/debug', then run, ./Cpp localhost "hello from C++" 8080
+  3.2 Go into the 'SimpleInterop/Cpp/build/install/main/debug', then run, ./Cpp localhost "hello from C++" 9088

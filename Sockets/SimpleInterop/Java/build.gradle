@@ -4,6 +4,7 @@ description = "Java Socket Client Server Example"
 
 task runClient(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
+  standardInput = System.in
   description = "Run Client"
   main = 'EchoClient'
   // default args
