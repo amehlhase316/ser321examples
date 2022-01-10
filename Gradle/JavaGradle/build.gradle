@@ -63,5 +63,5 @@ task runFraction(type: JavaExec) {
 
 // Setting dependencies, e.g. when you import JSON in your Java files
 // dependencies{
-//   compile 'org.json:json:20171018'
+//   implementation 'org.json:json:20171018'
 // }
