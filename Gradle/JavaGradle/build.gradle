@@ -49,6 +49,10 @@ task runFraction(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'Fraction'
+  
+  // default arguments if non are given
+  args '1'
+  args '3'
 }
 
 // Try:
