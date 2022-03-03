@@ -9,7 +9,7 @@ application {
 run {
   // default arguments
   args '5' // number of transactions (threads)
-  args '5' // sleep delay
+  args '3000' // sleep delay
 }
 
 // gradle SynchExample2 --args='5,1000'. -- runs with two accounts and created 5 threads
@@ -20,4 +20,14 @@ task SynchExample2(type: JavaExec) {
 
   args '5' // number of transactions (threads)
   args '40000' // sleep delay
+}
+
+// gradle SynchExample3 --args='5,1000'. -- runs with two accounts and created 5 threads
+task SynchExample3(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SynchExample3'
+
+  args '5' // number of transactions (threads)
+  args '500' // sleep delay
 }
