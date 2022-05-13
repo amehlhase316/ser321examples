@@ -2,6 +2,8 @@
 
 All examples in this repository are for you to play with and to learn about the different concepts in this class. This repo is still a "living" thing. As we progress we might add more examples or make changes. 
 
+You can use these samples to develop your solutions but you need to reference things if you copy parts of the repo into your solution and it is NOT ok to use any of the examples here and submit them as your own. Each assignment that you submit has to have a significant own contribution to show you understand the concepts and can develop a solution on your own. 
+
 ## Advise
 It is advised that you fork this repository so that you have your own version and can also make changes to your own repo to test different scenarios. Then clone that repo to your main machine and your second machine. 
 
