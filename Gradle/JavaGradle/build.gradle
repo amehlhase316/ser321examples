@@ -20,6 +20,21 @@ task runApp(type: JavaExec) {
 }
 
 // task which will run Main with default parameters, 
+// can be overwritten with: gradle runApp --args '3 4' 
+task runFrac(type: JavaExec) {
+  group 'Fraction tasks'
+  description 'Tasks which runs Fraction with default parameters'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Fraction'
+
+  // default arguments if non are given
+  args '1'
+  args '2'
+}
+
+// task which will run Main with default parameters, 
 // but also accepts new parameter this time with given names
 // Example: gradle runAppAgain -Pnum1=9 -Pnum2=10
 // Example2 (this will make Gradle run more quietly in the console):
@@ -49,6 +64,14 @@ task runFraction(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'Fraction'
+  
+  // only works if two arguments are provided
+  // Try: using default values in case non or only one parameter is provided
+  if (project.hasProperty("num1") && project.hasProperty("num2")) {
+    args(project.getProperty('num1'), project.getProperty('num2'));
+  } else if (project.hasProperty("num1")){
+    args(project.getProperty('num1'), 1);
+  }
 }
 
 // Try:
