@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies{
-  compile 'org.json:json:20171018' // org.json
+  implementation 'org.json:json:20171018' // org.json
 }
 
 // Client and Server socket, socket can serve up to three clients

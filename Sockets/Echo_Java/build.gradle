@@ -8,7 +8,7 @@ task runServer(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 
   main = 'Server'
-  // run with arguments e.g.: gradle Server -Pport=9099
+  // run with arguments e.g.: gradle runServer -Pport=9099
 
   if (project.hasProperty('port')) {
     args(project.getProperty('port'));
@@ -23,7 +23,7 @@ task runClient(type: JavaExec) {
 
   main = 'Client'
 
-  // run with arguments e.g.: gradle Client -Phost=localhost -Pport=9099
+  // run with arguments e.g.: gradle runClient -Phost=localhost -Pport=9099
   if (project.hasProperty("host") && project.hasProperty('port')) {
     args(project.getProperty('host'), project.getProperty('port'));
   }

@@ -2,7 +2,7 @@
 Demonstrate simple Client and Server communication using `SocketServer` and `Socket` classes.
 The server maintains a state of each client using a `HashMap`.
 
-There are not threads in this server, thus evertime the client wants something it will connect again. The client will thus break of the connection when sendint the data. 
+There are not threads in this server, thus evertime the client wants something it will connect again. The client will thus break off the connection after sending the data. 
 
 The client connects to the server, the client needs to send their unique client id. When the clientID is not known yet the new client id will be saved in a hashmap. If the clientID is known then the server will pull the data from that client. In this case the data is just an int. 
 
