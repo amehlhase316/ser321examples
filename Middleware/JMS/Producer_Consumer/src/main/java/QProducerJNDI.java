@@ -29,7 +29,7 @@ public class QProducerJNDI {
 	    TextMessage message = session.createTextMessage(messageStr);
 	    // Here we are sending the message!
 	    producer.send(message);
-	    System.out.println("Sent message '" + message.getText() + "' to queue example.MyQueue");
+	    System.out.println("Sent message '" + message.getText() + "' to queue MyQueue");
 	} finally {
 	    connection.close();
 	}

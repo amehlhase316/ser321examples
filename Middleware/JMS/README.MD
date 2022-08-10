@@ -9,7 +9,7 @@ Please note that this is for a default installation, for custom installations th
 
 This is a multi project gradle setup.
 
-Meaning each project has its own gradle file but there is one setting file and overall grading file so you can run things from the example folders or from the top level folder. 
+Meaning each project has its own gradle file but there is one setting file and overall gradle file so you can run things from the example folders or from the top level folder. 
 
 In the top level folder (`ActiveMQ`):
  - gradle projects
@@ -17,7 +17,7 @@ In the top level folder (`ActiveMQ`):
 
 You can run a project through:
  - gradle projectname:taskname
-    - gradle Producer_Consumer:runProducerJNDI -Pmessage=anketJNDI
+    - gradle Producer_Consumer:runProducerJNDI -Pmessage=BlanketJNDI
 
 #####  Pre-requisite for each project
 

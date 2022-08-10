@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-  compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
+  implementation group: 'org.apache.activemq', name: 'activemq-all', version: '5.15.8'
 }
 
 def jmsHost = 'localhost'
