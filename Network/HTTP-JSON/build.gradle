@@ -9,8 +9,8 @@ repositories {
 }
 
 dependencies{
-  compile 'org.json:json:20171018' // org.json
-  compile 'com.google.code.gson:gson:2.8.6' // Google JSON
+  implementation 'org.json:json:20171018' // org.json
+  implementation 'com.google.code.gson:gson:2.8.6' // Google JSON
 }
 
 task API(type: JavaExec) {

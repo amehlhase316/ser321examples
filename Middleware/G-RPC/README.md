@@ -10,6 +10,9 @@ You do not need to install anything things will run through the gradle file.
 
 - `host`, `port` and `message` are optional arguments for the program.
 
+
+The below is only needed for Python which is nothing we need for the course
+
 #### PYTHON Install Dependencies
 These need to be installed
 ###### (use of virtualenv recommended for `pip` installs)

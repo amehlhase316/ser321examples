@@ -20,6 +20,7 @@ in the jar file: json.jar. Nevertheless, you should download the library and
 generate the javadocs for the classes, which will be useful in utilizing
 Json with your Java programs.
 
+##### Run
 You should execute the Java program with:
-gradle GroupJson:run
+gradle run
 

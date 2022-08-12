@@ -1,6 +1,6 @@
 plugins {
   id 'java'
-  id "com.google.protobuf" version "0.8.13" apply true
+  id "com.google.protobuf" version "0.8.18" apply true
 }
 
 description = "gRPC Example"
@@ -13,9 +13,9 @@ repositories {
 dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.33.1'
     implementation 'io.grpc:grpc-protobuf:1.33.1'
-    implementation 'io.grpc:grpc-stub:1.33.1'
+    implementation 'io.grpc:grpc-stub:1.40.1'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
-    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.18.0'
 }
 task pythonProto(type:Exec) {
   commandLine 'python3', '-m', 'grpc_tools.protoc', '-Isrc/main/proto', '--python_out=build/generated/source/proto/main/python', '--grpc_python_out=build/generated/source/proto/main/grpc/echo', 'src/main/proto/echomessage.proto'
@@ -23,11 +23,11 @@ task pythonProto(type:Exec) {
 
 protobuf {
   protoc {
-    artifact = "com.google.protobuf:protoc:3.12.0"
+    artifact = "com.google.protobuf:protoc:3.21.1"
   }
   plugins {
     grpc {
-      artifact = 'io.grpc:protoc-gen-grpc-java:1.33.1'
+      artifact = 'io.grpc:protoc-gen-grpc-java:1.48.1'
     }
   }
   generateProtoTasks {

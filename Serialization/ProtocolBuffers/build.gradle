@@ -1,6 +1,6 @@
 plugins {
   id 'java'
-  id "com.google.protobuf" version "0.8.13" apply true
+  id "com.google.protobuf" version "0.8.18" apply true
 
 }
 
@@ -12,13 +12,13 @@ repositories {
 
 // json and protobuf dependencies 
 dependencies {
-    compile group: 'org.json', name: 'json', version: '20200518'
-    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.13.0'
+    implementation group: 'org.json', name: 'json', version: '20200518'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.18.0'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.13.0'
+        artifact = 'com.google.protobuf:protoc:3.21.1'
     }
     generateProtoTasks {
     all().each { task ->

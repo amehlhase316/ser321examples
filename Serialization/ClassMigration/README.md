@@ -29,10 +29,12 @@ the serialversion of the new class which is attempting to deserialize.
 Now, edit the User class again to uncomment line 45:
    //private static final long serialVersionUID = -3612890521606032036L;
 When you do this, assure that the definition matches that you got when running
-gradle ClassMigration:runUser 
+
+##### Run
+gradle runUser 
 
 Now run the program again with attempting to read:
-gradle ClassMigration:runFileSerialize --args 'read'
+gradle runFileSerialize --args 'read'
 
 The result should be success. This demonstrates how serialversioning works in java.
 The manuals describe what happens in this situtuation, assuming that you declare the

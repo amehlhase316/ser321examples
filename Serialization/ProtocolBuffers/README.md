@@ -36,12 +36,12 @@ Both clients run per default on
 host localhost, port 9099 and file data.json -- all these can be changed
 Run Java:
 	runClient
-Run Python:
-	runClient
+Run Python (has not been tested at the moment)
+	runClientPython
 
 #### With parameters:
 Java
 gradle runClient -Pport=9099 -Phost='localhost' -Pfile='data.json'
 
-Python
+Python (has not been tested at the moment)
 gradle runClientPython -Pport=9099 -Phost='localhost' -Pfile='data.json'

@@ -38,7 +38,7 @@ task runGetIP(type: JavaExec) {
 // run receiver first then send
 
 // gradle runDatagramReceive
-task runDatagramReceive(type: JavaExec) {
+task DatagramReceive(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   group = "Datagram Server/Client"
   description = "Datagram Receive"
@@ -48,7 +48,7 @@ task runDatagramReceive(type: JavaExec) {
 }
 
 // gradle runDatagramSend
-task runDatagramSend(type: JavaExec) {
+task DatagramSend(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   group = "Datagram Server/Client"
   description = "Datagram Send"

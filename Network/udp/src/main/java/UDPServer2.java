@@ -22,6 +22,7 @@ public class UDPServer2 {
 			while(true){
 				DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 				aSocket.receive(request);     
+				System.out.println("RECEIVED: " + new String(request.getData()));
 				// construct a reply packet from request
 				DatagramPacket reply = new DatagramPacket(request.getData(), request.getLength(), 
 						request.getAddress(), request.getPort());
