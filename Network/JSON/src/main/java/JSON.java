@@ -5,14 +5,14 @@ import org.json.*;
 public class JSON {
    public static void main(final String args[]) {
          // create a JSON String
-         String json3 = "{'Organization':'ASU','Adress':{'first':'Poly','second':'Tempe'},'employees':[{ 'firstName':'John', 'lastName':'Doe' },{ 'firstName':'Anna', 'lastName':'Smith' },{ 'firstName':'Peter', 'lastName':'Jones' }]}";
+         String json3 = "{'Organization':'ASU','Address':{'first':'Poly','second':'Tempe'},'employees':[{ 'firstName':'John', 'lastName':'Doe' },{ 'firstName':'Anna', 'lastName':'Smith' },{ 'firstName':'Peter', 'lastName':'Jones' }]}";
          
-         // Json string to JSONObject
+         // JSON String to JSON Object
          JSONObject newObject = new JSONObject(json3);
          System.out.println(newObject.getString("Organization"));
-         System.out.println(newObject.getJSONObject("Adress").getString("first"));
+         System.out.println(newObject.getJSONObject("Address").getString("first"));
 
-         // create new JSON Array which pulles the employees from the newObject
+         // create new JSON Array which pulls the employees from the newObject
          JSONArray employeeArray = newObject.getJSONArray("employees");
          System.out.println(employeeArray);
 
