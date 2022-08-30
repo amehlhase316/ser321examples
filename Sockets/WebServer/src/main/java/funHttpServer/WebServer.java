@@ -33,6 +33,7 @@ class WebServer {
 
   /**
    * Main thread
+   * 
    * @param port to listen on
    */
   public WebServer(int port) {
@@ -73,10 +74,7 @@ class WebServer {
    */
   private final static HashMap<String, String> _images = new HashMap<>() {
     {
-      put("streets", "https://iili.io/JV1pSV.jpg");
-      put("bread", "https://iili.io/Jj9MWG.jpg");
-    }
-  };
+      put("streets","https://iili.io/JV1pSV.jpg");put("bread","https://iili.io/Jj9MWG.jpg");}};
 
   private Random random = new Random();
 
@@ -202,20 +200,67 @@ class WebServer {
           query_pairs = splitQuery(request.replace("multiply?", ""));
 
           // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+            
+          //check whether getting num1_string works
+          String num1_string = query_pairs.get("num1");
+          // check whether num1_string null  
+          if(num1_string == null){
+          builder.append("HTTP/1.1 400 Bad Request\n");
+          builder.append("Content-Type: text/html; charset=utf-8\n");
+          builder.append("\n");
+          builder.append("Unable to find num1 in query_string");
+            response = builder.toString().getBytes();
+            return response;
+          }
+
+          // extract required fields from parameters
+            
+          String num2_string = query_pairs.get("num2");
+          //check whether getting num1_string works
+          // check whether num1_string null  
+          if(num2_string == null){
+          builder.append("HTTP/1.1 400 Bad Request\n");
+          builder.append("Content-Type: text/html; charset=utf-8\n");
+          builder.append("\n");
+          builder.append("Unable to find num2 in query_string");
+            response = builder.toString().getBytes();
+            return response;
+          }
+
+          Integer num1 = 1;
+
+          try {
+            num1 = Integer.parseInt(num1_string);
+          } catch(NumberFormatException e) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+             builder.append("Content-Type: text/html; charset=utf-8\n");
+             builder.append("\n");
+             builder.append("Unable to parse num1 into an integer");
+            response = builder.toString().getBytes();
+            return response;
+          }
+          
+          Integer num2 = 1;
+
+          try {
+            num2 = Integer.parseInt(num2_string);
+          } catch(NumberFormatException e) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+             builder.append("Content-Type: text/html; charset=utf-8\n");
+             builder.append("\n");
+             builder.append("Unable to parse num2 into an integer");
+            response = builder.toString().getBytes();
+            return response;
+          }
 
           // do math
           Integer result = num1 * num2;
-
-          // Generate response
+          
           builder.append("HTTP/1.1 200 OK\n");
           builder.append("Content-Type: text/html; charset=utf-8\n");
           builder.append("\n");
           builder.append("Result is: " + result);
-
-          // TODO: Include error handling here with a correct error code and
-          // a response that makes sense
+          
 
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
@@ -250,16 +295,20 @@ class WebServer {
         // Output
         response = builder.toString().getBytes();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-      response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
-    }
+    }catch(
 
-    return response;
+  IOException e)
+  {
+    e.printStackTrace();
+    response = ("<html>ERROR: " + e.getMessage() + "</html>").getBytes();
+  }
+
+  return response;
   }
 
   /**
    * Method to read in a query and split it up correctly
+   * 
    * @param query parameters on path
    * @return Map of all parameters and their specific values
    * @throws UnsupportedEncodingException If the URLs aren't encoded with UTF-8
@@ -280,6 +329,7 @@ class WebServer {
 
   /**
    * Builds an HTML file list from the www directory
+   * 
    * @return HTML string output of file list
    */
   public static String buildFileList() {
