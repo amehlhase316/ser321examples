@@ -4,10 +4,16 @@
 	</head>
 	<body>
 		<h3>You can make the following GET requests<h3>
-		<ul>
+		<ul><pre>
 			<li>/file/sample.html -- returns the content of the file sample.html</li>
 			<li>/json -- returns a json of the /random request</a></li>
 			<li>/random -- returns index.html</a></li>
+			<li>/multiply -- returns product of integers num1 and num2</a></li>
+			<li>/github/users/[user]/repos -- returns info on public repos for [user]</a></li>
+			<li>/location -- Saves name and location as Json pair and writes to file. **This is publicly viewable! Keep it vague and appropriate. Users may enter name as 'erase' to delete contents of file**</a></li>
+			http://52.23.163.30/location?name=Shea&location=Oregon --This adds JSON pair name: Shea and location: Oregon to the studentLocations file.</a>
+			http://52.23.163.30/location?name=erase -- This overwrites the contents of studentLocations file with blanks.</a>
+			</pre>
 		</ul>
 		<h3>File Structure in www (you can use /file/www/FILENAME):</h3>
 		${links}

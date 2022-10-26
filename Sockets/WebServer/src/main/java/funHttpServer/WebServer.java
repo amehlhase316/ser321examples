@@ -25,6 +25,7 @@ import java.util.Random;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.nio.charset.Charset;
+import org.json.*;
 
 class WebServer {
   public static void main(String args[]) {
@@ -193,52 +194,126 @@ class WebServer {
             builder.append("\n");
             builder.append("File not found: " + file);
           }
-        } else if (request.contains("multiply?")) {
-          // This multiplies two numbers, there is NO error handling, so when
-          // wrong data is given this just crashes
+        } else if (request.contains("multiply?")){
+		if ((request.contains("num1"))&&(request.contains("num2"))){
 
-          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-          // extract path parameters
-          query_pairs = splitQuery(request.replace("multiply?", ""));
+          		// This multiplies two numbers, there is NO error handling, so when
+          		// wrong data is given this just crashes
 
-          // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
-
-          // do math
-          Integer result = num1 * num2;
-
-          // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
-
+          		Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+          		// extract path parameters
+          		query_pairs = splitQuery(request.replace("multiply?", ""));
+			Integer num1 = null;
+			Integer num2 = null;
+			Integer result;
+			try {
+          		// extract required fields from parameter
+ 	  			num1 = Integer.parseInt(query_pairs.get("num1"));
+	  			num2 = Integer.parseInt(query_pairs.get("num2"));
+			}
+			catch (Exception e){
+				builder.append("HTTP/1.1 422 error\n");
+				builder.append("Content-Type: text/html; charset=utf-6\n");
+				builder.append("\n");
+				builder.append("Error. Only Integers Accepted");
+			}
+			if ((num1!=null)&&(num2!=null)){
+          			// do math
+ 				result = num1 * num2;
+          	
+				// Generate response
+          			builder.append("HTTP/1.1 200 OK\n");
+          			builder.append("Content-Type: text/html; charset=utf-8\n");
+          			builder.append("\n");
+          			builder.append("Result is: " + result);
+			}
+		}
+		else{
+			builder.append("HTTP/1.1 422 error\n");
+			builder.append("Content-Type: text/html; charset=utf-8\n");
+			builder.append("\n");
+			builder.append("Error. Missing Parameters.");
+		}
           // TODO: Include error handling here with a correct error code and
           // a response that makes sense
 
         } else if (request.contains("github?")) {
-          // pulls the query from the request and runs it with GitHub's REST API
-          // check out https://docs.github.com/rest/reference/
-          //
-          // HINT: REST is organized by nesting topics. Figure out the biggest one first,
-          //     then drill down to what you care about
-          // "Owner's repo is named RepoName. Example: find RepoName's contributors" translates to
-          //     "/repos/OWNERNAME/REPONAME/contributors"
-
-          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-          query_pairs = splitQuery(request.replace("github?", ""));
-          String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
-          System.out.println(json);
-
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Check the todos mentioned in the Java source file");
+          	// pulls the query from the request and runs it with GitHub's REST API
+          	// check out https://docs.github.com/rest/reference/
+          	//
+          	// HINT: REST is organized by nesting topics. Figure out the biggest one first,
+          	//     then drill down to what you care about
+          	// "Owner's repo is named RepoName. Example: find RepoName's contributors" translates to
+          	//     "/repos/OWNERNAME/REPONAME/contributor
+          	Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+          	query_pairs = splitQuery(request.replace("github?", ""));
+	  	String json = null;
+		json = fetchURL("https://api.github.com/" + query_pairs.get("query") );
+	 	System.out.println(json);
+	  	if(json.length() == 0){
+                builder.append("HTTP/1.1 422 error\n");
+                builder.append("Content-Type: text/html; charset=utf-8\n");
+                builder.append("\n");
+                builder.append("Error. Parameter must be in form 'query=users/[user]/repos'");
+		json = null;
+	  	}
+	  	else{
+		  	JSONArray repoArray =  new JSONArray(json);
+                  	builder.append("HTTP/1.1 200 OK\n");
+                  	builder.append("Content-Type: text/html; charset=utf-8\n");
+                  	builder.append("\n");
+	  	  	for (int i = 0; i < repoArray.length(); i++){
+		  		JSONObject repo = repoArray.getJSONObject(i);
+                  		String repoName = repo.getString("name");
+		  		JSONObject owner = repo.getJSONObject("owner");
+		  		String ownerName = owner.getString("login");
+	  	  		int repoId = repo.getInt("id");
+          	 		builder.append("Repo name: "+repoName+"\n Repo ID: "+repoId+"\n Repo Owner: "+ownerName+"\n\n");
+	  	  	}
+	  	}
           // TODO: Parse the JSON returned by your fetch and create an appropriate
           // response based on what the assignment document asks for
 
-        } else {
+       }else if (request.contains("location?")){
+                Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+                //query_pairs = splitQuery(request.replace("location?", ""));
+		String name=null;
+		String location=null;
+		try{
+	                query_pairs = splitQuery(request.replace("location?", ""));
+			name = query_pairs.get("name");
+			location = query_pairs.get("location");
+		}
+		catch (Exception e){
+                                builder.append("HTTP/1.1 422 error\n");
+                                builder.append("Content-Type: text/html; charset=utf-6\n");
+                                builder.append("\n");
+                                builder.append("Error. Missing input Parameters");
+		}
+                JSONObject stuLoc = new JSONObject();
+		FileWriter file;
+		if (name.equals("erase")) {
+			file = new FileWriter("www/studentLocations.html");
+			file.write(""); 
+                        builder.append("HTTP/1.1 200 OK\n");
+                        builder.append("Content-Type: text/html; charset=utf-8\n");
+                        builder.append("\n");
+                        builder.append("Erased contents of Student Locations File");
+		}
+		else{
+ 			file = new FileWriter("www/studentLocations.html",true);
+			stuLoc.put("student", query_pairs.get("name"));
+			stuLoc.put("location",query_pairs.get("location"));
+			file.write(stuLoc.toString(1));
+                        builder.append("HTTP/1.1 200 OK\n");
+                        builder.append("Content-Type: text/html; charset=utf-8\n");
+                        builder.append("\n");
+                        builder.append("Hello "+ name+ ". How is life in "+location+"? Your information has been added to the directory");
+		}
+		file.close();
+       }
+
+ else {
           // if the request is not recognized at all
 
           builder.append("HTTP/1.1 400 Bad Request\n");
