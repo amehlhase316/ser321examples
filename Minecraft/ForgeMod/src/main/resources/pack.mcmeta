@@ -1,6 +1,6 @@
 {
   "pack": {
-    "description": "Piemod resources",
+    "description": "${minecraft_mod_name} resources",
     "pack_format": 9,
     "forge:resource_pack_format": 9,
     "forge:data_pack_format": 10

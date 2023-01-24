@@ -1,5 +1,3 @@
-import org.gradle.language.jvm.tasks.ProcessResources
-
 plugins {
     id 'net.minecraftforge.gradle' version "${forgegradle_version}"
 }
@@ -165,15 +163,28 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
+// This ensures that while compiling java, we make sure to use the utf-8 encoding.
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
-
+// This ensures that when we build our project, before we compile it, we replace
+// various placeholder variables with the actual values we want.
+// For example, we replace ${version} with the version of our mod.
+// This is useful for things like the @Mod annotation, which requires a version.
 tasks.withType(ProcessResources).configureEach {
     processResources {
+        // This inputs.property line makes it so that if the value of the version property changes,
+        // the task will be re-run to ensure that the new value is used.
         inputs.property 'version', project.version
+        inputs.property 'mcversion', minecraft_version
+        inputs.property 'modid', minecraft_mod_id
+        inputs.property 'moddescr', minecraft_mod_description
+        inputs.property 'modname', minecraft_mod_name
+        inputs.property 'modauthor', minecraft_mod_author
 
-        filesMatching(['*.toml','*.mcmeta','*.json','*.java']) {
+        // This filesMatching line makes it so that all the files matching those patterns,
+        // are processed by this task.
+        filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
             expand project.properties
         }
     }

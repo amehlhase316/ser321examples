@@ -26,7 +26,8 @@ import org.slf4j.Logger;
 public class PieMod {
 
     // Define mod id in a common place for everything to reference
-    public static final String MODID = "Piemod";
+    public static final String MODID = "piemod";
+    public static final String MOD_NAME = "Pie Mod";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "Piemod" namespace
