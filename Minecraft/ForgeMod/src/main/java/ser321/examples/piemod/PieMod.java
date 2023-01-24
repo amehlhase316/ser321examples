@@ -2,13 +2,19 @@ package ser321.examples.piemod;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +26,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import ser321.examples.piemod.block.ExampleBlock;
+import ser321.examples.piemod.item.ExampleCustomItem;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod( PieMod.MODID )
@@ -30,17 +38,29 @@ public class PieMod {
     public static final String MOD_NAME = "Pie Mod";
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "Piemod" namespace
+    // Create a Deferred Register to hold Blocks which will all be registered under the "PieMod" namespace
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "Piemod" namespace
+    // Create a Deferred Register to hold Items which will all be registered under the "PieMod" namespace
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
 
-    // Creates a new Block with the id "Piemod:example_block", combining the namespace and path
+
+    // Creates a new Block with the id "piemod:example_block", combining the namespace and path
     public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block",
                                                                               () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));
-    // Creates a new BlockItem with the id "Piemod:example_block", combining the namespace and path
+    // Creates a new BlockItem with the id "piemod:example_block", combining the namespace and path
     public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_block", () -> new BlockItem(EXAMPLE_BLOCK.get(),
                                                                                                                       new Item.Properties()));
+
+    // Create a new Custom Item with the id "piemod:example_item", combining the namespace and path
+    public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new ExampleCustomItem(new Item.Properties()));
+
+    // Create a new Custom Block with the id "piemod:example_custom_block", combining the namespace and path
+    public static final RegistryObject<Block> EXAMPLE_CUSTOM_BLOCK = BLOCKS.register("example_custom_block",
+                                                                                   () -> new ExampleBlock(BlockBehaviour.Properties.of(Material.STONE)));
+
+    // Create a new Custom BlockItem with the id "piemod:example_custom_block", combining the namespace and path
+    public static final RegistryObject<Item> EXAMPLE_CUSTOM_BLOCK_ITEM = ITEMS.register("example_custom_block", () -> new BlockItem(EXAMPLE_CUSTOM_BLOCK.get(),
+                                                                                                                                   new Item.Properties()));
 
     public PieMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -68,6 +88,13 @@ public class PieMod {
     public void onServerStarting( ServerStartingEvent event ) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedIn( PlayerEvent.PlayerLoggedInEvent event ) {
+        event.getEntity().getInventory().add(new ItemStack(EXAMPLE_ITEM.get()));
+        event.getEntity().getInventory().add(new ItemStack(EXAMPLE_BLOCK_ITEM.get()));
+        event.getEntity().getInventory().add(new ItemStack(EXAMPLE_CUSTOM_BLOCK_ITEM.get()));
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
