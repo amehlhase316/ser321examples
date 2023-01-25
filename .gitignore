@@ -147,3 +147,12 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse
 
 *.pyc
+Sockets/JavaSimpleSock2/.idea/compiler.xml
+Sockets/JavaSimpleSock2/.idea/gradle.xml
+Sockets/JavaSimpleSock2/.idea/misc.xml
+Sockets/JavaSimpleSock2/.idea/runConfigurations.xml
+Sockets/JavaSimpleSock2/.idea/vcs.xml
+Sockets/JavaSimpleSock2/gradle/wrapper/gradle-wrapper.jar
+Sockets/JavaSimpleSock2/gradle/wrapper/gradle-wrapper.properties
+Sockets/JavaSimpleSock2/gradlew
+Sockets/JavaSimpleSock2/gradlew.bat
