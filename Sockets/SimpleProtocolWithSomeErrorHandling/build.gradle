@@ -1,0 +1,34 @@
+apply plugin: 'java'
+
+description = "Client Server Socket Example"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies{
+  implementation "junit:junit:4.12"
+  implementation 'org.json:json:20171018' // org.json
+}
+
+// Client and Server socket, socket can serve up to three clients
+// The port is defined directly in the Java files. For practice consider changing
+// the tasks to add the port as input to the Gradle task
+task Server(type: JavaExec) {
+  group 'TCP Server/Client'
+  description 'Creates Server socket waits for up to 3 messages'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SockServer'
+}
+
+task Client(type: JavaExec) {
+  group 'TCP Server/Client'
+  description 'Creates client socket sends a message and number to server'
+
+  standardInput = System.in
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'SockClient'
+}
