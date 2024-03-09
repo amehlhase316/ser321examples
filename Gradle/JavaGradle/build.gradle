@@ -51,6 +51,44 @@ task runFraction(type: JavaExec) {
   main = 'Fraction'
 }
 
+// Add this new task below your existing tasks in the build.gradle file
+
+task runFrac(type: JavaExec) {
+    group 'Application'
+    description 'Runs Fraction with provided numerator and denominator or defaults'
+
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'Fraction'
+
+    // Default values for numerator and denominator
+    def numerator = '1'
+    def denominator = '1'
+
+    // Check for numerator property and if provided, use it
+    if (project.hasProperty('num')) {
+        numerator = project.getProperty('num')
+    }
+    
+    // Check for denominator property and if provided, use it
+    if (project.hasProperty('denom')) {
+        denominator = project.getProperty('denom')
+    }
+
+    // Assign arguments to the main method
+    args = [numerator, denominator]
+}
+
+// add that libraries can be pulled from mavenCentral()
+repositories {
+   mavenCentral()
+}
+
+// Setting dependencies
+dependencies {
+   implementation 'org.json:json:20171018'
+}
+
+
 // Try:
 // 1. Change Fraction.main so it accepts 2 arguments
 // 2. Create a new gradle tasks that accepts two arguments and 
