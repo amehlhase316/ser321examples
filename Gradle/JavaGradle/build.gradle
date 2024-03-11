@@ -36,8 +36,17 @@ task runAppAgain(type: JavaExec) {
   // Try: using default values in case non or only one parameter is provided
   if (project.hasProperty("num1") && project.hasProperty("num2")) {
     args(project.getProperty('num1'), project.getProperty('num2'));
+
   } else if (project.hasProperty("num1")){
     args(project.getProperty('num1'), 1);
+
+  // Defaults to 1 if only num2 is provided
+  } else if (project.hasProperty("num2")) {
+    args(1, project.getProperty("num2"));
+
+  // defaults both values to 1 if no arguments are provided
+  } else {
+    args(1, 1);
   }
 }
 
@@ -56,12 +65,41 @@ task runFraction(type: JavaExec) {
 // 2. Create a new gradle tasks that accepts two arguments and 
 //    can be called as: gradle runFrac -Pdenom=4 -Pnum=3 or as gradle runFrac -Pnum=3 -Pdenom=4 , also make sure it can run with only 1 or no arguments
 
+task runCustomFraction(type: JavaExec) {
+  group 'Fraction Tasks'
+  description 'Runs Fraction with custom arguments'
+
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'Fraction'
+
+  if (project.hasProperty('num') && project.hasProperty('denom')) {
+    args(project.getProperty('num'), project.getProperty('denom'));
+
+  } else if (project.hasProperty('num')) {
+    // default denom = 1
+    args(project.getProperty('num'), 1);
+
+  // Defaults to 1 if only num2 is provided
+  } else if (project.hasProperty('denom')) {
+    
+    args(1, project.getProperty('denom'));
+
+  // defaults both values to 1 if no arguments are provided
+  } else {
+    args(1, 1);
+  }
+}
+
+
+
 // Example how you can add that libraries can be pulled from mavenCentral()
-// repositories {
-//   mavenCentral()
-// }
+ repositories {
+  mavenCentral() 
+}
 
 // Setting dependencies, e.g. when you import JSON in your Java files
-// dependencies{
-//   implementation 'org.json:json:20171018'
-// }
+dependencies {
+
+   implementation 'org.json:json:20171018'
+
+}
