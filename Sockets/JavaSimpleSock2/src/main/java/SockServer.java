@@ -14,9 +14,10 @@ import java.io.*;
 public class SockServer {
   public static void main (String args[]) {
     Socket sock;
-    try {
-      //open socket
-      ServerSocket serv = new ServerSocket(8888); // create server socket on port 8888
+
+     // open socket on port 8888
+    try (ServerSocket serv = new ServerSocket(8888);) {
+     
       System.out.println("Server ready for 3 connections");
       // only does three connections then closes
       // NOTE: SINGLE-THREADED, only one connection at a time
