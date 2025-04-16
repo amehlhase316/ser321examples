@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "echo";
+option java_outer_classname = "CalcProto";
+package calcmessage;
+
+service Calc {
+  rpc add (CalcRequest) returns (CalcResp) {}
+  rpc sub (CalcRequest) returns (CalcResp) {}
+  rpc mult (CalcRequest) returns (CalcResp) {}
+}
+
+// The request message
+message CalcRequest {
+  int32 num1 = 1;
+  int32 num2 = 2;
+}
+// The response message
+message CalcResp {
+  int32 result = 1;
+}

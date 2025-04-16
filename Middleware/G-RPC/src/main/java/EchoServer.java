@@ -1,11 +1,8 @@
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.grpc.stub.StreamObserver;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import echo.ServerResponse;
-import echo.ClientRequest;
-import echo.EchoGrpc;
+
 
 /**
  * Server that manages startup/shutdown of the `EchoServer`.
@@ -22,6 +19,7 @@ public class EchoServer {
     /* The port on which the server should run */
     server = ServerBuilder.forPort(port)
         .addService(new EchoImpl())
+            .addService(new CalcImp())
         .build()
         .start();
 

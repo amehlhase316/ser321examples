@@ -2,15 +2,15 @@ import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.util.concurrent.TimeUnit;
-import echo.ServerResponse;
-import echo.ClientRequest;
-import echo.EchoGrpc;
+import echo.*;
+import java.util.Scanner;
 
 /**
  * Client that requests `parrot` method from the `EchoServer`.
  */
 public class EchoClient {
   private final EchoGrpc.EchoBlockingStub blockingStub;
+  private final CalcGrpc.CalcBlockingStub blockingStub2;
 
   /** Construct client for accessing server using the existing channel. */
   public EchoClient(Channel channel) {
@@ -19,6 +19,7 @@ public class EchoClient {
 
         // Passing Channels to code makes code easier to test and makes it easier to reuse Channels.
     blockingStub = EchoGrpc.newBlockingStub(channel);
+    blockingStub2 = CalcGrpc.newBlockingStub(channel);
   }
 
   public void askServerToParrot(String message) {
@@ -32,6 +33,31 @@ public class EchoClient {
     }
     System.out.println("Received from server: " + response.getMessage());
   }
+
+  private void add(int a, int b) {
+    echo.CalcRequest req = echo.CalcRequest.newBuilder().setNum1(a).setNum2(b).build();
+    echo.CalcResp response;
+    try {
+      response = blockingStub2.add(req);
+      System.out.println(response.toString());
+    } catch (Exception e) {
+      System.err.println("RPC failed: " + e.getMessage());
+      return;
+    }
+  }
+
+  private void sub(int a, int b) {
+    echo.CalcRequest req = echo.CalcRequest.newBuilder().setNum1(a).setNum2(b).build();
+    echo.CalcResp response;
+    try {
+      response = blockingStub2.sub(req);
+      System.out.println(response.toString());
+    } catch (Exception e) {
+      System.err.println("RPC failed: " + e.getMessage());
+      return;
+    }
+  }
+
 
   public static void main(String[] args) throws Exception {
     if (args.length != 3) {
@@ -59,8 +85,19 @@ public class EchoClient {
         .usePlaintext()
         .build();
     try {
+      Scanner scanner = new Scanner(System.in);
       EchoClient client = new EchoClient(channel);
       client.askServerToParrot(message);
+      while (true) {
+        System.out.print("Add first number (0 to exit): ");
+        int a = scanner.nextInt();
+        if (a == 0) {
+          break;
+        }
+        System.out.print("Add second number: ");
+        int b = scanner.nextInt();
+        client.add(a, b);
+      }
     } finally {
       // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
       // resources the channel should be shut down when it will no longer be used. If it may be used
@@ -68,4 +105,5 @@ public class EchoClient {
       channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
     }
   }
+
 }

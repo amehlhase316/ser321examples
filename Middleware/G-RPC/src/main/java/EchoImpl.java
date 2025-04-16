@@ -1,11 +1,5 @@
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import echo.ServerResponse;
-import echo.ClientRequest;
-import echo.EchoGrpc;
+import echo.*;
 class EchoImpl extends EchoGrpc.EchoImplBase {
 
     @Override
