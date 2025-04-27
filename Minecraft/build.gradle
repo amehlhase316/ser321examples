@@ -1,0 +1,4 @@
+subprojects {
+    group = "minecraft.examples"
+}
+
