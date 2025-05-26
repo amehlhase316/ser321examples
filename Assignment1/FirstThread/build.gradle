@@ -1,0 +1,11 @@
+apply plugin: 'application'
+application {
+    mainClassName = 'FirstThread'
+    description = "FirstThread Example"
+}
+
+run {
+  // default arguments
+  args '5' // repeat times
+  args '5' // sleep delay
+}
