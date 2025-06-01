@@ -16,6 +16,7 @@ write a response back
 
 package funHttpServer;
 
+import com.google.gson.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -194,50 +195,138 @@ class WebServer {
             builder.append("File not found: " + file);
           }
         } else if (request.contains("multiply?")) {
-          // This multiplies two numbers, there is NO error handling, so when
-          // wrong data is given this just crashes
+          try {
+            // This multiplies two numbers, there is NO error handling, so when
+            // wrong data is given this just crashes
 
-          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-          // extract path parameters
-          query_pairs = splitQuery(request.replace("multiply?", ""));
+            Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+            // extract path parameters
+            query_pairs = splitQuery(request.replace("multiply?", ""));
 
-          // extract required fields from parameters
-          Integer num1 = Integer.parseInt(query_pairs.get("num1"));
-          Integer num2 = Integer.parseInt(query_pairs.get("num2"));
+            // extract required fields from parameters
+            Integer num1 = Integer.parseInt(query_pairs.get("num1"));
+            Integer num2 = Integer.parseInt(query_pairs.get("num2"));
 
-          // do math
-          Integer result = num1 * num2;
+            // do math
+            Integer result = num1 * num2;
 
-          // Generate response
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Result is: " + result);
+            // Generate response
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Result is: " + result);
 
-          // TODO: Include error handling here with a correct error code and
-          // a response that makes sense
-
+          } catch (NumberFormatException e) {
+            builder.append("HTTP/1.1 422 Unprocessable Entity\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: num1 and num2 must be integers.");
+          } catch (IllegalArgumentException e) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: Missing required parameters (num1 and num2).");
+          } catch (Exception e) {
+            builder.append("HTTP/1.1 500 Internal Server Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Server error: " + e.getMessage());
+          }
         } else if (request.contains("github?")) {
           // pulls the query from the request and runs it with GitHub's REST API
           // check out https://docs.github.com/rest/reference/
-          //
-          // HINT: REST is organized by nesting topics. Figure out the biggest one first,
-          //     then drill down to what you care about
-          // "Owner's repo is named RepoName. Example: find RepoName's contributors" translates to
-          //     "/repos/OWNERNAME/REPONAME/contributors"
+          try {
+            Map<String, String> query_pairs = splitQuery(request.replace("github?", ""));
+            String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
 
-          Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-          query_pairs = splitQuery(request.replace("github?", ""));
-          String json = fetchURL("https://api.github.com/" + query_pairs.get("query"));
-          System.out.println(json);
+            // Parse JSON
+            JsonElement root = JsonParser.parseString(json);
+            JsonArray repos = root.getAsJsonArray();
 
-          builder.append("HTTP/1.1 200 OK\n");
-          builder.append("Content-Type: text/html; charset=utf-8\n");
-          builder.append("\n");
-          builder.append("Check the todos mentioned in the Java source file");
-          // TODO: Parse the JSON returned by your fetch and create an appropriate
-          // response based on what the assignment document asks for
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("<html><body><h1>GitHub Repositories</h1><ul>");
 
+            for (JsonElement elem : repos) {
+              JsonObject repo = elem.getAsJsonObject();
+              String name = repo.get("name").getAsString();
+              String desc = repo.has("description") && !repo.get("description").isJsonNull()
+                      ? repo.get("description").getAsString() : "No description";
+              int stars = repo.get("stargazers_count").getAsInt();
+              int forks = repo.get("forks_count").getAsInt();
+
+              builder.append("<li><strong>").append(name).append("</strong>: ")
+                      .append(desc).append("<br>")
+                      .append("Stars: ").append(stars).append(" | Forks: ").append(forks)
+                      .append("</li><br>");
+            }
+
+            builder.append("</ul></body></html>");
+
+          } catch (Exception e) {
+            builder.append("HTTP/1.1 500 Internal Server Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: ").append(e.getMessage());
+          }
+        } else if (request.contains("reverse?")) {
+          try {
+            Map<String, String> query_pairs = splitQuery(request.replace("reverse?", ""));
+            if (!query_pairs.containsKey("text")) {
+              throw new IllegalArgumentException("Missing 'text' parameter");
+            }
+
+            String input = query_pairs.get("text");
+            String reversed = new StringBuilder(input).reverse().toString();
+
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Original: ").append(input).append("<br>Reversed: ").append(reversed);
+          } catch (IllegalArgumentException e) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: ").append(e.getMessage());
+          } catch (Exception e) {
+            builder.append("HTTP/1.1 500 Internal Server Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Server error: ").append(e.getMessage());
+          }
+        } else if (request.contains("convert?")) {
+          try {
+            Map<String, String> query_pairs = splitQuery(request.replace("convert?", ""));
+
+            if (!query_pairs.containsKey("temp") || !query_pairs.containsKey("type")) {
+              throw new IllegalArgumentException("Missing 'temp' or 'type' parameter");
+            }
+
+            double temp = Double.parseDouble(query_pairs.get("temp"));
+            String type = query_pairs.get("type");
+
+            double converted;
+            String result;
+
+            if (type.equalsIgnoreCase("ftoc")) {
+              converted = (temp - 32) * 5 / 9;
+              result = temp + " °F = " + String.format("%.2f", converted) + " °C";
+            } else if (type.equalsIgnoreCase("ctof")) {
+              converted = (temp * 9 / 5) + 32;
+              result = temp + " °C = " + String.format("%.2f", converted) + " °F";
+            } else {
+              throw new IllegalArgumentException("Type must be 'ftoc' or 'ctof'");
+            }
+
+            builder.append("HTTP/1.1 200 OK\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append(result);
+
+          } catch (NumberFormatException e) {
+            builder.append("HTTP/1.1 422 Unprocessable Entity\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: 'temp' must be a valid number");
+          } catch (IllegalArgumentException e) {
+            builder.append("HTTP/1.1 400 Bad Request\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Error: ").append(e.getMessage());
+          } catch (Exception e) {
+            builder.append("HTTP/1.1 500 Internal Server Error\n");
+            builder.append("Content-Type: text/html; charset=utf-8\n\n");
+            builder.append("Server error: ").append(e.getMessage());
+          }
         } else {
           // if the request is not recognized at all
 

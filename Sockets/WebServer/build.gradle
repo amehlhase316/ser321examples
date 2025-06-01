@@ -1,10 +1,14 @@
 // set as java application
 apply plugin: 'application'
 
+dependencies {
+  implementation('com.google.code.gson:gson:2.10.1')
+}
+
 //define main class
 mainClassName = 'SimpleServer'
 
-task SimpleWebServer(type: JavaExec) {
+tasks.register('SimpleWebServer', JavaExec) {
   group 'http'
   description 'Simple Http Demo'
 
@@ -14,7 +18,7 @@ task SimpleWebServer(type: JavaExec) {
   standardInput = System.in
 }
 
-task FunWebServer(type: JavaExec) {
+tasks.register('FunWebServer', JavaExec) {
   group 'http'
   description 'Simple Http Demo'
 
