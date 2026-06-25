@@ -5,7 +5,7 @@ import org.json.*;
 public class JSON {
    public static void main(final String args[]) {
          // create a JSON String
-         String json3 = "{'Organization':'ASU','Adress':{'first':'Poly','second':'Tempe'},'employees':[{ 'firstName':'John', 'lastName':'Doe' },{ 'firstName':'Anna', 'lastName':'Smith' },{ 'firstName':'Peter', 'lastName':'Jones' }]}";
+         String json3 = "{'Organization':'ASU','Address':{'first':'Poly','second':'Tempe'},'employees':[{ 'firstName':'John', 'lastName':'Doe' },{ 'firstName':'Anna', 'lastName':'Smith' },{ 'firstName':'Peter', 'lastName':'Jones' }]}";
          
          // Json string to JSONObject
          JSONObject newObject = new JSONObject(json3);
