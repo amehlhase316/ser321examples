@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "piemod:block/example_custom_block"
+    }
+  }
+}

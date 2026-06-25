@@ -1,0 +1,7 @@
+{
+  "block.piemod.example_block": "Example Block",
+  "item.piemod.example_block_item": "This Example Block's item!",
+  "item.piemod.example_item": "This is an Example Item!",
+  "block.piemod.example_custom_block": "Custom Block",
+  "item.piemod.example_custom_block_item": "Example Custom Block"
+}
